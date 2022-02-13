@@ -1,0 +1,161 @@
+/* #region local fonts */
+@font-face {
+    font-family: AgencyFB;
+    src: url("res/fonts/AGENCYR.TTF");
+}
+@font-face {
+    font-family: AgencyFB;
+    src: url("res/fonts/AgencyFBBold.ttf");
+    font-weight: bold;
+}
+/* #endregion */
+
+/* #region root elements */
+html {
+    font-family: AgencyFB, Veranda;
+    font-size: 110%;
+}
+
+body {
+    background-image: url("https://cdnb.artstation.com/p/assets/images/images/040/012/643/large/derek-bentley-derekbentley-season10-lobby-03.jpg?1627586423");
+}
+/* #endregion */
+
+
+#content-area {
+    margin-top: 2%;
+    width: 80%;
+    display: flex;
+}
+
+/* #region level-2 */
+#left-bar {
+    display: inline-block;
+    width: 25%;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+#main-content {
+    flex-grow: 1;
+}
+/* #endregion level-2 */
+
+.nav-bar {
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    margin-bottom: 2%;
+    border-bottom-right-radius: 0.5em;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0), rgba(56, 55, 55, 0.5));
+    backdrop-filter: blur(3px);
+    color: white;
+    text-align: center;
+    font-size: 1.2em;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* #region challenge bars */
+.challenge-bar {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    padding-left: 1%;
+    padding-right: 3%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-bottom: 1%;
+    background-color: rgba(56, 55, 55, 0.5);
+    backdrop-filter: blur(3px);
+    color: lightgrey;
+}
+
+.challenge-bar-data {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.challenge-bar-title {
+    align-content: center;
+    width: 100%;
+}
+
+.cb-type {
+    display: inline-block;
+    width: 2ch;
+    padding: 0.4ch 0.5ch 0.2ch 0.5ch;
+    margin-right: 1ch;
+    text-align: center;
+}
+.type-br {
+    background-color: rgb(64, 148, 158);
+    color: rgb(114, 252, 255);
+}
+.type-a {
+    background-color: rgb(108, 79, 198);
+    color: rgb(199, 148, 255);
+}
+.type-c {
+    background-color: rgb(215, 154, 8);
+    color: rgb(255, 254, 24);
+}
+
+
+.challenge-bar-interior {
+    display: inline-block;
+    width: 95%;
+    background-color: rgba(27, 27, 27, 0.8);
+}
+
+.challenge-bar-progress {
+    padding: 0.5% 1% 0.5% 1%;
+    /* padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%; */
+    background-color: rgba(255, 69, 0, 0.8);
+    width: 50%;
+}
+
+
+
+.challenge-bar-type-br {
+    
+}
+
+.challenge-bar-type-c {
+    
+}
+
+/* Make the progress bar look like it's slanted */
+.bar-angle {
+    clip-path: polygon(0 0, calc(100% - 1.5em) 0, 100% 100%, 0% 100%);
+}
+
+.keyword {
+    color: rgb(255, 208, 0);
+}
+
+.star-container {
+    display: flex;
+    width: fit-content;
+    justify-content: end;
+    align-items: center;
+}
+/* Spans that are children */
+.star-container > span {
+    /* 3 character width. +10 is max, but +1 is same width now */
+    width: 3ch;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+.star-five {
+    width: 2.5em;
+    height: 2.5em;
+}
+/* #endregion challenge bars */

@@ -1,5 +1,11 @@
-// const Recorder = require("recorder-js");
+import {storageAvailable} from "./StorageCheck";
 
 window.addEventListener("load", (event) => {
-    document.querySelector("body").innerHTML = "Hi from typescript the fifth"
-})
+    // document.querySelector("body").innerHTML = "Hi from typescript the fifth"
+    // let storage = window.localStorage;
+    // Make sure we have the storage we need
+    if(!storageAvailable("localStorage")) {
+
+    }
+
+});

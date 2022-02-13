@@ -1,9 +1,44 @@
 <html>
 <head>
-
+    <link rel="stylesheet" href="style.css">
+    <title>Apex Legends Challenge Tracker</title>
 </head>
 <body>
-    asdf
+    <div id="content-area">
+        <div id="left-bar">
+            <div class="nav-bar">Daily</div>
+            <div class="nav-bar">Week 1</div>
+        </div>
+
+        <div id="main-content">
+            <div class="challenge-bar">
+                <div class="challenge-bar-data">
+                    <div class="challenge-bar-title"><span class="cb-type type-c">C</span>Play 2 matches</div>
+                    <div class="challenge-bar-interior bar-angle">
+                        <div class="challenge-bar-progress bar-angle">1/2</div>
+                    </div>
+                </div>
+                <div class="star-container">
+                    <span>+10</span>
+                    <img src="res/images/star-five.png" class="star-five"></img>
+                </div>
+            </div>
+            <div class="challenge-bar">
+                <div class="challenge-bar-data">
+                    <div class="challenge-bar-title"><span class="cb-type type-br">BR</span><span>Play 2 matches as <span class="keyword">Pathfinder</span></span></div>
+                    <div class="challenge-bar-interior bar-angle">
+                        <div class="challenge-bar-progress bar-angle">1/2</div>
+                    </div>
+                </div>
+                <div class="star-container">
+                    <span>+1</span>
+                    <img src="res/images/star-five.png" class="star-five"></img>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="dist/bundle.js"></script>
     <script id="__bs_script__">//<![CDATA[
         document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.27.7'><\/script>".replace("HOST", location.hostname));
