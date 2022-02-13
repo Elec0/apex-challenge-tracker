@@ -18,10 +18,8 @@ function initStuff() {
         console.log("First load, run setup");
         // Time to run first time setup
         // setupFirstTime();
-        // ChallengeRenderer.render(new ChallengeEntry());
-        // Just use the append methods like a normal person
-        $("#main-content").append("<div>test</div>");
-        $("#main-content").add("p");;
+        let testChallenge = new ChallengeEntry("Play 12 matches as Bloodhound, Seer, or Crypto", ["Bloodhound, Seer, Crypto"], 5, 12, 5, "BR");
+        ChallengeRenderer.render(testChallenge);
     }
     else {
         console.log("Not first load, retrieve saved info");
