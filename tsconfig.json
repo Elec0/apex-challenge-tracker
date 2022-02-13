@@ -5,6 +5,7 @@
         "module": "commonjs",
         "sourceMap": true,
         "noImplicitAny": true,
-        "allowJs": true
+        "allowJs": true,
+        "esModuleInterop": true
     }
 }

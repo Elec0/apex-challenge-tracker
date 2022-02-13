@@ -121,16 +121,6 @@ body {
     width: 50%;
 }
 
-
-
-.challenge-bar-type-br {
-    
-}
-
-.challenge-bar-type-c {
-    
-}
-
 /* Make the progress bar look like it's slanted */
 .bar-angle {
     clip-path: polygon(0 0, calc(100% - 1.5em) 0, 100% 100%, 0% 100%);
