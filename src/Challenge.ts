@@ -1,11 +1,10 @@
 import $, { Cash } from "cash-dom";
+import { KEYWORDS } from "./constants";
 
 /**
  * Data class for each challenge entry.
  */
-class ChallengeEntry {
-    public static keywords: string[];
-    
+class ChallengeEntry {    
     text: string;
     mode: string;
     progress: number;
@@ -47,8 +46,6 @@ class ChallengeEntry {
     </div>
  */
  class ChallengeRenderer {
-    private static _modes: string[] = ["BR", "A", "C"];
-
     public static render(challenge: ChallengeEntry) {
 
         let newBar = $("<div>").addClass("challenge-bar")
@@ -78,7 +75,7 @@ class ChallengeEntry {
      * @returns {Cash} `span` element
      */
     public static keywordify(challengeText: string): Cash {
-        ChallengeEntry.keywords.forEach((elem) => {
+        KEYWORDS.forEach((elem) => {
             let index = challengeText.indexOf(elem);
             if(index != -1) {
                 // It exists, replace it
@@ -91,7 +88,7 @@ class ChallengeEntry {
     /**
      * Create a `span` for the given {@link mode}
      * 
-     * @param {string} mode - A valid entry in {@link ChallengeRenderer._modes}
+     * @param {string} mode - A valid entry in {@link MODES}
      * @returns {Cash} `span` element
      */
     public static modeify(mode: string): Cash {
