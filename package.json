@@ -4,7 +4,8 @@
   "description": "Track your Apex Legends challenges",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ts-node node_modules/jasmine/bin/jasmine --config=test/support/jasmine.json",
+    "coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test",
     "build": "webpack",
     "dev": "npm run watch",
     "dev:py": "python -m http.server",
@@ -23,15 +24,20 @@
   "author": "elec0",
   "license": "ISC",
   "devDependencies": {
+    "@types/jasmine": "^3.10.3",
     "concurrently": "^7.0.0",
+    "jasmine": "^4.0.2",
+    "jsdom": "^19.0.0",
+    "mock-local-storage": "^1.1.20",
+    "nyc": "^15.1.0",
     "ts-loader": "^9.2.6",
+    "ts-node": "^10.5.0",
     "typescript": "^4.5.5",
     "watchify": "^4.0.0",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "cash-dom": "^8.1.0",
-    "sanitize": "^2.1.0"
+    "cash-dom": "^8.1.0"
   }
 }

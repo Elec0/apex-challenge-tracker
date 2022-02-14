@@ -24,7 +24,7 @@ class ChallengeEntry {
     /**
      * Create dom element with {@link ChallengeRenderer.render}.
      */
-    render() {
+    public render() {
         ChallengeRenderer.render(this);
     }
 }
@@ -49,7 +49,7 @@ class ChallengeEntry {
  class ChallengeRenderer {
     private static _modes: string[] = ["BR", "A", "C"];
 
-    static render(challenge: ChallengeEntry) {
+    public static render(challenge: ChallengeEntry) {
 
         let newBar = $("<div>").addClass("challenge-bar")
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
@@ -77,7 +77,7 @@ class ChallengeEntry {
      * @param {string} challengeText - value to format as a keyword
      * @returns {Cash} `span` element
      */
-    private static keywordify(challengeText: string): Cash {
+    public static keywordify(challengeText: string): Cash {
         ChallengeEntry.keywords.forEach((elem) => {
             let index = challengeText.indexOf(elem);
             if(index != -1) {
@@ -94,8 +94,8 @@ class ChallengeEntry {
      * @param {string} mode - A valid entry in {@link ChallengeRenderer._modes}
      * @returns {Cash} `span` element
      */
-    private static modeify(mode: string): Cash {
-        return $("<span>").addClass("cb-type type-" + mode).text(mode);
+    public static modeify(mode: string): Cash {
+        return $("<span>").addClass("cb-type type-" + mode.toLocaleLowerCase()).text(mode.toLocaleUpperCase());
     }
 
     /**
