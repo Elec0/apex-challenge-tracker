@@ -4,16 +4,16 @@ import $, { Cash } from "cash-dom";
  * Data class for each challenge entry.
  */
 class ChallengeEntry {
+    public static keywords: string[];
+    
     text: string;
-    keywords: string[];
     mode: string;
     progress: number;
     max: number;
     value: number;
 
-    constructor(text: string, keywords: string[], progress: number, max: number, value: number, mode?: string) {
+    constructor(text: string, progress: number, max: number, value: number, mode?: string) {
         this.text = text;
-        this.keywords = keywords;
         this.progress = progress;
         this.max = max;
         this.value = value;
@@ -55,11 +55,8 @@ class ChallengeEntry {
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
         // Create our title element
         $("<div>").addClass("challenge-bar-title")
-                .append(this.modeify("BR"))
-                .append(
-                    $("<span>").html(challenge.text)
-                        // .append(this.keywordify("Pathfinder"))
-                )
+                .append(this.modeify(challenge.mode))
+                .append(this.keywordify(challenge.text))
             .appendTo(barData);
 
         // Create our progress bar
@@ -75,11 +72,20 @@ class ChallengeEntry {
     }
 
     /**
-     * @param {string} keyword - value to format as a keyword
+     * Given the challenge text and the list of known keywords, replace the raw keyword texts
+     * with spanned elements.
+     * @param {string} challengeText - value to format as a keyword
      * @returns {Cash} `span` element
      */
-    private static keywordify(keyword: string): Cash {
-        return $("<span>").addClass("keyword").text(keyword);
+    private static keywordify(challengeText: string): Cash {
+        ChallengeEntry.keywords.forEach((elem) => {
+            let index = challengeText.indexOf(elem);
+            if(index != -1) {
+                // It exists, replace it
+                challengeText = `${challengeText.substring(0, index)}<span class='keyword'>${elem}</span>${challengeText.substring(index+elem.length)}`;
+            }
+        });
+        return $("<span>").html(challengeText);
     }
 
     /**
@@ -99,7 +105,7 @@ class ChallengeEntry {
     private static starify(value: number): Cash {
         return $("<div>").addClass("star-container")
             .append($("<span>").text(`+${value}`))
-            .append($("<img>").attr("src", "/res/images/star-five.png").addClass("star-five"));
+            .append($("<img>").attr("src", "/res/images/star-five.svg").addClass("star-five"));
     }
 }
 

@@ -1,4 +1,4 @@
-import {storageAvailable} from "./StorageCheck";
+import {storageAvailable, escapeHtml} from "./utils";
 import $ from "cash-dom";
 import { ChallengeEntry, ChallengeRenderer } from "./Challenge";
 
@@ -18,7 +18,11 @@ function initStuff() {
         console.log("First load, run setup");
         // Time to run first time setup
         // setupFirstTime();
-        let testChallenge = new ChallengeEntry("Play 12 matches as Bloodhound, Seer, or Crypto", ["Bloodhound, Seer, Crypto"], 5, 12, 5, "BR");
+        // Init keywords
+        ChallengeEntry.keywords = ["Bloodhound", "Seer", "Crypto"];
+
+        let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
+        let testChallenge = new ChallengeEntry(txt, 5, 12, 5, "BR");
         ChallengeRenderer.render(testChallenge);
     }
     else {
