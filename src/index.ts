@@ -1,6 +1,6 @@
 import {storageAvailable, escapeHtml} from "./utils";
 import $ from "cash-dom";
-import { ChallengeEntry, ChallengeRenderer } from "./Challenge";
+import { ChallengeEntry, ChallengeRenderer } from "./challenge";
 
 $(function () {
     if(!storageAvailable("localStorage")) {
@@ -19,11 +19,13 @@ function initStuff() {
         // Time to run first time setup
         // setupFirstTime();
         // Init keywords
-        ChallengeEntry.keywords = ["Bloodhound", "Seer", "Crypto"];
 
         let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
-        let testChallenge = new ChallengeEntry(txt, 5, 12, 5, "BR");
-        ChallengeRenderer.render(testChallenge);
+        for(let i = 0; i < 10; ++i)
+        {
+            let testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*12), 12, 5, "BR");
+            ChallengeRenderer.render(testChallenge);
+        }
     }
     else {
         console.log("Not first load, retrieve saved info");

@@ -4,12 +4,19 @@ import { KEYWORDS } from "./constants";
 /**
  * Data class for each challenge entry.
  */
-class ChallengeEntry {    
+class ChallengeEntry {
+    /** Actual full text of the challenge */
     text: string;
+    /** What {@link MODES} the challenge applies to. Can be null, which means applies everywhere. */
     mode: string;
+    /** How much progression has been completed */
     progress: number;
+    /** The max needed progression */
     max: number;
+    /** How many stars the challenge is worth */
     value: number;
+    /** What week the challenge is associated with */
+    week: number;
 
     constructor(text: string, progress: number, max: number, value: number, mode?: string) {
         this.text = text;
@@ -58,9 +65,8 @@ class ChallengeEntry {
 
         // Create our progress bar
         $("<div>").addClass("challenge-bar-interior bar-angle")
-                .append($("<div>").addClass("challenge-bar-progress bar-angle")
-                    .text(`${challenge.progress}/${challenge.max}`)
-                )
+                .append($("<div>").addClass("challenge-bar-progress bar-angle").attr("style", `width:${Math.floor((challenge.progress/challenge.max) * 100)}%`))
+                .append($("<span>").text(`${challenge.progress}/${challenge.max}`))
             .appendTo(barData);
         
         newBar.append(this.starify(challenge.value));

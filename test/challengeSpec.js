@@ -1,5 +1,5 @@
-const { ChallengeRenderer, ChallengeEntry } = require("../src/Challenge");
-const { KEYWORDS } = require("../src/constants");
+const { ChallengeRenderer, ChallengeEntry } = require("./../src/challenge");
+const { KEYWORDS } = require("./../src/constants");
 
 describe('ChallengeRenderer', function() {
 
