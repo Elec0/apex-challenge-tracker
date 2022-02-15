@@ -1,6 +1,7 @@
 import {storageAvailable, escapeHtml} from "./utils";
-import $ from "cash-dom";
+import $, { Cash } from "cash-dom";
 import { ChallengeEntry, ChallengeRenderer } from "./challenge";
+import { handleTabClick, navToChallenges } from "./navigation";
 
 $(function () {
     if(!storageAvailable("localStorage")) {
@@ -14,18 +15,18 @@ $(function () {
  * Idk start running things
  */
 function initStuff() {
+    // Setup our nav button handler
+    $(".tab-entry").on("click", (e) => {
+        handleTabClick(e.target.id);
+    });
+
     if(StorageHelper.isFirstLoad()) {
         console.log("First load, run setup");
         // Time to run first time setup
         // setupFirstTime();
         // Init keywords
 
-        let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
-        for(let i = 0; i < 10; ++i)
-        {
-            let testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
-            ChallengeRenderer.render(testChallenge);
-        }
+        navToChallenges();
     }
     else {
         console.log("Not first load, retrieve saved info");

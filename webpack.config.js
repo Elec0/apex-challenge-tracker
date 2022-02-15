@@ -4,13 +4,21 @@ module.exports = {
   entry: './src/index.ts',
   devtool: 'inline-source-map',
   module: {
-    rules: [{
-      use: "ts-loader",
-      exclude: "/node_modules/"
-    }]
+    rules: [
+      {
+        test: /\.html$/i,
+        use: 'html-loader',
+        exclude: "/node_modules/"
+      },
+      {
+        test: /\.ts$/,
+        use: "ts-loader",
+        exclude: "/node_modules/"
+      }
+    ]
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.html'],
   },
   output: {
     filename: 'bundle.js',
