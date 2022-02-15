@@ -55,7 +55,7 @@ class ChallengeEntry {
  class ChallengeRenderer {
     public static render(challenge: ChallengeEntry) {
 
-        let newBar = $("<div>").addClass("challenge-bar")
+        let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur")
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
         // Create our title element
         $("<div>").addClass("challenge-bar-title")

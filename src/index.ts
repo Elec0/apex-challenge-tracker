@@ -23,7 +23,7 @@ function initStuff() {
         let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
         for(let i = 0; i < 10; ++i)
         {
-            let testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*12), 12, 5, "BR");
+            let testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
             ChallengeRenderer.render(testChallenge);
         }
     }
