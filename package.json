@@ -12,13 +12,13 @@
     "dev:reload": "browser-sync reload",
     "dev:browsersync": "browser-sync start",
     "watch": "concurrently --kill-others \"npm run dev:browsersync\"  \"npm run dev:py\" \"npm run watch:js\"",
-    "watch:js": "nodemon --watch \"src/\" --exec \"npm run build && npm run dev:reload\""
+    "watch:js": "nodemon --watch \"src/\" --watch \"content/\" --exec \"npm run build && npm run dev:reload\""
   },
   "nodemonConfig": {
     "ignore": [
       "test/*"
     ],
-    "ext": "js,ts",
+    "ext": "js,ts,html",
     "delay": 3000
   },
   "author": "elec0",

@@ -23,17 +23,39 @@ export function handleTabClick(id: string) {
             case TAB_SETTINGS:
                 navToSettings();
             break;
+            default:
+                console.warn("Got an unexpected id: %s", id);
         }
     }
 }
 
 function loadChallenges() {
     let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
+    let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true);
+    ChallengeRenderer.render(testChallenge);
     for(let i = 0; i < 10; ++i)
     {
-        let testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
+        testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
         ChallengeRenderer.render(testChallenge);
     }
+}
+
+/** 
+ * Check the URL hash and navigate to the tab it says, if it exists.
+ * <p>If it doesn't, navigate to {@code Challenges} with no hash.
+ */
+export function navToHash(): boolean {
+    if(window.location.hash != "") {
+        handleTabClick(window.location.hash.substring(1));
+        return true;
+    }
+    handleTabClick(TAB_CHALLENGES);
+    return false;
+}
+
+/** Set the URL hash */
+function setHash(newHash: string) {
+    window.location.hash = newHash;
 }
 
 /**
@@ -51,18 +73,21 @@ export function navToChallenges() {
     // Restore the left bar to visibility
     $("#left-bar").removeAttr("style");
     clearMainContent();
+    setHash("");
     loadChallenges();
 }
 
 /** Navigate to Optimal Path */
 function navToOptimalPath() {
     console.log("Navigate to Optimal Path");
+    setHash(TAB_OPTIMAL_PATH);
     navFromChallenges();
 }
 
 /** Navigate to Settings */
 function navToSettings() {
     console.log("Navigate to Settings");
+    setHash(TAB_SETTINGS);
     navFromChallenges();
     $("#main-content").html(settingsHtml);
 }

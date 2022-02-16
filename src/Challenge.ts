@@ -17,14 +17,18 @@ class ChallengeEntry {
     value: number;
     /** What week the challenge is associated with */
     week: number;
+    /** If the challenge is part of an event */
+    event: boolean;
 
-    constructor(text: string, progress: number, max: number, value: number, mode?: string) {
+    constructor(text: string, progress: number, max: number, value: number, mode?: string, event?: boolean) {
         this.text = text;
         this.progress = progress;
         this.max = max;
         this.value = value;
         if(mode !== null)
             this.mode = mode;
+        if(event !== null)
+            this.event = event;
         
     }
     /**
@@ -69,7 +73,7 @@ class ChallengeEntry {
                 .append($("<span>").text(`${challenge.progress}/${challenge.max}`))
             .appendTo(barData);
         
-        newBar.append(this.starify(challenge.value));
+        newBar.append(this.starify(challenge));
 
         $("#main-content").append(newBar);
     }
@@ -102,13 +106,20 @@ class ChallengeEntry {
     }
 
     /**
-     * @param {number} value - Number of stars this challenge is worth 
+     * @param {number} challenge - Number of stars this challenge is worth 
      * @returns {Cash} `div` element
      */
-    private static starify(value: number): Cash {
-        return $("<div>").addClass("star-container")
-            .append($("<span>").text(`+${value}`))
-            .append($("<img>").attr("src", "/res/images/star-five.svg").addClass("star-five"));
+    private static starify(challenge: ChallengeEntry): Cash {
+        let res = $("<div>").addClass("star-container")
+            .append($("<span>").text(`+${challenge.value}`));
+            if(!challenge.event) {
+                res.append($("<img>").attr("src", "/res/images/star-five.svg").addClass("star-five"));
+            }
+            else {
+                res.append($("<img>").attr("src", "/res/images/ticket.png").addClass("star-five"));
+            }
+            return res;
+
     }
 }
 

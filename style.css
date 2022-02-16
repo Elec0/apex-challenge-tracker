@@ -120,7 +120,8 @@ body {
     margin-left: 2%;
 }
 #main-content {
-    flex-grow: 1;
+    width: 100%;
+    /* flex-grow: 1; */
 }
 /* #endregion level-2 */
 
@@ -257,3 +258,15 @@ body {
     height: 2.5em;
 }
 /* #endregion challenge bars */
+
+/* #region Settings */
+#settings-content-holder {
+    display: flex;
+    justify-content: center;
+}
+
+#settings-content {
+    /* display: inline-block; */
+    flex-grow: 1;
+}
+/* #endregion Settings */
