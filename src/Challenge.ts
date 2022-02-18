@@ -1,5 +1,6 @@
 import $, { Cash } from "cash-dom";
 import { KEYWORDS } from "./constants";
+import { escapeHtml } from "./utils";
 
 /**
  * Data class for each challenge entry.
@@ -75,7 +76,7 @@ class ChallengeEntry {
         
         newBar.append(this.starify(challenge));
 
-        $("#main-content").append(newBar);
+        $("#challenge-content-area").append(newBar);
     }
 
     /**
@@ -120,6 +121,17 @@ class ChallengeEntry {
             }
             return res;
 
+    }
+}
+
+export function loadChallenges() {
+    let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
+    let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true);
+    ChallengeRenderer.render(testChallenge);
+    for(let i = 0; i < 10; ++i)
+    {
+        testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
+        ChallengeRenderer.render(testChallenge);
     }
 }
 

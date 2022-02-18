@@ -1,8 +1,10 @@
 import $, { Cash } from "cash-dom";
-import { ChallengeEntry, ChallengeRenderer } from "./challenge";
+import { ChallengeEntry, ChallengeRenderer, loadChallenges } from "./challenge";
 import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
 import { escapeHtml } from "./utils";
 import settingsHtml from "./../content/settings.html";
+import challengeHtml from "./../content/challenge.html";
+import { initSettings } from "./settings";
 
 /** Handle changing selected tab and navigation */
 export function handleTabClick(id: string) {
@@ -26,17 +28,6 @@ export function handleTabClick(id: string) {
             default:
                 console.warn("Got an unexpected id: %s", id);
         }
-    }
-}
-
-function loadChallenges() {
-    let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
-    let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true);
-    ChallengeRenderer.render(testChallenge);
-    for(let i = 0; i < 10; ++i)
-    {
-        testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
-        ChallengeRenderer.render(testChallenge);
     }
 }
 
@@ -71,9 +62,10 @@ function handleTabSelection(id: string) {
 export function navToChallenges() {
     console.log("Navigate to Challenges");
     // Restore the left bar to visibility
-    $("#left-bar").removeAttr("style");
-    clearMainContent();
+    clearPageContent();
     setHash("");
+    $("#left-bar").removeAttr("style");
+    $("#root-container").append(challengeHtml);
     loadChallenges();
 }
 
@@ -81,23 +73,21 @@ export function navToChallenges() {
 function navToOptimalPath() {
     console.log("Navigate to Optimal Path");
     setHash(TAB_OPTIMAL_PATH);
-    navFromChallenges();
+    clearPageContent();
 }
 
 /** Navigate to Settings */
 function navToSettings() {
     console.log("Navigate to Settings");
     setHash(TAB_SETTINGS);
-    navFromChallenges();
-    $("#main-content").html(settingsHtml);
+    clearPageContent();
+    $("#root-container").append(settingsHtml);
+    initSettings();
 }
 
-/** Ensure Challenges info is not present */
-function navFromChallenges() {
-    // Hide the left bar
+function clearPageContent() {
     $("#left-bar").attr("style", "display:none");
-    clearMainContent();
-}
-function clearMainContent() {
-    $("#main-content").empty();
+    $("#challenge-content-area").remove();
+    $("#settings-content-area").remove();
+    $("#path-content-area").remove();
 }
