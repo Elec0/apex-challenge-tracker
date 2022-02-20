@@ -2,6 +2,7 @@ import {storageAvailable, escapeHtml} from "./utils";
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry, ChallengeRenderer } from "./challenge";
 import { handleTabClick, navToChallenges, navToHash } from "./navigation";
+import { StorageHelper } from "./storage-helper";
 
 $(function () {
     if(!storageAvailable("localStorage")) {
@@ -53,22 +54,4 @@ function setupListeners() {
         // Move to the new hash when it's changed
         navToHash();
     });
-    }
-
-class StorageHelper {
-    private static _storage = window.localStorage;
-    static getValue(key: string) {
-        return this._storage.getItem(key);
-    }
-
-    static setValue(key: string, val: any) {
-        this._storage.setItem(key, val);
-    }
-
-    /**
-     * Check if this is the user's first load into our page
-     */
-    static isFirstLoad(): boolean {
-        return this._storage.getItem("started") == null;
-    }
 }

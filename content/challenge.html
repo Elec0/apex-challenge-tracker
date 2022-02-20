@@ -6,7 +6,7 @@
     <div style="display: inline-block">
         <div class="challenge-editor-line-1">
             <span>Mode: </span>
-            <select name="edit-mode" class="edit-mode" onload="onchange" onchange="this.dataset.chosen=this.value;">
+            <select name="edit-mode" class="edit-mode" onchange="this.dataset.chosen=this.value;">
                 <option value="BR">BR</option>
                 <option value="A">A</option>
                 <option value="C">C</option>
@@ -19,7 +19,9 @@
         </div>
     </div>
     <div class="star-container">
-        <input type="number" for-data="value" class="edit-text" />
+        <div class="edit-text-div">
+            <input type="number" for-data="value" class="edit-text" />
+        </div>
         <img src="/res/images/star-five.svg" class="star-five" />
 
         <div class="edit-icon edit-checkmark"><img src="/res/images/checkmark.png" /></div>

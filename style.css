@@ -38,7 +38,8 @@ body {
     flex-direction: column;
     justify-content: left;
     margin-top: 2%;
-    flex-grow: 0.5;
+    /* flex-grow: 0.5; */
+    width: 50%;
 }
 
 #settings-content-area {
@@ -131,8 +132,8 @@ body {
 #left-bar {
     display: inline-flex;
     flex-direction: column;
-    /* width: 25%; */
-    flex-grow: 0.25;
+    width: 20%;
+    /* flex-grow: 0.25; */
     margin-right: 2%;
     margin-left: 2%;
     margin-top: 2%;
@@ -325,15 +326,15 @@ body {
     height: 100%;
     align-content: center;
 }
-.challenge-editor .star-container .edit-text {
-    
-    margin-right: 1em;
+.challenge-editor .star-container .edit-text-div {
+    box-sizing: border-box;
+    width: 5em;
 }
 .challenge-editor .edit-text[type="number"] {
     width: 5em;
 }
 .challenge-editor-line-2 {
-    margin-top: 0.5em;
+    margin-top: 0.4em;
 }
 .edit-icon.edit-checkmark {
     opacity: 1;

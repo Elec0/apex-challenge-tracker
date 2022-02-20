@@ -1,12 +1,12 @@
 import $, { Cash } from "cash-dom";
-import { TAB_OPTIMAL_PATH } from "../dist/bundle";
 import { KEYWORDS } from "./constants";
+import { StorageHelper } from "./storage-helper";
 import { escapeHtml } from "./utils";
 
 /**
  * Data class for each challenge entry.
  */
-class ChallengeEntry {
+export class ChallengeEntry {
     /** Actual full text of the challenge */
     text: string;
     /** What {@link MODES} the challenge applies to. Can be null, which means applies everywhere. */
@@ -105,8 +105,8 @@ class ChallengeEntry {
         </div>
     </div>
  */
- class ChallengeRenderer {
-    public static render(challenge: ChallengeEntry) {
+ export class ChallengeRenderer {
+    public static render(challenge: ChallengeEntry, prepend?: boolean) {
 
         let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur").attr("id", challenge.order.toString());
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
@@ -125,7 +125,10 @@ class ChallengeEntry {
         newBar.append(this.starify(challenge));
         newBar.append(this.setupEditButton(challenge));
 
-        $("#challenge-content-area").append(newBar);
+        if(prepend)
+            $("#challenge-content-area").prepend(newBar);
+        else
+            $("#challenge-content-area").append(newBar);
     }
 
     /**
@@ -188,20 +191,24 @@ class ChallengeEntry {
      * Add the IDs of the challenge to each input.
      * 
      * On submit, save the data to storage, clear and reload the entire challenge list.
+     * 
+     * TODO: Populate the values with existing data
      */
     private static handleEditButtonClick(challenge: ChallengeEntry) {
         let clickedElem = $(`#${challenge.order}`);
         let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
-        let modeSelector = cloneElem.find("select.edit-mode");
 
         cloneElem.find("div.edit-checkmark").on("click", e => this.handleEditSave(e, challenge));
 
         // Make the selector have the correct formatting
-        modeSelector.attr("data-chosen", `${challenge.mode}`);
+        cloneElem.find("select.edit-mode").attr("data-chosen", `${challenge.mode}`);
+
+        // Drop the display html and replace it with our new edit layout
         clickedElem.empty();
         clickedElem.append(cloneElem);
     }
 
+    /** Retrieve the input values and save them */
     private static handleEditSave(event: any, challenge: ChallengeEntry) {
         
         let cloneElem = $(`#${challenge.order}`);
@@ -211,24 +218,39 @@ class ChallengeEntry {
         let maxText = cloneElem.find("input[for-data='max']");
         let valueText = cloneElem.find("input[for-data='value']");
 
-        challenge.text = titleText.val() as string;
-        challenge.progress = Number.parseInt(progressText.val() as string);
-        challenge.max = Number.parseInt(maxText.val() as string);
-        challenge.value = Number.parseInt(valueText.val() as string);
+        challenge.text = escapeHtml(titleText.val() as string);
+        challenge.mode = escapeHtml(modeSelector.val() as string);
+        challenge.progress = Number.parseInt(escapeHtml(progressText.val() as string));
+        challenge.max = Number.parseInt(escapeHtml(maxText.val() as string));
+        challenge.value = Number.parseInt(escapeHtml(valueText.val() as string));
+
         console.log("Save challenge", challenge);
+        StorageHelper.setOrderChallenge(challenge);
+        reloadChallenge(challenge);
     }
 }
 
 /** Entry function from navigation */
 export function loadChallenges() {
     let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
-    let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true);
+    let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true, 0);
     ChallengeRenderer.render(testChallenge);
     for(let i = 0; i < 10; ++i)
     {
-        testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR");
+        testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR", false, i+1);
         ChallengeRenderer.render(testChallenge);
     }
+}
+
+/** Remove and re-add all challenges */
+function reloadAllChallenges() {
+    $("#challenge-content-area").empty();
+    loadChallenges();
+}
+
+function reloadChallenge(challenge: ChallengeEntry) {
+    $(`#${challenge.order}`).remove();
+    ChallengeRenderer.render(challenge, true);
 }
 
 /** Create the elements for adding new challenges */
@@ -237,8 +259,6 @@ function initChallengeAdder() {
 }
 
 /** Get the data from local storage and populate stuff */
-function loadChallengesFromStorage() {
+export function loadChallengesFromStorage() {
     
 }
-
-export { ChallengeEntry, ChallengeRenderer };
