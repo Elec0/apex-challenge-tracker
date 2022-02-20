@@ -140,6 +140,7 @@ body {
 
 /* #endregion level-2 */
 
+/* #region nav */
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     div.nav-blur {
         background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0), rgba(56, 55, 55, 0.5));
@@ -163,6 +164,7 @@ body {
     text-transform: uppercase;
     cursor: pointer;
 }
+/* #endregion */
 
 /* #region challenge bars */
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
@@ -271,6 +273,77 @@ body {
 .star-five {
     width: 2.5em;
     height: 2.5em;
+}
+.edit-icon {
+    display: inline-flex;
+    opacity: 0;
+    align-items: center;
+    margin-left: 1em;
+    background: no-repeat url("/res/images/edit-icon-32x32.png") 50% / 100%;
+    transition-property: opacity;
+    transition-duration: 100ms;
+}
+.edit-icon:hover {
+    background: no-repeat url("/res/images/edit-icon-32x32-hover.png") 50% / 100%;
+    filter: brightness(1.5);
+}
+.edit-icon img {
+    vertical-align: top;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+}
+/* Make the icon visible when hovering on the entire div */
+.challenge-bar:hover .edit-icon {
+    opacity: 1;
+}
+.challenge-editor {
+    width: inherit;
+}
+.edit-mode {
+    display: inline-block;
+    width: 7ch;
+    padding: 0.4ch 0.5ch 0.2ch 0.5ch;
+    margin-right: 1ch;
+    text-align: center;
+}
+.challenge-editor select[data-chosen='BR'] {
+    background-color: rgb(64, 148, 158);
+    color: rgb(114, 252, 255);
+}
+.challenge-editor select[data-chosen='A'] {
+    background-color: rgb(108, 79, 198);
+    color: rgb(199, 148, 255);
+}
+.challenge-editor select[data-chosen='C'] {
+    background-color: rgb(215, 154, 8);
+    color: rgb(255, 254, 24);
+}
+.challenge-editor .star-container {
+    display: inline-flex;
+    float: right;
+    height: 100%;
+    align-content: center;
+}
+.challenge-editor .star-container .edit-text {
+    
+    margin-right: 1em;
+}
+.challenge-editor .edit-text[type="number"] {
+    width: 5em;
+}
+.challenge-editor-line-2 {
+    margin-top: 0.5em;
+}
+.edit-icon.edit-checkmark {
+    opacity: 1;
+    background: no-repeat url("/res/images/checkmark.png") 50% / 100%;
+}
+.edit-icon.edit-checkmark:hover {
+    background: no-repeat url("/res/images/checkmark-hover.png") 50% / 100%;
+}
+.edit-checkmark img {
+    opacity: 0;
 }
 /* #endregion challenge bars */
 
