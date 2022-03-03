@@ -230,6 +230,14 @@ body {
     color: rgb(240, 144, 116);
 }
 
+.challenge-bar-interior[for-data] {
+    padding-left: 0.2em;
+    padding-top: 0.2em;
+    padding-right: 2em;
+    width: fit-content;
+    min-width: 1em;
+}
+
 .challenge-bar-interior > span {
     position: absolute;
     top: 0em;
@@ -304,6 +312,7 @@ body {
 .edit-mode {
     display: inline-block;
     width: 7ch;
+    height: 2em;
     padding: 0.4ch 0.5ch 0.2ch 0.5ch;
     margin-right: 1ch;
     text-align: center;
@@ -328,13 +337,17 @@ body {
 }
 .challenge-editor .star-container .edit-text-div {
     box-sizing: border-box;
-    width: 5em;
 }
-.challenge-editor .edit-text[type="number"] {
+/* .challenge-editor .edit-text[type="number"] {
     width: 5em;
+} */
+.challenge-editor-line-1 {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
 }
 .challenge-editor-line-2 {
-    margin-top: 0.4em;
+    margin-top: 0.2em;
 }
 .edit-icon.edit-checkmark {
     opacity: 1;

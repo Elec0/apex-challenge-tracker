@@ -1,10 +1,10 @@
 import { ChallengeEntry } from "./challenge";
 
 export class StorageHelper {
-    private static _challenges: ChallengeEntry[] = new Array(1);
+    private static _challenges: ChallengeEntry[] = new Array(0);
     private static _storage = window.localStorage;
     
-    public static getValue(key: string) {
+    public static getValue(key: string): any {
         return this._storage.getItem(key);
     }
 
@@ -35,11 +35,10 @@ export class StorageHelper {
     /** Set the value of a challenge in an array spot. For use in updating values. */
     public static setOrderChallenge(challenge: ChallengeEntry) {
         let index: number = challenge.order;
-        if(this.challenges.length <= index) {
+        if(this.challenges.length > index) {
             this._challenges[index] = challenge;
         }
         else {
-            console.warn(`Challenge at order ${challenge.order} not found, pushing.`)
             this.addChallenge(challenge);
         }
     }
@@ -47,5 +46,10 @@ export class StorageHelper {
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
         this.setValue("allChallenges", this.challenges);
+    }
+
+    /** Load all the data out of storage */
+    public static loadFromStorage() {
+        this._challenges = this.getValue("allChallenges");
     }
 }

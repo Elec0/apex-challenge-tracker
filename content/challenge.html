@@ -11,16 +11,17 @@
                 <option value="A">A</option>
                 <option value="C">C</option>
             </select>
-            <span>Title: </span><input type="text" for-data="title" class="edit-text"/>
+            <span>Title: </span><span contenteditable="true" for-data="title" class="challenge-bar-interior bar-angle edit-text"></span>
         </div>
         <div class="challenge-editor-line-2">
             <span>Progress: </span>
-            <input type="number" for-data="progress" class="edit-text" /> / <input type="number" for-data="max" class="edit-text" />
+            <span contenteditable="true" type="number" for-data="progress" class="edit-text challenge-bar-interior bar-angle"></span> 
+            / <span contenteditable="true" type="number" for-data="max" class="edit-text challenge-bar-interior bar-angle"></span>
         </div>
     </div>
     <div class="star-container">
         <div class="edit-text-div">
-            <input type="number" for-data="value" class="edit-text" />
+            <span contenteditable="true" type="number" for-data="value" class="edit-text challenge-bar-interior bar-angle"></span>
         </div>
         <img src="/res/images/star-five.svg" class="star-five" />
 

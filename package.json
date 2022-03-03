@@ -19,7 +19,7 @@
       "test/*"
     ],
     "ext": "js,ts,html",
-    "delay": 3000
+    "delay": 0
   },
   "author": "elec0",
   "license": "ISC",

@@ -86,6 +86,10 @@ export class ChallengeEntry {
     public get max() { return this._max; }
     public get value() { return this._value; }
     public get week() { return this._week; }
+
+    public toString(): string {
+        return `${this.text}, ${this.progress}/${this.max}, ${this.value}, ${this.mode}, ${this.week}, ${this.order}`
+    }
 }
 
 /**
@@ -125,10 +129,20 @@ export class ChallengeEntry {
         newBar.append(this.starify(challenge));
         newBar.append(this.setupEditButton(challenge));
 
-        if(prepend)
+        if(challenge.order != 0) {
+            // Find the element that this one should be placed before
+            let elemAfter = $(`#${challenge.order + 1}`);
+            // If its not found then we put it at the end of the main area
+            if (elemAfter.length) {
+                elemAfter.before(newBar);
+            }
+            else {
+                $("#challenge-content-area").append(newBar);
+            }
+        }
+        else {
             $("#challenge-content-area").prepend(newBar);
-        else
-            $("#challenge-content-area").append(newBar);
+        }
     }
 
     /**
@@ -178,10 +192,9 @@ export class ChallengeEntry {
     private static setupEditButton(challenge: ChallengeEntry): Cash {
         let res = $("<div>").addClass("edit-icon").attr("id", "")
             .append($("<img>").attr("src", "/res/images/edit-icon-32x32.png"));
-        res.on("click", (event) => {
-            // The image has pointer events disabled, so we will always get the div out of the click
-            this.handleEditButtonClick(challenge);
-        });
+        
+        // The image has pointer events disabled, so we will always get the div out of the click
+        res.on("click", (event) => this.handleEditButtonClick(challenge));
         return res;
     }
 
@@ -191,17 +204,23 @@ export class ChallengeEntry {
      * Add the IDs of the challenge to each input.
      * 
      * On submit, save the data to storage, clear and reload the entire challenge list.
-     * 
-     * TODO: Populate the values with existing data
      */
     private static handleEditButtonClick(challenge: ChallengeEntry) {
         let clickedElem = $(`#${challenge.order}`);
         let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
 
         cloneElem.find("div.edit-checkmark").on("click", e => this.handleEditSave(e, challenge));
+        // Setup the ability to press enter and save the challenge
+        cloneElem.on("keydown", e => this.handleKeyboardEvent(e, challenge));
 
         // Make the selector have the correct formatting
         cloneElem.find("select.edit-mode").attr("data-chosen", `${challenge.mode}`);
+        
+        // Set the span inputs to have the existing data, if it exists
+        cloneElem.find("span[for-data='title']").text(challenge.text);
+        cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
+        cloneElem.find("span[for-data='max']").text(challenge.max.toString());
+        cloneElem.find("span[for-data='value']").text(challenge.value.toString());
 
         // Drop the display html and replace it with our new edit layout
         clickedElem.empty();
@@ -210,23 +229,30 @@ export class ChallengeEntry {
 
     /** Retrieve the input values and save them */
     private static handleEditSave(event: any, challenge: ChallengeEntry) {
-        
-        let cloneElem = $(`#${challenge.order}`);
-        let modeSelector = cloneElem.find("select.edit-mode");
-        let titleText = cloneElem.find("input[for-data='title']");
-        let progressText = cloneElem.find("input[for-data='progress']");
-        let maxText = cloneElem.find("input[for-data='max']");
-        let valueText = cloneElem.find("input[for-data='value']");
+        console.log(event);
 
-        challenge.text = escapeHtml(titleText.val() as string);
-        challenge.mode = escapeHtml(modeSelector.val() as string);
-        challenge.progress = Number.parseInt(escapeHtml(progressText.val() as string));
-        challenge.max = Number.parseInt(escapeHtml(maxText.val() as string));
-        challenge.value = Number.parseInt(escapeHtml(valueText.val() as string));
+        let cloneElem = $(`#${challenge.order}`);
+        let modeSelector = cloneElem.find("select.edit-mode").val();
+        let titleText = cloneElem.find("span[for-data='title']").text();
+        let progressText = cloneElem.find("span[for-data='progress']").text();
+        let maxText = cloneElem.find("span[for-data='max']").text();
+        let valueText = cloneElem.find("span[for-data='value']").text();
+
+        challenge.text = escapeHtml(titleText as string);
+        challenge.mode = escapeHtml(modeSelector as string);
+        challenge.progress = Number.parseInt(escapeHtml(progressText as string));
+        challenge.max = Number.parseInt(escapeHtml(maxText as string));
+        challenge.value = Number.parseInt(escapeHtml(valueText as string));
 
         console.log("Save challenge", challenge);
         StorageHelper.setOrderChallenge(challenge);
         reloadChallenge(challenge);
+    }
+
+    /** Check if the keyboard event is an enter press, and save the changes if so */
+    private static handleKeyboardEvent(event: KeyboardEvent, challenge: ChallengeEntry) {
+        if (event.key == "Enter")
+            this.handleEditSave(event, challenge);
     }
 }
 
