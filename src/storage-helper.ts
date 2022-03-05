@@ -41,15 +41,28 @@ export class StorageHelper {
         else {
             this.addChallenge(challenge);
         }
+        this.saveToStorage();
     }
 
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
-        this.setValue("allChallenges", this.challenges);
+        this.setValue("allChallenges", JSON.stringify(this.challenges));
     }
 
     /** Load all the data out of storage */
     public static loadFromStorage() {
-        this._challenges = this.getValue("allChallenges");
+        let stor: string = this.getValue("allChallenges");
+        if (stor != null) {
+            let arr: Array<ChallengeEntry> = JSON.parse(stor);
+            // Recreate our array with enough room
+            this._challenges = new Array(arr.length);
+            
+            arr.forEach(c => {
+                let newObj = ChallengeEntry.loadFromJson(c);
+                this.setOrderChallenge(newObj);
+            })
+        }
+
+
     }
 }

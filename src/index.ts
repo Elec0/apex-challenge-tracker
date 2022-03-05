@@ -26,7 +26,9 @@ function initStuff() {
     }
     else {
         console.log("Not first load, retrieve saved info");
+        StorageHelper.loadFromStorage();
     }
+    StorageHelper.loadFromStorage();
 
     // Go to hash tab if it exists, otherwise go to default challenges
     if(!navToHash()) {

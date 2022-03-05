@@ -1,5 +1,5 @@
 import $, { Cash } from "cash-dom";
-import { KEYWORDS } from "./constants";
+import { KEYWORDS, MODES } from "./constants";
 import { StorageHelper } from "./storage-helper";
 import { escapeHtml } from "./utils";
 
@@ -30,14 +30,13 @@ export class ChallengeEntry {
 
     private static totalOrder: number = 0;
 
-    constructor(text: string, progress: number, max: number, value: number, mode?: string, event?: boolean, order?: number) {
+    constructor(text: string, progress: number, max: number = 1, value: number, mode: string = MODES[0], event?: boolean, order?: number) {
         this.text = text;
         this.progress = progress;
         this.max = max;
         this.value = value;
         this.order = 0;
-        if(mode !== undefined)
-            this.mode = mode;
+        this.mode = mode;
         if(event !== undefined)
             this.event = event;
         if(order !== undefined)
@@ -51,6 +50,11 @@ export class ChallengeEntry {
      */
     public render() {
         ChallengeRenderer.render(this);
+    }
+
+    public static loadFromJson(jsonValue: ChallengeEntry): ChallengeEntry {
+        return new ChallengeEntry(jsonValue["text"], jsonValue["progress"], jsonValue["max"],
+            jsonValue["value"], jsonValue["mode"], jsonValue["event"] || undefined, jsonValue["order"] || undefined);
     }
 
     /** Ensure progress is a number. */
@@ -110,7 +114,8 @@ export class ChallengeEntry {
     </div>
  */
  export class ChallengeRenderer {
-    public static render(challenge: ChallengeEntry, prepend?: boolean) {
+    public static render(challenge: ChallengeEntry) {
+        console.log(challenge);
 
         let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur").attr("id", challenge.order.toString());
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
@@ -205,7 +210,7 @@ export class ChallengeEntry {
      * 
      * On submit, save the data to storage, clear and reload the entire challenge list.
      */
-    private static handleEditButtonClick(challenge: ChallengeEntry) {
+    public static handleEditButtonClick(challenge: ChallengeEntry) {
         let clickedElem = $(`#${challenge.order}`);
         let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
 
@@ -229,8 +234,6 @@ export class ChallengeEntry {
 
     /** Retrieve the input values and save them */
     private static handleEditSave(event: any, challenge: ChallengeEntry) {
-        console.log(event);
-
         let cloneElem = $(`#${challenge.order}`);
         let modeSelector = cloneElem.find("select.edit-mode").val();
         let titleText = cloneElem.find("span[for-data='title']").text();
@@ -258,14 +261,38 @@ export class ChallengeEntry {
 
 /** Entry function from navigation */
 export function loadChallenges() {
-    let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
-    let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true, 0);
-    ChallengeRenderer.render(testChallenge);
-    for(let i = 0; i < 10; ++i)
-    {
-        testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR", false, i+1);
-        ChallengeRenderer.render(testChallenge);
-    }
+    StorageHelper.challenges.forEach(challenge => {
+        ChallengeRenderer.render(challenge);
+    });
+
+    let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur").attr("id", "add-challenge")
+        .append($("<span>").text("New Challenge"));
+    btnAdd.on("click", e => handleAddChallenge(e));
+    $("#challenge-content-area").append(btnAdd);
+
+    // if (!useOrder) {
+    //     // Not using order, which means append (keep addChallenge at the end)
+    //     console.log("append");
+    //     $("#addChallenge").before(newBar);
+    // }
+
+    // let txt = escapeHtml("Play 12 matches as Bloodhound, Seer, or Crypto");
+    // let testChallenge = new ChallengeEntry("Something event", Math.floor(Math.random()*13), 1000, 200, "BR", true, 0);
+    // ChallengeRenderer.render(testChallenge);
+    // for(let i = 0; i < 10; ++i)
+    // {
+    //     testChallenge = new ChallengeEntry(txt, Math.floor(Math.random()*13), 12, 5, "BR", false, i+1);
+    //     ChallengeRenderer.render(testChallenge);
+    // }
+    // Create the button at the bottom to add a new challenge
+
+}
+
+/** Add a new, blank, challenge entry and set it to edit mode. */
+function handleAddChallenge(event: any) {
+    let newChallenge: ChallengeEntry = new ChallengeEntry("", 0, 1, 0);
+    ChallengeRenderer.render(newChallenge);
+    ChallengeRenderer.handleEditButtonClick(newChallenge);
 }
 
 /** Remove and re-add all challenges */
@@ -276,7 +303,7 @@ function reloadAllChallenges() {
 
 function reloadChallenge(challenge: ChallengeEntry) {
     $(`#${challenge.order}`).remove();
-    ChallengeRenderer.render(challenge, true);
+    ChallengeRenderer.render(challenge);
 }
 
 /** Create the elements for adding new challenges */

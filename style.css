@@ -37,6 +37,7 @@ body {
     display: inline-flex;
     flex-direction: column;
     justify-content: left;
+    align-items: center;
     margin-top: 2%;
     /* flex-grow: 0.5; */
     width: 50%;
@@ -125,6 +126,13 @@ body {
     flex-grow: 1;
     height: 3.3em;
     background-color: rgba(40, 40, 44, 0.7);
+}
+#add-challenge {
+    width: 50%;
+    height: 2em;
+}
+#add-challenge > span {
+    padding-top: 0.1em;
 }
 /* #endregion */
 
