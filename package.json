@@ -1,6 +1,6 @@
 {
   "name": "apex-challenge-tracker",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Track your Apex Legends challenges",
   "private": true,
   "scripts": {

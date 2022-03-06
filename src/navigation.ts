@@ -1,5 +1,7 @@
 import $, { Cash } from "cash-dom";
-import { ChallengeEntry, ChallengeRenderer, loadChallenges } from "./challenge";
+import { loadChallenges } from "./challenge";
+import { ChallengeRenderer } from "./ChallengeRenderer";
+import { ChallengeEntry } from "./ChallengeEntry";
 import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
 import { escapeHtml } from "./utils";
 import settingsHtml from "./../content/settings.html";
@@ -33,7 +35,8 @@ export function handleTabClick(id: string) {
 
 /** 
  * Check the URL hash and navigate to the tab it says, if it exists.
- * <p>If it doesn't, navigate to {@code Challenges} with no hash.
+ * 
+ * If it doesn't, navigate to `Challenges` with no hash.
  */
 export function navToHash(): boolean {
     if(window.location.hash != "") {

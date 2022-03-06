@@ -8,12 +8,12 @@ module.exports = {
       {
         test: /\.html$/i,
         use: 'html-loader',
-        exclude: "/node_modules/"
+        exclude: [ "/node_modules/", "/dist/", "/test/" ]
       },
       {
         test: /\.ts$/,
         use: "ts-loader",
-        exclude: "/node_modules/"
+        exclude: [ "/node_modules/", "/dist/", "/test/" ]
       }
     ]
   },

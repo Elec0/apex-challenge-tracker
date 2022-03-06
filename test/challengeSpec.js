@@ -1,9 +1,9 @@
-const { ChallengeRenderer, ChallengeEntry } = require("./../src/challenge");
+const { ChallengeRenderer } = require("./../src/ChallengeRenderer");
 const { KEYWORDS } = require("./../src/constants");
 
-describe('ChallengeRenderer', function() {
+describe('ChallengeRenderer', function () {
 
-    it('Should generate proper mode span', function() {
+    it('Should generate proper mode span', function () {
         let result = ChallengeRenderer.modeify("BR");
         expect(result.attr("class")).toContain("cb-type")
         expect(result.attr("class")).toContain("type-br")
@@ -16,4 +16,4 @@ describe('ChallengeRenderer', function() {
         expect(toTest.html()).toContain("<span class=\"keyword\">Light Machine Gun</span>");
     });
 
-  });
+});

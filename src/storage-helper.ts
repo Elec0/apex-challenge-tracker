@@ -1,4 +1,4 @@
-import { ChallengeEntry } from "./challenge";
+import { ChallengeEntry } from "./ChallengeEntry";
 
 export class StorageHelper {
     private static _challenges: ChallengeEntry[] = new Array(0);
@@ -29,40 +29,100 @@ export class StorageHelper {
 
     /** Writing this instead of a set challenge to hopefully keep things cleaner. */
     public static addChallenge(challenge: ChallengeEntry) {
+        // if(challenge.order >= this._challenges.length) {
+        //     console.log("Reorder challenge to fit in array");
+        //     challenge.order = this._challenges.length;
+        //     // Since length is +1 anyway and order is 0-indexed
+        // }
         this._challenges.push(challenge);
     }
 
-    /** Set the value of a challenge in an array spot. For use in updating values. */
+    /** 
+     * Update challenge after being edited. 
+     * Match `order` variables to determine equality.
+     * 
+     * Saves all challenges after addition.
+    */
     public static setOrderChallenge(challenge: ChallengeEntry) {
+        // this.loadSetOrderChallenge(challenge);
+        // See if we have the challenge loaded
+        let findChallengeIndex: number = StorageHelper.getChallengeByOrder(challenge.order);
+        if (findChallengeIndex == -1) {
+            console.warn("Challenge not found by order, appending");
+            this.addChallenge(challenge);
+        }
+        else {
+            // Found it, so replace it
+            this._challenges[findChallengeIndex] = challenge;
+        }
+
+        this.saveToStorage();
+    }
+
+    /** 
+     * Get the {@link ChallengeEntry} object by `order`. 
+     * @returns If not found, return -1;
+     */
+    public static getChallengeByOrder(order: number): number {
+        console.log(order, this.challenges);
+
+        for(let i = 0; i < this.challenges.length; ++i) {
+            if (this.challenges[i].order == order)
+                return i;
+        }
+
+        // Not found
+        return -1;
+    }
+
+    /**
+     * Called from {@link loadFromStorage} and {@link setOrderChallenge}.
+     * 
+     * Set the value of a challenge in an array spot. For use in updating values. 
+     * 
+     * Either updates an element if it exists at `order`, or pushes it.
+     * 
+     * What if we just decoupled `order` from `index`, because that's kind of dumb.
+     * @deprecated
+     */
+    private static loadSetOrderChallenge(challenge: ChallengeEntry) {
         let index: number = challenge.order;
+
         if(this.challenges.length > index) {
             this._challenges[index] = challenge;
         }
         else {
             this.addChallenge(challenge);
         }
-        this.saveToStorage();
     }
 
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
-        this.setValue("allChallenges", JSON.stringify(this.challenges));
+        const jString = JSON.stringify(this.challenges);
+        console.log("Saving to storage:", this.challenges);
+        this.setValue("allChallenges", jString);
     }
 
     /** Load all the data out of storage */
     public static loadFromStorage() {
         let stor: string = this.getValue("allChallenges");
         if (stor != null) {
-            let arr: Array<ChallengeEntry> = JSON.parse(stor);
-            // Recreate our array with enough room
-            this._challenges = new Array(arr.length);
-            
+            let arr: Array<any> = JSON.parse(stor);
+            console.log("Load", arr);
+            // We don't need any room because we push everything initially
+            // since we decoupled order from index.
+            this._challenges = new Array(0);
             arr.forEach(c => {
                 let newObj = ChallengeEntry.loadFromJson(c);
-                this.setOrderChallenge(newObj);
+                console.log(newObj);
+                // Saving the data while loading it is really bad, so let's not
+                this._challenges.push(newObj);
             })
         }
+    }
 
-
+    /** Delete everything we have in storage. */
+    public static clearAllData() {
+        this._storage.clear();
     }
 }

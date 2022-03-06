@@ -8,8 +8,10 @@
         "allowJs": true,
         "esModuleInterop": true
     },
+    "import": [ "/src/", "/res/" ],
     "exclude": [
         "/node_modules/",
-        "/test/"
+        "/test/",
+        "/dist/"
     ]
 }
