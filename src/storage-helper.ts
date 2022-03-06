@@ -48,7 +48,7 @@ export class StorageHelper {
         // See if we have the challenge loaded
         let findChallengeIndex: number = StorageHelper.getChallengeByOrder(challenge.order);
         if (findChallengeIndex == -1) {
-            console.warn("Challenge not found by order, appending");
+            // Not loaded, so it's a new one. Append it.
             this.addChallenge(challenge);
         }
         else {
@@ -60,7 +60,7 @@ export class StorageHelper {
     }
 
     /** 
-     * Get the {@link ChallengeEntry} object by `order`. 
+     * Get the index of the given challenge object by `order`. 
      * @returns If not found, return -1;
      */
     public static getChallengeByOrder(order: number): number {
@@ -73,6 +73,22 @@ export class StorageHelper {
 
         // Not found
         return -1;
+    }
+
+    /** Remove `challenge` from storage and save. 
+     * @returns true if the challenge was in storage and was deleted, false if not in storage.
+    */
+    public static deleteChallenge(challenge: ChallengeEntry): boolean {
+        const foundChallenge = this.getChallengeByOrder(challenge.order);
+        if (foundChallenge != -1) {
+            const rem = this._challenges.splice(foundChallenge, 1);
+            console.debug("Deleted", rem);
+            this.saveToStorage();
+            return true;
+        }
+        // Challenge doesn't exist in storage, it probably was created and not
+        // saved before being deleted.
+        return false;
     }
 
     /**
@@ -99,7 +115,7 @@ export class StorageHelper {
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
         const jString = JSON.stringify(this.challenges);
-        console.log("Saving to storage:", this.challenges);
+        console.debug("Saving to storage:", this.challenges);
         this.setValue("allChallenges", jString);
     }
 
@@ -108,13 +124,12 @@ export class StorageHelper {
         let stor: string = this.getValue("allChallenges");
         if (stor != null) {
             let arr: Array<any> = JSON.parse(stor);
-            console.log("Load", arr);
+            console.debug("Load", arr);
             // We don't need any room because we push everything initially
             // since we decoupled order from index.
             this._challenges = new Array(0);
             arr.forEach(c => {
                 let newObj = ChallengeEntry.loadFromJson(c);
-                console.log(newObj);
                 // Saving the data while loading it is really bad, so let's not
                 this._challenges.push(newObj);
             })

@@ -291,6 +291,7 @@ body {
     width: 2.5em;
     height: 2.5em;
 }
+/* Do the edit icon with CSS since sizing is easier this way */
 .edit-icon {
     display: inline-flex;
     opacity: 0;
@@ -365,6 +366,16 @@ body {
     background: no-repeat url("/res/images/checkmark-hover.png") 50% / 100%;
 }
 .edit-checkmark img {
+    opacity: 0;
+}
+.edit-icon.edit-delete {
+    opacity: 1;
+    background: no-repeat url("/res/images/trashcan.png") 50% / 100%;
+}
+.edit-icon.edit-delete:hover {
+    background: no-repeat url("/res/images/trashcan-hover.png") 50% / 100%;
+}
+.edit-delete img {
     opacity: 0;
 }
 /* #endregion challenge bars */

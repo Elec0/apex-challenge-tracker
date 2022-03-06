@@ -65,8 +65,6 @@ export class ChallengeEntry {
         if (this.order > ChallengeEntry.totalOrder) {
             ChallengeEntry.totalOrder = this.order;
         }
-        console.debug("New challenge", this);
-        console.debug(ChallengeEntry.totalOrder, order, this.order);
     }
 
     /**
