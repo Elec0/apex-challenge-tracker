@@ -11,13 +11,13 @@ export class ChallengeEntry {
     /** What {@link MODES} the challenge applies to. Can be null, which means applies everywhere. */
     mode: string;
     /** How much progression has been completed */
-    _progress: number;
+    private _progress: number = 0;
     /** The max needed progression */
-    _max: number;
+    private _max: number = 0;
     /** How many stars the challenge is worth */
-    _value: number;
+    private _value: number = 0;
     /** What week the challenge is associated with */
-    _week: number;
+    private _week: number = 0;
     /** If the challenge is part of an event */
     event: boolean;
     /**

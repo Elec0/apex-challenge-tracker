@@ -1,7 +1,9 @@
 {
     "compilerOptions": {
+        "strict": true,
+        "alwaysStrict": true,
         "outDir": "./dist/",
-        "target": "es5",
+        "target": "ES5",
         "module": "commonjs",
         "sourceMap": true,
         "noImplicitAny": true,
