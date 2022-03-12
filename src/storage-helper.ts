@@ -1,7 +1,8 @@
 import { ChallengeEntry } from "./ChallengeEntry";
 
 export class StorageHelper {
-    private static _challenges: ChallengeEntry[] = new Array(0);
+    private static _challenges: Map<string, ChallengeEntry> = new Map<string, ChallengeEntry>();
+    private static _weekData: Array<Array<string>> = new Array(new Array());
     private static _storage = window.localStorage;
     
     public static getValue(key: string): any {
@@ -27,112 +28,76 @@ export class StorageHelper {
         return this._challenges;
     }
 
-    /** Writing this instead of a set challenge to hopefully keep things cleaner. */
-    public static addChallenge(challenge: ChallengeEntry) {
-        // if(challenge.order >= this._challenges.length) {
-        //     console.log("Reorder challenge to fit in array");
-        //     challenge.order = this._challenges.length;
-        //     // Since length is +1 anyway and order is 0-indexed
-        // }
-        this._challenges.push(challenge);
-    }
-
-    /** 
-     * Update challenge after being edited. 
-     * Match `order` variables to determine equality.
-     * 
-     * Saves all challenges after addition.
+    /** Writing this instead of a set challenge to hopefully keep things cleaner. 
+     * @deprecated Use {@link setChallenge}.
     */
-    public static setOrderChallenge(challenge: ChallengeEntry) {
-        // this.loadSetOrderChallenge(challenge);
-        // See if we have the challenge loaded
-        let findChallengeIndex: number = StorageHelper.getChallengeByOrder(challenge.order);
-        if (findChallengeIndex == -1) {
-            // Not loaded, so it's a new one. Append it.
-            this.addChallenge(challenge);
-        }
-        else {
-            // Found it, so replace it
-            this._challenges[findChallengeIndex] = challenge;
-        }
-
-        this.saveToStorage();
+    public static addChallenge(challenge: ChallengeEntry) {
+        this.setChallenge(challenge);
     }
 
-    /** 
-     * Get the index of the given challenge object by `order`. 
-     * @returns If not found, return -1;
-     */
-    public static getChallengeByOrder(order: number): number {
-        console.log(order, this.challenges);
-
-        for(let i = 0; i < this.challenges.length; ++i) {
-            if (this.challenges[i].order == order)
-                return i;
-        }
-
-        // Not found
-        return -1;
+    /** Set the challenge entry in the map with key `challenge.order`. */
+    public static setChallenge(challenge: ChallengeEntry) {
+        this._challenges.set(challenge.order.toString(), challenge);
+        this.saveToStorage();
     }
 
     /** Remove `challenge` from storage and save. 
      * @returns true if the challenge was in storage and was deleted, false if not in storage.
     */
     public static deleteChallenge(challenge: ChallengeEntry): boolean {
-        const foundChallenge = this.getChallengeByOrder(challenge.order);
-        if (foundChallenge != -1) {
-            const rem = this._challenges.splice(foundChallenge, 1);
-            console.debug("Deleted", rem);
+        if (this.challenges.has(challenge.order.toString())) {
+            this._challenges.delete(challenge.order.toString());
             this.saveToStorage();
             return true;
         }
-        // Challenge doesn't exist in storage, it probably was created and not
-        // saved before being deleted.
+        // Challenge doesn't exist in storage, was probably created then deleted
+        // before being saved.
         return false;
     }
 
-    /**
-     * Called from {@link loadFromStorage} and {@link setOrderChallenge}.
-     * 
-     * Set the value of a challenge in an array spot. For use in updating values. 
-     * 
-     * Either updates an element if it exists at `order`, or pushes it.
-     * 
-     * What if we just decoupled `order` from `index`, because that's kind of dumb.
-     * @deprecated
-     */
-    private static loadSetOrderChallenge(challenge: ChallengeEntry) {
-        let index: number = challenge.order;
-
-        if(this.challenges.length > index) {
-            this._challenges[index] = challenge;
-        }
-        else {
-            this.addChallenge(challenge);
-        }
+    public static get weekData(): Array<Array<string>> {
+        return this._weekData;
     }
+
 
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
-        const jString = JSON.stringify(this.challenges);
         console.debug("Saving to storage:", this.challenges);
-        this.setValue("allChallenges", jString);
+        console.debug(JSON.stringify(Array.from(this.challenges.entries())));
+        this.setValue("allChallenges", JSON.stringify(Array.from(this.challenges.entries())));
+        this.setValue("weekData", JSON.stringify(this._weekData));
     }
 
     /** Load all the data out of storage */
     public static loadFromStorage() {
-        let stor: string = this.getValue("allChallenges");
-        if (stor != null) {
-            let arr: Array<any> = JSON.parse(stor);
-            console.debug("Load", arr);
-            // We don't need any room because we push everything initially
-            // since we decoupled order from index.
-            this._challenges = new Array(0);
-            arr.forEach(c => {
-                let newObj = ChallengeEntry.loadFromJson(c);
+        let storChallenges: string = this.getValue("allChallenges");
+        let storWeeks: string = this.getValue("weekData");
+        console.debug(storChallenges);
+        console.debug(storWeeks);
+
+        if (storChallenges != null) {
+            let jMap: Map<string, any> = new Map(JSON.parse(storChallenges));
+            console.debug("Load", jMap);
+
+            jMap.forEach((value, key) => {
+                let newObj: ChallengeEntry = ChallengeEntry.loadFromJson(value);
                 // Saving the data while loading it is really bad, so let's not
-                this._challenges.push(newObj);
+                console.debug("Load: ", newObj);
+                this.setChallenge(newObj);
             })
+        }
+
+        if (storWeeks != null) {
+            let arr: Array<Array<string>> = JSON.parse(storWeeks);
+            this._weekData = arr;
+        }
+    }
+
+    /** Add challenge to week array */
+    public static addChallengeToWeek(challenge: ChallengeEntry, week: number) {
+        if (!this.weekData[week].includes(challenge.order.toString())) {
+            this.weekData[week].push(challenge.order.toString());
+            this.saveToStorage();
         }
     }
 

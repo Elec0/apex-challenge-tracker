@@ -24,6 +24,8 @@ import { ChallengeController } from "./ChallengeController";
             <img src="res/images/star-five.png" class="star-five"></img>
         </div>
     </div>
+
+    TODO: Instead of ordering, add a sort button
  */
 
 export class ChallengeRenderer {

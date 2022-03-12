@@ -22,7 +22,7 @@ export class ChallengeController {
         challenge.value = Number.parseInt(escapeHtml(valueText as string));
 
         console.debug("Save challenge", challenge);
-        StorageHelper.setOrderChallenge(challenge);
+        StorageHelper.setChallenge(challenge);
         reloadChallenge(challenge);
     }
 
