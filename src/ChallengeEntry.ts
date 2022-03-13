@@ -17,7 +17,7 @@ export class ChallengeEntry {
     private _max: number = 0;
     /** How many stars the challenge is worth */
     private _value: number = 0;
-    /** What week the challenge is associated with */
+    /** What week the challenge is associated with. Doesn't currently do anything. */
     private _week: number = 0;
     /** UUID for the challenge, to be stored in arrays and accessed via dictionary */
     private _id: string = "";
@@ -43,6 +43,7 @@ export class ChallengeEntry {
         this.event = event;
 
         this._id = StorageHelper.generateHash();
+        this._week = StorageHelper.currentWeek;
     }
 
     /**
@@ -57,6 +58,7 @@ export class ChallengeEntry {
             jsonValue["_value"], jsonValue["mode"], jsonValue["event"]);
         // We can't pass in an id, but we can set it from inside this class since it's private.
         nC._id = jsonValue["_id"];
+        nC._week = jsonValue["_week"];
         return nC;
     }
 

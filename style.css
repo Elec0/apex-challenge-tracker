@@ -127,6 +127,9 @@ body {
     height: 3.3em;
     background-color: rgba(40, 40, 44, 0.7);
 }
+.tab-button {
+    flex-grow: 0;
+}
 #add-challenge {
     width: 50%;
     height: 2em;
@@ -157,6 +160,10 @@ body {
         backdrop-filter: blur(3px);
     }
 }
+
+div.nav-bar-selected, .nav-bar:hover {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0), rgba(194, 18, 42, 0.8));
+}
 .nav-bar {
     padding-left: 5%;
     padding-right: 5%;
@@ -186,7 +193,7 @@ body {
 
 .challenge-bar {
     display: flex;
-    flex-grow: 1;
+    flex-grow: 0;
     width: 100%;
     padding-left: 1%;
     padding-right: 3%;
@@ -399,7 +406,4 @@ body {
     }
 }
 
-div.tab-as-button {
-    flex-grow: 0.3;
-}
 /* #endregion Settings */

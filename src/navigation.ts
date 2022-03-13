@@ -69,7 +69,7 @@ export function navToChallenges() {
     setHash("");
     $("#left-bar").removeAttr("style");
     $("#root-container").append(challengeHtml);
-    ChallengeController.loadChallenges();
+    ChallengeController.navigationEntry();
 }
 
 /** Navigate to Optimal Path */

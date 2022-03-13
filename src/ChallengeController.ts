@@ -40,17 +40,39 @@ export class ChallengeController {
         }
     }
 
-    /** Entry function from navigation */
     public static loadChallenges() {
         StorageHelper.getDataToRender().forEach(challenge => {
             
             ChallengeRenderer.render(challenge);
         });
 
-        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur").attr("id", "add-challenge")
+        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur tab-button").attr("id", "add-challenge")
             .append($("<span>").text("New Challenge"));
         btnAdd.on("click", e => this.handleAddChallenge(e));
         $("#challenge-content-area").append(btnAdd);
+    }
+
+    public static createWeekButtons() {
+        // Create the week buttons
+        const leftBar = $("#left-bar");
+        for (let i = 0; i < StorageHelper.weekData.length + 1; ++i) {
+            let newBtn = $("<div>")
+                .addClass("nav-bar nav-blur")
+                // .attr("week", i.toString())
+                .text(`Week ${i}`);
+            if (i == 0) {
+                newBtn.text("Daily");
+                newBtn.addClass("nav-bar-selected");
+            }
+            newBtn.on("click", e => ChallengeController.handleChangeWeek(e, i));
+            leftBar.append(newBtn);
+        }
+    }
+
+    /** Entry function from navigation */
+    public static navigationEntry() {
+        ChallengeController.loadChallenges();
+        ChallengeController.createWeekButtons();
     }
 
     /** Add a new, blank, challenge entry and set it to edit mode. */
@@ -58,6 +80,25 @@ export class ChallengeController {
         let newChallenge: ChallengeEntry = new ChallengeEntry("", 0, 1, 0);
         ChallengeRenderer.render(newChallenge);
         ChallengeRenderer.handleEditButtonClick(newChallenge);
+    }
+
+    /** Change what week is being displayed by updating StorageHelper */
+    private static handleChangeWeek(event: Event, week: number) {
+        if (week < 0 || week > 12) {
+            console.error("Requested week is outside of 0-12 range.");
+            return;
+        }
+        StorageHelper.currentWeek = week;
+        // Clear our challenges
+        $("#challenge-content-area").empty();
+
+        // Unset selected class from week button, and set selected for new one
+        $(".nav-bar-selected").removeClass("nav-bar-selected");
+        if (event.target != null) {
+            $(<Element>event.target).addClass("nav-bar-selected");
+        }
+        // Reload challenges with entry method, it will handle the set week
+        ChallengeController.loadChallenges();   
     }
 
     /** Removes challenge bar with id `challenge.id` and calls {@link ChallengeRenderer.render}. */

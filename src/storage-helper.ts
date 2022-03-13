@@ -22,7 +22,7 @@ export class StorageHelper {
      */
     private static _weekData: Array<Array<string>> = new Array<Array<string>>(12);
     /** Current week to display, index of {@link _weekData}. */
-    private static _currentWeek: number = 0;
+    public static currentWeek: number = 0;
     private static _storage = window.localStorage;
 
     /** Set up our 2D week array */
@@ -83,7 +83,7 @@ export class StorageHelper {
         }
         else {
             // Doesn't exist, need to add it to week array
-            this.addChallengeToWeek(challenge, this._currentWeek);
+            this.addChallengeToWeek(challenge, this.currentWeek);
         }
     }
 
@@ -146,17 +146,15 @@ export class StorageHelper {
 
     /** Abstract the data retrieval method for data retrieval. */
     public static getDataToRender(): Array<ChallengeEntry> {
-        let curWeekData: Array<string> = this.weekData[this._currentWeek];
+        let curWeekData: Array<string> = this.weekData[this.currentWeek];
         let result: Array<ChallengeEntry> = new Array(0);
 
-        console.debug(this.weekData, curWeekData);
         curWeekData.forEach(d => {
             // ts apparently doesn't consider this enough checking for undefined
             // hence the '!'
             if (this.challenges.has(d))
                 result.push(this.challenges.get(d)!);
         });
-        console.debug("result", result);
         return result;
     }
 
