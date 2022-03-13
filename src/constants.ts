@@ -16,3 +16,7 @@ export const TAB_CHALLENGES: string = "Challenges";
 export const TAB_OPTIMAL_PATH: string = "Optimal-Path";
 /** ID correspondig to the tab for Settings */
 export const TAB_SETTINGS: string = "Settings";
+
+// --- JSON Keys ---
+export const KEY_CHALLENGES: string = "allChallenges";
+export const KEY_WEEK_DATA: string = "weekData";

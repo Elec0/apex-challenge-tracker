@@ -3,7 +3,6 @@ import { ChallengeEntry } from "./ChallengeEntry";
 import { KEYWORDS } from "./constants";
 import { StorageHelper } from "./storage-helper";
 import { escapeHtml } from "./utils";
-import { reloadChallenge } from "./challenge";
 import { MODES } from "./constants";
 import { ChallengeController } from "./ChallengeController";
 
@@ -32,7 +31,7 @@ export class ChallengeRenderer {
     public static render(challenge: ChallengeEntry) {
         console.debug("Render", challenge);
 
-        let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur").attr("id", challenge.order.toString());
+        let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur").attr("id", challenge.id);
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
         // Create our title element
         $("<div>").addClass("challenge-bar-title")
@@ -199,7 +198,7 @@ export class ChallengeRenderer {
      * On submit, save the data to storage, clear and reload the entire challenge list.
      */
          public static handleEditButtonClick(challenge: ChallengeEntry) {
-            let clickedElem = $(`#${challenge.order}`);
+            let clickedElem = $(`#${challenge.id}`);
             let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
     
             cloneElem.find("div.edit-checkmark").on("click", e => ChallengeController.handleEditSave(e, challenge));

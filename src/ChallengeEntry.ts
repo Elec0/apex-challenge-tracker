@@ -1,5 +1,6 @@
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { MODES } from "./constants";
+import { StorageHelper } from "./storage-helper";
 
 /**
  * Data class for each challenge entry.
@@ -18,25 +19,11 @@ export class ChallengeEntry {
     private _value: number = 0;
     /** What week the challenge is associated with */
     private _week: number = 0;
+    /** UUID for the challenge, to be stored in arrays and accessed via dictionary */
+    private _id: string = "";
     /** If the challenge is part of an event */
     event: boolean;
-    /**
-     * The order of the challenge in the list, 0 being top.
-     * Also serves as the ID for a challenge, since the order and array index
-     * of the entry in the storage array are the same.
-     */
-    order: number;
-
-    /**
-     * Stores the total number of challenges we have loaded.
-     * 
-     * Also used for ordering/indexing of the challenges.
-     * 
-     * If a challenge is passed in with an explicit order that is larger than this, we set it 
-     * equal to the new number to ensure new challenges will always be added at the end.
-     */
-    private static totalOrder: number = 0;
-
+    
     /**
      * Creation of new challenges.
      * @param {string} text - Text of the challenge
@@ -47,7 +34,7 @@ export class ChallengeEntry {
      * @param {boolean=} [event] - Whether the challenge is part of an event or not. Changes star to ticket
      * @param {number=} [order] - Display & index order of the challenges, must be unique
      */
-    constructor(text: string, progress: number, max: number = 1, value: number, mode: string = MODES[1], event: boolean = false, order: number = -1) {
+    constructor(text: string, progress: number, max: number = 1, value: number, mode: string = MODES[1], event: boolean = false) {
         this.text = text;
         this.progress = progress;
         this.max = max;
@@ -55,16 +42,7 @@ export class ChallengeEntry {
         this.mode = mode;
         this.event = event;
 
-        if (order !== -1)
-            this.order = order;
-        else {
-            this.order = ChallengeEntry.totalOrder;
-        }
-        ChallengeEntry.totalOrder++;
-        
-        if (this.order > ChallengeEntry.totalOrder) {
-            ChallengeEntry.totalOrder = this.order;
-        }
+        this._id = StorageHelper.generateHash();
     }
 
     /**
@@ -75,8 +53,11 @@ export class ChallengeEntry {
     }
 
     public static loadFromJson(jsonValue: any): ChallengeEntry {
-        return new ChallengeEntry(jsonValue["text"], jsonValue["_progress"], jsonValue["_max"],
-            jsonValue["_value"], jsonValue["mode"], jsonValue["event"], jsonValue["order"]);
+        let nC = new ChallengeEntry(jsonValue["text"], jsonValue["_progress"], jsonValue["_max"],
+            jsonValue["_value"], jsonValue["mode"], jsonValue["event"]);
+        // We can't pass in an id, but we can set it from inside this class since it's private.
+        nC._id = jsonValue["_id"];
+        return nC;
     }
 
     /** Ensure progress is a number. */
@@ -112,12 +93,22 @@ export class ChallengeEntry {
             this._week = 0;
     }
 
+    /** UUID accessor */
+    public get id(): string {
+        return this._id;
+    }
+
+    /** @deprecated Switch to {@link id}. */
+    public get order(): number {
+        return Number.parseInt(this.id);
+    }
+
     public get progress() { return this._progress; }
     public get max() { return this._max; }
     public get value() { return this._value; }
     public get week() { return this._week; }
 
     public toString(): string {
-        return `${this.text}, ${this.progress}/${this.max}, ${this.value}, ${this.mode}, ${this.week}, ${this.order}`;
+        return `${this.text}, ${this.progress}/${this.max}, ${this.value}, ${this.mode}, ${this.week}, ${this.id}`;
     }
 }

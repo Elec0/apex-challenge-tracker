@@ -2,13 +2,13 @@ import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "./ChallengeEntry";
 import { StorageHelper } from "./storage-helper";
 import { escapeHtml } from "./utils";
-import { reloadChallenge } from "./challenge";
+import { ChallengeRenderer } from "./ChallengeRenderer";
 
 export class ChallengeController {
 
     /** Retrieve the input values and save them */
     public static handleEditSave(event: any, challenge: ChallengeEntry) {
-        let cloneElem = $(`#${challenge.order}`);
+        let cloneElem = $(`#${challenge.id}`);
         let modeSelector = cloneElem.find("select.edit-mode").val();
         let titleText = cloneElem.find("span[for-data='title']").text();
         let progressText = cloneElem.find("span[for-data='progress']").text();
@@ -22,21 +22,47 @@ export class ChallengeController {
         challenge.value = Number.parseInt(escapeHtml(valueText as string));
 
         console.debug("Save challenge", challenge);
-        StorageHelper.setChallenge(challenge);
-        reloadChallenge(challenge);
+        StorageHelper.saveChallenge(challenge);
+        ChallengeController.reloadChallenge(challenge);
     }
 
     /** Delete this challenge from the DOM and storage. */
     public static handleEditDelete(event: any, challenge: ChallengeEntry) {
-        let elem = $(`#${challenge.order}`);
+        let elem = $(`#${challenge.id}`);
         console.debug("Deleted challenge successfully?", StorageHelper.deleteChallenge(challenge));
         elem.remove();
-        // TODO: What do we do about the existing order? Does it need to be re-ordered?
     }
 
     /** Check if the keyboard event is an enter press, and save the changes if so */
     public static handleKeyboardEvent(event: KeyboardEvent, challenge: ChallengeEntry) {
-        if (event.key == "Enter")
-            this.handleEditSave(event, challenge);
+        if (event.key == "Enter") {
+            ChallengeController.handleEditSave(event, challenge);
+        }
+    }
+
+    /** Entry function from navigation */
+    public static loadChallenges() {
+        StorageHelper.getDataToRender().forEach(challenge => {
+            
+            ChallengeRenderer.render(challenge);
+        });
+
+        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur").attr("id", "add-challenge")
+            .append($("<span>").text("New Challenge"));
+        btnAdd.on("click", e => this.handleAddChallenge(e));
+        $("#challenge-content-area").append(btnAdd);
+    }
+
+    /** Add a new, blank, challenge entry and set it to edit mode. */
+    public static handleAddChallenge(event: any) {
+        let newChallenge: ChallengeEntry = new ChallengeEntry("", 0, 1, 0);
+        ChallengeRenderer.render(newChallenge);
+        ChallengeRenderer.handleEditButtonClick(newChallenge);
+    }
+
+    /** Removes challenge bar with id `challenge.id` and calls {@link ChallengeRenderer.render}. */
+    public static reloadChallenge(challenge: ChallengeEntry) {
+        $(`#${challenge.id}`).remove();
+        ChallengeRenderer.render(challenge);
     }
 }

@@ -1,5 +1,4 @@
 import $, { Cash } from "cash-dom";
-import { loadChallenges } from "./challenge";
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { ChallengeEntry } from "./ChallengeEntry";
 import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
@@ -7,6 +6,7 @@ import { escapeHtml } from "./utils";
 import settingsHtml from "./../content/settings.html";
 import challengeHtml from "./../content/challenge.html";
 import { initSettings } from "./settings";
+import { ChallengeController } from "./ChallengeController";
 
 /** Handle changing selected tab and navigation */
 export function handleTabClick(id: string) {
@@ -69,7 +69,7 @@ export function navToChallenges() {
     setHash("");
     $("#left-bar").removeAttr("style");
     $("#root-container").append(challengeHtml);
-    loadChallenges();
+    ChallengeController.loadChallenges();
 }
 
 /** Navigate to Optimal Path */
