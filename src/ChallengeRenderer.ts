@@ -25,8 +25,9 @@ import { ChallengeController } from "./ChallengeController";
     </div>
 
     TODO: Instead of ordering, add a sort button
+    TODO: Add easy increase/decrease of challenges
+    TODO: Customize interval?
  */
-
 export class ChallengeRenderer {
     public static render(challenge: ChallengeEntry) {
         console.debug("Render", challenge);
@@ -52,86 +53,21 @@ export class ChallengeRenderer {
     }
 
     /** 
-     * Take the bar and challenge entry and insert the challenge element properly in order
-     * based on it's `order` parameter.
+     * Since we switched to using the week arrays to determine order this is much simpler.
      * 
-     * This should allow bars to be inserted in any order but end up ordered according to `order` parameter
-     * 
-     * If the bar is being edited, it will have been removed from the DOM before this point
+     * TODO: Saving a challenge always moves it to bottom of list now
      */
     private static insertInOrder(challenge: ChallengeEntry, newBar: Cash) {
-        if (challenge.order != 0) {
-            // If this is -1 then the element belongs at the beginning of the page
-            let idBefore = ChallengeRenderer.findNumBetween(challenge.order, ChallengeRenderer.getChallengeIDs());
-
-            // Find the element that this one should be placed before
-            let elemBefore = $(`#${idBefore}`);
-            if( idBefore != -1 && !elemBefore.length) {
-                // Something went very wrong because this element should exist
-                // This happens when someone creates multiple challenges at once but saves one that
-                // is not the first new one. 
-                // We will fill in the gaps, and the user can re-order anyway so whatever.
-                console.error(`Element with id ${idBefore} does not exist when it should! Appending.`);
-                // Set idBefore to -1 to append the element
-                idBefore = -1;
-            }
-            if (idBefore == -1) {
-                // We want to keep the button at the end, so if that exists 
-                // place this bar before it
-                let addBtn = $("#add-challenge");
-                if (addBtn.length)
-                    addBtn.before(newBar);
-                else // Just drop it at the end
-                    $("#challenge-content-area").append(newBar);
-                return;
-            }
-            // Our element exists, so place our bar after it
-            elemBefore.after(newBar);
-        }
-        else {
-            $("#challenge-content-area").prepend(newBar);
-        }
+        // We want to keep the button at the end, so if that exists 
+        // place this bar before it
+        let addBtn = $("#add-challenge");
+        if (addBtn.length)
+            addBtn.before(newBar);
+        else // Just drop it at the end
+            $("#challenge-content-area").append(newBar);
+        return;
     }
-
-    /**
-     * Find number to insert after.
-     *
-     * Number before first number that is larger than `num`
-     * @param num - Number to search with
-     * @param arr - Array of numbers
-     * @returns - -1 if unable to find any number larger than `num`
-     */
-    private static findNumBetween(num: number, arr: Array<number>): number {
-        let found: number = -1;
-
-        for(let i = 0; i < arr.length; ++i) {
-            if (num > arr[i]) {
-                found = arr[i];
-            }
-            else {
-                // If it equals then we're editing
-                // The bar has been removed by this point, so return
-                // our prior number
-                return found;
-            }
-        }
-        // Ran out of numbers, means we're at the end
-        return found;
-    }
-
-    /** Retrieve every DOM element with class="challenge-bar", get their IDs, 
-     * put it into a sorted array and return it.
-     * @returns {Array<number>} - Sorted array of challenge IDs
-     */
-    private static getChallengeIDs(): Array<number> {
-        let curArr = new Array(0);
-        let elems: Cash = $(".challenge-bar");
-        $.each(elems, e => curArr.push(e));
-
-        curArr.sort();
-        return curArr;
-    }
-
+    
     /**
      * Given the challenge text and the list of known keywords, replace the raw keyword texts
      * with spanned elements.

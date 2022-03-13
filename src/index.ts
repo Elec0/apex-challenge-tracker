@@ -2,8 +2,9 @@ import {storageAvailable, escapeHtml} from "./utils";
 import $, { Cash } from "cash-dom";
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { ChallengeEntry } from "./ChallengeEntry";
-import { handleTabClick, navToChallenges, navToHash } from "./navigation";
+import { NavigationController } from "./NavigationController";
 import { StorageHelper } from "./storage-helper";
+import { Navigation } from "./Navigation";
 
 $(function () {
     if(!storageAvailable("localStorage")) {
@@ -30,11 +31,7 @@ function initStuff() {
         StorageHelper.loadFromStorage();
     }
     StorageHelper.loadFromStorage();
-
-    // Go to hash tab if it exists, otherwise go to default challenges
-    if(!navToHash()) {
-        navToChallenges();
-    }
+    NavigationController.init();
 }
 
 /**
@@ -51,10 +48,10 @@ function setupFirstTime() {
 function setupListeners() {
     // Setup our nav button listener
     $(".tab-entry").on("click", (e) => {
-        handleTabClick(e.target.id);
+       NavigationController.handleTabClick(e.target.id);
     });
-    window.addEventListener('hashchange', function() {
+    window.addEventListener('hashchange', () => {
         // Move to the new hash when it's changed
-        navToHash();
+        NavigationController.navToHash();
     });
 }

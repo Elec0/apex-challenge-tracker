@@ -3,8 +3,28 @@ import { ChallengeEntry } from "./ChallengeEntry";
 import { StorageHelper } from "./storage-helper";
 import { escapeHtml } from "./utils";
 import { ChallengeRenderer } from "./ChallengeRenderer";
+import { Navigation } from "./Navigation";
+import challengeHtml from "./../content/challenge.html";
+import { TAB_CHALLENGES } from "./constants";
 
-export class ChallengeController {
+export class ChallengeController extends Navigation {
+    navigateTo(): void {
+        if (!this.isShowing) {
+            super.navigateTo();
+            this.setHash("");
+            $("#left-bar").removeAttr("style");
+            $("#root-container").append(challengeHtml);
+
+            ChallengeController.loadChallenges();
+            ChallengeController.createWeekButtons();
+        }
+    }
+    navigateAway(): void {
+        super.navigateAway();
+        $("#left-bar").attr("style", "display:none");
+        $("#challenge-content-area").remove();
+        $("#challenge-editor").remove();
+    }
 
     /** Retrieve the input values and save them */
     public static handleEditSave(event: any, challenge: ChallengeEntry) {
@@ -67,12 +87,6 @@ export class ChallengeController {
             newBtn.on("click", e => ChallengeController.handleChangeWeek(e, i));
             leftBar.append(newBtn);
         }
-    }
-
-    /** Entry function from navigation */
-    public static navigationEntry() {
-        ChallengeController.loadChallenges();
-        ChallengeController.createWeekButtons();
     }
 
     /** Add a new, blank, challenge entry and set it to edit mode. */

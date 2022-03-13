@@ -1,96 +1,51 @@
-import $, { Cash } from "cash-dom";
-import { ChallengeRenderer } from "./ChallengeRenderer";
-import { ChallengeEntry } from "./ChallengeEntry";
-import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
-import { escapeHtml } from "./utils";
-import settingsHtml from "./../content/settings.html";
-import challengeHtml from "./../content/challenge.html";
-import { initSettings } from "./settings";
-import { ChallengeController } from "./ChallengeController";
+import $ from "cash-dom";
 
-/** Handle changing selected tab and navigation */
-export function handleTabClick(id: string) {
-    let selectedTab: Cash = $(`#${id}`);
-    // No need to do anything if the current tab is being clicked on
-    if(!selectedTab.hasClass("tab-selected"))
-    {
-        handleTabSelection(id);
+// Other background images
+/* background-image: url("https://cdnb.artstation.com/p/assets/images/images/040/012/643/large/derek-bentley-derekbentley-season10-lobby-03.jpg?1627586423"); */
+/* background-image: url("https://images6.alphacoders.com/992/992280.jpg"); */
 
-        // Determine where we're navigating
-        switch(id) {
-            case TAB_CHALLENGES:
-                navToChallenges();
-            break;
-            case TAB_OPTIMAL_PATH:
-                navToOptimalPath();
-            break;
-            case TAB_SETTINGS:
-                navToSettings();
-            break;
-            default:
-                console.warn("Got an unexpected id: %s", id);
-        }
+export abstract class Navigation implements INavigation{
+    public static currentPage: Navigation;
+
+    public isShowing: boolean = false;
+
+    public tabId: string = "";
+    
+    constructor(tabId: string) {
+        this.tabId = tabId;
     }
-}
 
-/** 
- * Check the URL hash and navigate to the tab it says, if it exists.
- * 
- * If it doesn't, navigate to `Challenges` with no hash.
- */
-export function navToHash(): boolean {
-    if(window.location.hash != "") {
-        handleTabClick(window.location.hash.substring(1));
-        return true;
+    /** 
+     * Called from NavigationController, to be overriden by pages. 
+     * Should be called from overriden methods
+    */
+    navigateTo(): void {
+        console.debug("Nagivation.navigateTo", this.tabId);
+        if (Navigation.currentPage != undefined)
+            Navigation.currentPage.navigateAway();
+
+        this.isShowing = true;
+        Navigation.currentPage = this;
+        // Clear out all tab selected classes
+        $(".tab-selected").removeClass("tab-selected");
+        // Set our current selection
+        $(`#${this.tabId}`).addClass("tab-selected");
     }
-    handleTabClick(TAB_CHALLENGES);
-    return false;
-}
 
-/** Set the URL hash */
-function setHash(newHash: string) {
-    window.location.hash = newHash;
-}
+    /** 
+     * Called from NavigationController, to be overriden by pages. 
+     * Should be called from overriden methods
+    */
+    navigateAway(): void {
+        console.debug("Nagivation.navigateAway", this.tabId);
+        this.isShowing = false;
+    }
 
-/**
- * Unset all tab-selected classes, and add it to the tab clicked.
- * @param id DOM id for the tab to set to selected
- */
-function handleTabSelection(id: string) {
-    $(".tab-entry").removeClass("tab-selected");
-    $(`#${id}`).addClass("tab-selected");
-}
-
-/** Navigate to Challenges */
-export function navToChallenges() {
-    console.log("Navigate to Challenges");
-    // Restore the left bar to visibility
-    clearPageContent();
-    setHash("");
-    $("#left-bar").removeAttr("style");
-    $("#root-container").append(challengeHtml);
-    ChallengeController.navigationEntry();
-}
-
-/** Navigate to Optimal Path */
-function navToOptimalPath() {
-    console.log("Navigate to Optimal Path");
-    setHash(TAB_OPTIMAL_PATH);
-    clearPageContent();
-}
-
-/** Navigate to Settings */
-function navToSettings() {
-    console.log("Navigate to Settings");
-    setHash(TAB_SETTINGS);
-    clearPageContent();
-    $("#root-container").append(settingsHtml);
-    initSettings();
-}
-
-function clearPageContent() {
-    $("#left-bar").attr("style", "display:none");
-    $("#challenge-content-area").remove();
-    $("#settings-content-area").remove();
-    $("#path-content-area").remove();
+    /** 
+     * Set the URL hash with history.pushState to prevent the hashchanged event 
+     * from triggering when we change this ourselves.
+     */
+    protected setHash(newHash: string) {
+        history.pushState(null, "", document.location.pathname + '#' + newHash);
+    }
 }
