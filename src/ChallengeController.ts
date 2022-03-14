@@ -115,9 +115,8 @@ export class ChallengeController extends Navigation {
         ChallengeController.loadChallenges();   
     }
 
-    /** Removes challenge bar with id `challenge.id` and calls {@link ChallengeRenderer.render}. */
+    /** Calls {@link ChallengeRenderer.render} with `renderMode`=`2` */
     public static reloadChallenge(challenge: ChallengeEntry) {
-        $(`#${challenge.id}`).remove();
-        ChallengeRenderer.render(challenge);
+        ChallengeRenderer.render(challenge, 2);
     }
 }

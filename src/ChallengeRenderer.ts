@@ -29,7 +29,14 @@ import { ChallengeController } from "./ChallengeController";
     TODO: Customize interval?
  */
 export class ChallengeRenderer {
-    public static render(challenge: ChallengeEntry) {
+    /**
+     * 
+     * @param challenge 
+     * @param renderMode - 0: Rendering from storage in order. Append each element
+        1: New element, append
+        2: Editing element, place `before` element with same id
+    */
+    public static render(challenge: ChallengeEntry, renderMode: number = 0) {
         console.debug("Render", challenge);
 
         let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur").attr("id", challenge.id);
@@ -49,49 +56,18 @@ export class ChallengeRenderer {
         newBar.append(this.starify(challenge));
         newBar.append(this.setupEditButton(challenge));
 
-        ChallengeRenderer.insertInOrder(challenge, newBar);
-    }
-
-    /** 
-     * Since we switched to using the week arrays to determine order this is much simpler.
-     * 
-     * TODO: Saving a challenge always moves it to bottom of list now
-     */
-    private static insertInOrder(challenge: ChallengeEntry, newBar: Cash) {
-        const weekData = StorageHelper.weekData[challenge.week];
-
-        // If there is nothing in the array (1? element) then that's gotta be us, so 
-        // drop our element before the button.
-        if (weekData.length <= 1) {
+        if (renderMode == 2) {
+            let oldElem = $(`#${challenge.id}`);
+            oldElem.before(newBar)
+            oldElem.remove();
+        }
+        else {
             let addBtn = $("#add-challenge");
             if (addBtn.length)
                 addBtn.before(newBar);
             else // Just drop it at the end if the button doesnt exist for some reason
                 $("#challenge-content-area").append(newBar);
-            return;
         }
-
-        // Loop through our week data and find our ID in the list
-        for(let i = 0; i < weekData.length; ++i) {
-            if (weekData[i] == challenge.id) {
-                // There should be somebody before us or we can prepend to the area
-                if (i != 0) {
-                    const e = $(`#${weekData[i-1]}`);
-                    if (e.length)
-                        e.after(newBar);
-                    else {
-                        console.error("Challenge bar doesn't exist! Prepending");
-                        console.error(i, weekData);
-                        $("#challenge-content-area").prepend(newBar);
-                    }
-                }
-                else {
-                    $("#challenge-content-area").prepend(newBar);
-                }
-                return;
-            }
-        }
-        console.error("Couldn't insert challenge for some reason!", challenge, newBar);
     }
     
     /**
