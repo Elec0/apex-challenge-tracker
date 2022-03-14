@@ -58,14 +58,40 @@ export class ChallengeRenderer {
      * TODO: Saving a challenge always moves it to bottom of list now
      */
     private static insertInOrder(challenge: ChallengeEntry, newBar: Cash) {
-        // We want to keep the button at the end, so if that exists 
-        // place this bar before it
-        let addBtn = $("#add-challenge");
-        if (addBtn.length)
-            addBtn.before(newBar);
-        else // Just drop it at the end
-            $("#challenge-content-area").append(newBar);
-        return;
+        const weekData = StorageHelper.weekData[challenge.week];
+
+        // If there is nothing in the array (1? element) then that's gotta be us, so 
+        // drop our element before the button.
+        if (weekData.length <= 1) {
+            let addBtn = $("#add-challenge");
+            if (addBtn.length)
+                addBtn.before(newBar);
+            else // Just drop it at the end if the button doesnt exist for some reason
+                $("#challenge-content-area").append(newBar);
+            return;
+        }
+
+        // Loop through our week data and find our ID in the list
+        for(let i = 0; i < weekData.length; ++i) {
+            if (weekData[i] == challenge.id) {
+                // There should be somebody before us or we can prepend to the area
+                if (i != 0) {
+                    const e = $(`#${weekData[i-1]}`);
+                    if (e.length)
+                        e.after(newBar);
+                    else {
+                        console.error("Challenge bar doesn't exist! Prepending");
+                        console.error(i, weekData);
+                        $("#challenge-content-area").prepend(newBar);
+                    }
+                }
+                else {
+                    $("#challenge-content-area").prepend(newBar);
+                }
+                return;
+            }
+        }
+        console.error("Couldn't insert challenge for some reason!", challenge, newBar);
     }
     
     /**
@@ -126,7 +152,7 @@ export class ChallengeRenderer {
         return res;
     }
 
-        /**
+    /**
      * Start edit mode.
      * Swap all the fields with text boxes, add a save button & listen for tab & enter keys.
      * Add the IDs of the challenge to each input.

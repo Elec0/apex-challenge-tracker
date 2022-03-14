@@ -11,6 +11,7 @@ export class OptimalPathController extends Navigation{
         }
     }
     navigateAway(): void {
+        super.navigateAway();
         $("#path-content-area").remove();
     }
 

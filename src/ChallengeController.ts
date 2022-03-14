@@ -12,9 +12,8 @@ export class ChallengeController extends Navigation {
         if (!this.isShowing) {
             super.navigateTo();
             this.setHash("");
-            $("#left-bar").removeAttr("style");
             $("#root-container").append(challengeHtml);
-
+            $("#left-bar").removeAttr("style");
             ChallengeController.loadChallenges();
             ChallengeController.createWeekButtons();
         }
@@ -22,6 +21,7 @@ export class ChallengeController extends Navigation {
     navigateAway(): void {
         super.navigateAway();
         $("#left-bar").attr("style", "display:none");
+        $("#left-bar").empty();
         $("#challenge-content-area").remove();
         $("#challenge-editor").remove();
     }

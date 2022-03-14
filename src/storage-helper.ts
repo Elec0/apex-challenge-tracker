@@ -90,7 +90,6 @@ export class StorageHelper {
     /** Add challenge to week array */
     public static addChallengeToWeek(challenge: ChallengeEntry, week: number) {
         if (!this.weekData[week].includes(challenge.id)) {
-            console.debug("week push", challenge, this.weekData);
             this.weekData[week].push(challenge.id);
         }
         // Make sure to update/save the challenge as well
@@ -103,6 +102,15 @@ export class StorageHelper {
     public static deleteChallenge(challenge: ChallengeEntry): boolean {
         if (this.challenges.has(challenge.id)) {
             this._challenges.delete(challenge.id);
+            // Remove it from week data
+            let ind = this.weekData[challenge.week].indexOf(challenge.id);
+            console.log("week delete", ind, this.weekData, challenge.week, challenge.id);
+
+            if (ind != -1)
+                this.weekData[challenge.week].splice(ind, 1);
+            else
+                console.warn("No challenge week entry found for deletion!");
+
             this.saveToStorage();
             return true;
         }
@@ -176,6 +184,17 @@ export class StorageHelper {
             }
         }
 
+        // Check our saved length
+        if (this.weekData.length < 12) {
+            console.warn(`Week array is too short, expanding from ${this.weekData.length} to 13.`);
+            console.debug(this.weekData);
+
+            for(let i = 0; i <= 12 - this.weekData.length; ++i) {
+                this.weekData.push(new Array<string>());
+            }
+            found = true;
+            console.debug(this.weekData);
+        }
         // Now ensure each entry in the weeks arrays exists
         for(let i = 0; i < this.weekData.length; ++i) {
             let toRemove: Array<number> = []; // Keep track of what indexes to remove, if any
@@ -190,7 +209,7 @@ export class StorageHelper {
             }
             for(let j = 0; j < toRemove.length; ++j) {
                 // Remove the invalid indexes
-                this.weekData.splice(toRemove[j], 1);
+                this.weekData[i].splice(toRemove[j], 1);
             }
         }
 
