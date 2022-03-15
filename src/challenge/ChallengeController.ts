@@ -1,11 +1,11 @@
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "./ChallengeEntry";
-import { StorageHelper } from "./storage-helper";
-import { escapeHtml } from "./utils";
+import { StorageHelper } from "../storage-helper";
+import { escapeHtml } from "../utils";
 import { ChallengeRenderer } from "./ChallengeRenderer";
-import { Navigation } from "./Navigation";
-import challengeHtml from "./../content/challenge.html";
-import { TAB_CHALLENGES } from "./constants";
+import { Navigation } from "../Navigation";
+import challengeHtml from "./../../content/challenge.html";
+import { TAB_CHALLENGES } from "../constants";
 
 export class ChallengeController extends Navigation {
     navigateTo(): void {

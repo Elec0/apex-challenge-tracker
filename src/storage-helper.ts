@@ -1,5 +1,5 @@
-import { ChallengeController } from "./ChallengeController";
-import { ChallengeEntry } from "./ChallengeEntry";
+import { ChallengeController } from "./challenge/ChallengeController";
+import { ChallengeEntry } from "./challenge/ChallengeEntry";
 import { KEY_WEEK_DATA, KEY_CHALLENGES } from "./constants";
 
 export class StorageHelper {

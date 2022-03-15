@@ -1,5 +1,5 @@
 /** All characters */
-export const CHARACTERS: string[] = ["Ash", "Bangalore", "Bloodhound", "Caustic", "Crypto", 
+export const LEGENDS: string[] = ["Ash", "Bangalore", "Bloodhound", "Caustic", "Crypto", 
                                      "Fuse", "Gibraltar", "Horizon", "Lifeline", "Loba", "Mad Maggie", 
                                      "Mirage", "Octane", "Pathfinder", "Rampart", "Revenant", "Seer", 
                                      "Valkyrie", "Wattson", "Wraith"];
@@ -18,7 +18,7 @@ export const MODES_NAMES: string[] = ["", "Battle Royale", "Arenas", "Control"];
 /** Mode abbreviations, same array order as {@link MODES_NAMES} */
 export const MODES: string[] = ["All", "BR", "A", "C"];
 /** Full list of keywords, built from concatenating the subtypes below */
-export const KEYWORDS: string[] = CHARACTERS.concat(WEAPON_NAMES, WEAPON_TYPES);
+export const KEYWORDS: string[] = LEGENDS.concat(WEAPON_NAMES, WEAPON_TYPES);
 
 /** ID correspondig to the tab for Challenges */
 export const TAB_CHALLENGES: string = "Challenges";

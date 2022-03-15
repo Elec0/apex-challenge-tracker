@@ -1,9 +1,9 @@
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "./ChallengeEntry";
-import { KEYWORDS } from "./constants";
-import { StorageHelper } from "./storage-helper";
-import { escapeHtml } from "./utils";
-import { MODES } from "./constants";
+import { KEYWORDS } from "../constants";
+import { StorageHelper } from "../storage-helper";
+import { escapeHtml } from "../utils";
+import { MODES } from "../constants";
 import { ChallengeController } from "./ChallengeController";
 
 

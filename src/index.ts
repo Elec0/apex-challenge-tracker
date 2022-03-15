@@ -1,7 +1,7 @@
 import {storageAvailable, escapeHtml} from "./utils";
 import $, { Cash } from "cash-dom";
-import { ChallengeRenderer } from "./ChallengeRenderer";
-import { ChallengeEntry } from "./ChallengeEntry";
+import { ChallengeRenderer } from "./challenge/ChallengeRenderer";
+import { ChallengeEntry } from "./challenge/ChallengeEntry";
 import { NavigationController } from "./NavigationController";
 import { StorageHelper } from "./storage-helper";
 import { Navigation } from "./Navigation";

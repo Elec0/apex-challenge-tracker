@@ -1,6 +1,6 @@
 import { ChallengeRenderer } from "./ChallengeRenderer";
-import { MODES } from "./constants";
-import { StorageHelper } from "./storage-helper";
+import { MODES } from "../constants";
+import { StorageHelper } from "../storage-helper";
 
 /**
  * Data class for each challenge entry.

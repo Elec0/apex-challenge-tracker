@@ -1,5 +1,5 @@
-import { TAB_OPTIMAL_PATH } from "./constants";
-import { Navigation } from "./Navigation";
+import { TAB_OPTIMAL_PATH } from "../constants";
+import { Navigation } from "../Navigation";
 import $, { Cash } from "cash-dom";
 
 
