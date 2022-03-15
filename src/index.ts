@@ -5,6 +5,7 @@ import { ChallengeEntry } from "./ChallengeEntry";
 import { NavigationController } from "./NavigationController";
 import { StorageHelper } from "./storage-helper";
 import { Navigation } from "./Navigation";
+// import css from "./../style.css";
 
 $(function () {
     if(!storageAvailable("localStorage")) {

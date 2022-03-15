@@ -302,12 +302,12 @@ div.nav-bar-selected, .nav-bar:hover {
     opacity: 0;
     align-items: center;
     margin-left: 1em;
-    background: no-repeat url("/res/images/edit-icon-32x32.png") 50% / 100%;
+    background: no-repeat url("res/images/edit-icon-32x32.png") 50% / 100%;
     transition-property: opacity;
     transition-duration: 100ms;
 }
 .edit-icon:hover {
-    background: no-repeat url("/res/images/edit-icon-32x32-hover.png") 50% / 100%;
+    background: no-repeat url("res/images/edit-icon-32x32-hover.png") 50% / 100%;
     filter: brightness(1.5);
 }
 .edit-icon img {
@@ -365,20 +365,20 @@ div.nav-bar-selected, .nav-bar:hover {
 }
 .edit-icon.edit-checkmark {
     opacity: 1;
-    background: no-repeat url("/res/images/checkmark.png") 50% / 100%;
+    background: no-repeat url("res/images/checkmark.png") 50% / 100%;
 }
 .edit-icon.edit-checkmark:hover {
-    background: no-repeat url("/res/images/checkmark-hover.png") 50% / 100%;
+    background: no-repeat url("res/images/checkmark-hover.png") 50% / 100%;
 }
 .edit-checkmark img {
     opacity: 0;
 }
 .edit-icon.edit-delete {
     opacity: 1;
-    background: no-repeat url("/res/images/trashcan.png") 50% / 100%;
+    background: no-repeat url("res/images/trashcan.png") 50% / 100%;
 }
 .edit-icon.edit-delete:hover {
-    background: no-repeat url("/res/images/trashcan-hover.png") 50% / 100%;
+    background: no-repeat url("res/images/trashcan-hover.png") 50% / 100%;
 }
 .edit-delete img {
     opacity: 0;

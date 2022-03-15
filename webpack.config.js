@@ -1,20 +1,35 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: { index: [ './src/index.ts' ] },
   devtool: 'inline-source-map',
   module: {
     rules: [
       {
         test: /\.html$/i,
-        use: 'html-loader',
-        exclude: [ "/node_modules/", "/dist/", "/test/" ]
+        loader: 'html-loader',
+        exclude: [ "/node_modules/", "/dist/", "/test/" ],
+        options: {
+          sources: {
+            urlFilter: (attribute, value, resourcePath) => {
+              if (/.*\.(png|svg)$/.test(value)) {
+                return false;
+              }
+              return true;
+            },
+          },
+        },
       },
       {
         test: /\.ts$/,
         use: "ts-loader",
         exclude: [ "/node_modules/", "/dist/", "/test/" ]
-      }
+      },
+      // {
+      //   test: /\.css$/i,
+      //   use: ['style-loader', 'css-loader'],
+      //   exclude: [ "/node_modules/", "/dist/", "/test/" ]
+      // },
     ]
   },
   resolve: {
@@ -23,6 +38,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
   mode: "development"
 };

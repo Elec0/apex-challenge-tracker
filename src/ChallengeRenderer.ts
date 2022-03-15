@@ -110,10 +110,10 @@ export class ChallengeRenderer {
         let res = $("<div>").addClass("star-container")
             .append($("<span>").text(`+${challenge.value}`));
         if (!challenge.event) {
-            res.append($("<img>").attr("src", "/res/images/star-five.svg").addClass("star-five"));
+            res.append($("<img>").attr("src", "res/images/star-five.svg").addClass("star-five"));
         }
         else {
-            res.append($("<img>").attr("src", "/res/images/ticket.png").addClass("star-five"));
+            res.append($("<img>").attr("src", "res/images/ticket.png").addClass("star-five"));
         }
         return res;
     }
@@ -121,7 +121,7 @@ export class ChallengeRenderer {
     /** Create the edit div & setup the click listener for {@link handleEditButtonClick} */
     private static setupEditButton(challenge: ChallengeEntry): Cash {
         let res = $("<div>").addClass("edit-icon").attr("id", "")
-            .append($("<img>").attr("src", "/res/images/edit-icon-32x32.png"));
+            .append($("<img>").attr("src", "res/images/edit-icon-32x32.png"));
 
         // The image has pointer events disabled, so we will always get the div out of the click
         res.on("click", (event) => this.handleEditButtonClick(challenge));
