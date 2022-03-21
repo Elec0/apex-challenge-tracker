@@ -27,6 +27,7 @@ import { ChallengeController } from "./ChallengeController";
     TODO: Instead of ordering, add a sort button
     TODO: Add easy increase/decrease of challenges
     TODO: Customize interval?
+    TODO: Handle shorter windows, currently in editing it jumps to next line
  */
 export class ChallengeRenderer {
     /**

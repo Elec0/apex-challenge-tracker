@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_4_1_"
+   x="0px"
+   y="0px"
+   viewBox="0 0 37 37"
+   style="enable-background:new 0 0 37 37;"
+   xml:space="preserve"
+   sodipodi:docname="Pathfinder_Icon.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"><metadata
+   id="metadata11"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs9" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1600"
+   inkscape:window-height="837"
+   id="namedview7"
+   showgrid="false"
+   inkscape:zoom="18.108108"
+   inkscape:cx="18.5"
+   inkscape:cy="18.5"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_4_1_" />
+<style
+   type="text/css"
+   id="style2">
+	.st0{fill:#241C1C;}
+</style>
+<path
+   class="st0"
+   d="M18.5,0.8C8.7,0.8,0.8,8.7,0.8,18.5c0,9.8,7.9,17.8,17.7,17.8c9.8,0,17.8-7.9,17.8-17.8  C36.3,8.7,28.3,0.8,18.5,0.8z M23.6,32.1h0.1c-0.3,0.1-0.6,0.2-1,0.3c-1.3,0.5-2.8,0.7-4.2,0.7c-1.5,0-2.9-0.3-4.3-0.7  c-0.3-0.1-0.6-0.2-1-0.3h0.1c-4.7-2.1-8-6.9-8-12.5c0-0.1,0-0.2,0-0.4h2.3c0,0.1,0,0.2,0,0.4c0,6.2,4.9,11.3,10.8,11.3  s10.8-5.1,10.8-11.3c0-0.1,0-0.2,0-0.4h2.3c0,0.1,0,0.2,0,0.4C31.6,25.2,28.3,30,23.6,32.1z M12.6,19.6v-8.4h2.7v8.4H12.6z   M21.7,19.6v-8.4h2.7v8.4H21.7z M32.1,19.2c0-0.2,0-0.5,0-0.7c0-7.4-6.1-13.4-13.6-13.4c-7.5,0-13.6,6-13.6,13.4c0,0.2,0,0.5,0,0.7  H3.8c0-0.2,0-0.5,0-0.7c0-8,6.6-14.5,14.7-14.5s14.7,6.5,14.7,14.5c0,0.2,0,0.5,0,0.7H32.1z"
+   id="path4"
+   style="fill:#273839;fill-opacity:1" />
+</svg>

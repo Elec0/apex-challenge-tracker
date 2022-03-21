@@ -62,6 +62,10 @@ export class ChallengeEntry {
         return nC;
     }
 
+    public isCompleted(): boolean {
+        return this.progress == this.max;
+    }
+
     /** Ensure progress is a number. */
     public set progress(value: number) {
         if (!isNaN(value))

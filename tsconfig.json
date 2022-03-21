@@ -3,7 +3,7 @@
         "strict": true,
         "alwaysStrict": true,
         "outDir": "./dist/",
-        "target": "ES5",
+        "target": "ES6",
         "module": "commonjs",
         "sourceMap": true,
         "noImplicitAny": true,

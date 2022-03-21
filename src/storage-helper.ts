@@ -60,7 +60,7 @@ export class StorageHelper {
     }
 
     /** 
-     * Set the challenge entry in the map with key `challenge.id`. 
+     * Set the challenge entry in the map with key `challenge.id`.
      * 
      * Saves if `save` is true.
     */
@@ -130,8 +130,8 @@ export class StorageHelper {
     public static loadFromStorage() {
         let storChallenges: string = this.getValue(KEY_CHALLENGES);
         let storWeeks: string = this.getValue(KEY_WEEK_DATA);
-        console.debug("Load: raw string:", storChallenges);
-        console.debug("Load: raw string:", storWeeks);
+        // console.debug("Load: raw string:", storChallenges);
+        // console.debug("Load: raw string:", storWeeks);
 
         // Keep track of all the challenges as we load them so we can check for orphans
         let challengeIds: Array<string> = [];

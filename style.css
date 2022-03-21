@@ -21,7 +21,7 @@ body {
     margin-top: 0em;
     margin-left: 0em;
     margin-right: 0em;
-    background-image: url("https://images6.alphacoders.com/992/992033.jpg");
+    background: url("https://images6.alphacoders.com/992/992033.jpg") no-repeat center center fixed;
     background-size: cover;
 }
 /* #endregion */
@@ -37,7 +37,6 @@ body {
     justify-content: left;
     align-items: center;
     margin-top: 2%;
-    /* flex-grow: 0.5; */
     width: 50%;
 }
 
@@ -46,6 +45,15 @@ body {
     justify-content: center;
     margin-top: 2%;
     flex-grow: 1;
+}
+
+#path-content-area {
+    display: inline-flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    width: 75%;
 }
 
 /* #endregion */
@@ -405,3 +413,36 @@ div.nav-bar-selected, .nav-bar:hover {
 }
 
 /* #endregion Settings */
+
+/* #region Optimal Path */
+#path-content {
+    display: inline-flex;
+    flex-direction: row;
+    row-gap: 1em;
+    flex-wrap: wrap;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+#path-content div.title-break {
+    display: flex;
+    flex-basis: 100%;
+    justify-content: center;
+}
+#path-content div.entries {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-basis: 100%;
+    row-gap: 1em;
+    justify-content: center;
+}
+.path-entry {
+    display: inline-flex;
+    align-items: center;
+    flex-direction: column;
+    margin-right: 1em;
+}
+.path-entry span {
+    margin-top: 0.5em;
+}
+/* #endregion Optimal Path */
