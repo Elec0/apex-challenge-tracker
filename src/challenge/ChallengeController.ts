@@ -5,7 +5,7 @@ import { escapeHtml } from "../utils";
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { Navigation } from "../Navigation";
 import challengeHtml from "./../../content/challenge.html";
-import { TAB_CHALLENGES } from "../constants";
+import { MODES, ModeStrings, TAB_CHALLENGES } from "../constants";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
@@ -41,7 +41,8 @@ export class ChallengeController extends Navigation {
         let valueText = cloneElem.find("span[for-data='value']").text();
 
         challenge.text = escapeHtml(titleText as string);
-        challenge.mode = escapeHtml(modeSelector as string);
+        // Turning a string variable into an enum string key is strange
+        challenge.mode = MODES[escapeHtml(modeSelector as string) as keyof typeof MODES];
         challenge.progress = Number.parseInt(escapeHtml(progressText as string));
         challenge.max = Number.parseInt(escapeHtml(maxText as string));
         challenge.value = Number.parseInt(escapeHtml(valueText as string));
@@ -67,7 +68,6 @@ export class ChallengeController extends Navigation {
 
     public static loadChallenges() {
         StorageHelper.getDataToRenderFilter(this.currentFilter).forEach(challenge => {
-            
             ChallengeRenderer.render(challenge);
         });
 

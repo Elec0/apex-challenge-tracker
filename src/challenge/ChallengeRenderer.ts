@@ -3,7 +3,7 @@ import { ChallengeEntry } from "./ChallengeEntry";
 import { KEYWORDS } from "../constants";
 import { StorageHelper } from "../storage-helper";
 import { escapeHtml } from "../utils";
-import { MODES } from "../constants";
+import { MODES, ModeStrings } from "../constants";
 import { ChallengeController } from "./ChallengeController";
 
 
@@ -94,9 +94,10 @@ export class ChallengeRenderer {
      * @param {string} mode - A valid entry in {@link MODES}
      * @returns {Cash} `span` element
      */
-    public static modeify(mode: string): Cash {
-        if (mode != MODES[0]) { // 0th is All, so don't show that
-            return $("<span>").addClass("cb-type type-" + mode.toLocaleLowerCase()).text(mode.toLocaleUpperCase());
+    public static modeify(mode: MODES): Cash {
+        const modeString: string = MODES[mode].toLocaleString().toLocaleLowerCase();
+        if (mode != MODES.All) { // 0th is All, so don't show that
+            return $("<span>").addClass("cb-type type-" + modeString).text(modeString.toLocaleUpperCase());
         }
         else {
             return $("<span>");
@@ -146,7 +147,7 @@ export class ChallengeRenderer {
             cloneElem.on("keydown", e => ChallengeController.handleKeyboardEvent(e, challenge));
     
             // Make the selector have the correct formatting
-            cloneElem.find("select.edit-mode").attr("data-chosen", `${challenge.mode}`).val(challenge.mode);
+            cloneElem.find("select.edit-mode").attr("data-chosen", `${MODES[challenge.mode]}`).val(MODES[challenge.mode]);
     
             // Set the span inputs to have the existing data, if it exists
             cloneElem.find("span[for-data='title']").text(challenge.text);

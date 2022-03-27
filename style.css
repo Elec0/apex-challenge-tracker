@@ -496,6 +496,7 @@ div.entries {
     flex-direction: column;
     justify-content: flex-end;
     margin-right: 1em;
+    cursor: pointer;
 }
 .path-entry-text {
     display: inline-flex;

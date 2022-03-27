@@ -233,7 +233,10 @@ export class StorageHelper {
     
     /** 
      * Collect all challenges that contain `filterText` in the text.
+     * 
      * If `filterText` is blank, call {@link getDataToRender}.
+     * 
+     * If there's a comma, after that will be the mode
      */
     public static getDataToRenderFilter(filterText: string): Array<ChallengeEntry> {
         if (filterText == "")
@@ -241,6 +244,10 @@ export class StorageHelper {
 
         let result: Array<ChallengeEntry> = new Array(0);
         let filterLower = filterText.toLowerCase();
+        // let filterMode = 
+        if (filterText.includes(",")) {
+
+        }
 
         this.challenges.forEach((val, key) => {
             if (val.text.toLowerCase().includes(filterLower))

@@ -13,10 +13,15 @@ export const WEAPON_NAMES: string[] = ["HAVOC", "VK-47 Flatline", "Hemlock", "R-
 /** All weapon types */
 export const WEAPON_TYPES: string[] = ["Assault rifle", "Sub machine gun", "LMG", "Marksman", "Sniper rifle", "Shotgun", "Pistol"]
 
-/** All full mode names */
-export const MODES_NAMES: string[] = ["", "Battle Royale", "Arenas", "Control"];
-/** Mode abbreviations, same array order as {@link MODES_NAMES} */
-export const MODES: string[] = ["All", "BR", "A", "C"];
+/** Mode abbreviations and names. */
+export enum MODES {
+    All,
+    BR,
+    A,
+    C
+}
+export type ModeStrings = keyof typeof MODES;
+
 /** Full list of keywords, built from concatenating the subtypes below */
 export const KEYWORDS: string[] = LEGENDS.concat(WEAPON_NAMES, WEAPON_TYPES);
 

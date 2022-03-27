@@ -1,5 +1,5 @@
 import { ChallengeRenderer } from "./ChallengeRenderer";
-import { MODES } from "../constants";
+import { ModeStrings, MODES } from "../constants";
 import { StorageHelper } from "../storage-helper";
 
 /**
@@ -9,8 +9,8 @@ import { StorageHelper } from "../storage-helper";
 export class ChallengeEntry {
     /** Actual full text of the challenge */
     text: string;
-    /** What {@link MODES} the challenge applies to. Can be null, which means applies everywhere. */
-    mode: string;
+    /** What mode the challenge applies to. Is saved as a number that is an index of the enum {@link MODES}. */
+    mode: MODES;
     /** How much progression has been completed */
     private _progress: number = 0;
     /** The max needed progression */
@@ -30,12 +30,13 @@ export class ChallengeEntry {
      * @param {number} progress - Current progress on the challenge
      * @param {numebr} max - `progress` must be <= `max`
      * @param {number} value - How many stars this challenge is worth
-     * @param {string=} [mode] - Mode the challenge applies to, default is `BR`
+     * @param {MODES=} [mode] - Mode the challenge applies to, default is `BR`
      * @param {boolean=} [event] - Whether the challenge is part of an event or not. Changes star to ticket
      * @param {number=} [order] - Display & index order of the challenges, must be unique
      */
-    constructor(text: string, progress: number, max: number = 1, value: number, mode: string = MODES[1], event: boolean = false) {
+    constructor(text: string, progress: number, max: number = 1, value: number, mode: MODES = MODES.BR, event: boolean = false) {
         this.text = text;
+        
         this.progress = progress;
         this.max = max;
         this.value = value;
@@ -54,8 +55,9 @@ export class ChallengeEntry {
     }
 
     public static loadFromJson(jsonValue: any): ChallengeEntry {
-        let nC = new ChallengeEntry(jsonValue["text"], jsonValue["_progress"], jsonValue["_max"],
-            jsonValue["_value"], jsonValue["mode"], jsonValue["event"]);
+        let nC = new ChallengeEntry(jsonValue["text"] as string, jsonValue["_progress"] as number, 
+            <number|undefined> jsonValue["_max"], jsonValue["_value"] as number, 
+            jsonValue["mode"] as number, jsonValue["event"] as boolean);
         // We can't pass in an id, but we can set it from inside this class since it's private.
         nC._id = jsonValue["_id"];
         nC._week = jsonValue["_week"];
@@ -115,6 +117,6 @@ export class ChallengeEntry {
     public get week() { return this._week; }
 
     public toString(): string {
-        return `${this.text}, ${this.progress}/${this.max}, ${this.value}, ${this.mode}, ${this.week}, ${this.id}`;
+        return `${this.text}, ${this.progress}/${this.max}, ${this.value}, ${this.mode} (${MODES[this.mode]}), ${this.week}, ${this.id}`;
     }
 }
