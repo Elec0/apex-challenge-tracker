@@ -30,6 +30,8 @@ export abstract class Navigation implements INavigation{
         $(".tab-selected").removeClass("tab-selected");
         // Set our current selection
         $(`#${this.tabId}`).addClass("tab-selected");
+        // Make sure we're always at the top of the page when moving
+        window.scrollTo(0, 0);
     }
 
     /** 

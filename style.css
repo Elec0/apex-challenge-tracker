@@ -36,7 +36,13 @@ body {
     flex-direction: column;
     justify-content: left;
     align-items: center;
-    margin-top: 2%;
+    margin-top: 1%;
+    width: 100%;
+}
+
+#challenge-outer-area {
+    display: flex;
+    flex-direction: column;
     width: 50%;
 }
 
@@ -201,6 +207,7 @@ div.nav-bar-selected, .nav-bar:hover {
     display: flex;
     flex-grow: 0;
     width: 100%;
+    box-sizing: border-box;
     padding-left: 1%;
     padding-right: 3%;
     padding-top: 1%;
@@ -257,6 +264,7 @@ div.nav-bar-selected, .nav-bar:hover {
     padding-right: 2em;
     width: fit-content;
     min-width: 1em;
+    overflow-wrap: normal;
 }
 
 .challenge-bar-interior > span {
@@ -318,11 +326,19 @@ div.nav-bar-selected, .nav-bar:hover {
     background: no-repeat url("res/images/edit-icon-32x32-hover.png") 50% / 100%;
     filter: brightness(1.5);
 }
-.edit-icon img {
+.edit-icon img, .search-icon img {
     vertical-align: top;
     width: 100%;
     opacity: 0;
     pointer-events: none;
+}
+
+.search-icon {
+    background: no-repeat url("res/images/search-icon.png") 50% / 100%;
+}
+.search-icon:hover, .search-icon.selected {
+    background: no-repeat url("res/images/search-icon-hover.png") 50% / 100%;
+    filter: brightness(1.5);
 }
 /* Make the icon visible when hovering on the entire div */
 .challenge-bar:hover .edit-icon {
@@ -393,6 +409,38 @@ div.nav-bar-selected, .nav-bar:hover {
 }
 /* #endregion challenge bars */
 
+/* #region Challenge Filter */
+#challenge-filter-area {
+    display: flex;
+    /* width: fit-content; */
+    width: 1.4em; /* 1em from the search icon, .4 is 2x padding */
+    background-color: rgba(56, 55, 55, 0.8);
+    color: lightgrey;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 0.2em;
+    transition-property: width;
+    transition-duration: 200ms;
+
+}
+#challenge-filter-area.selected {
+    width: 100%;
+}
+#challenge-filter-area img {
+    width: 1em;
+    height: 1em;
+}
+
+span.filter-bar-textbox {
+    margin-left: 1em;
+    min-height: auto;
+}
+
+#btn-filter, #btn-filter-clear {
+    height: auto;
+}
+/* #endregion */
+
 /* #region Settings */
 .settings-content {
     display: inline-flex;
@@ -436,6 +484,11 @@ div.nav-bar-selected, .nav-bar:hover {
     row-gap: 1em;
     justify-content: center;
 }
+div.entries {
+    padding: 1em;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0), 
+        rgba(56, 55, 55, 0.8), rgba(0, 0, 0, 0.0));
+}
 .path-entry {
     display: inline-flex;
     align-items: center;
@@ -444,5 +497,15 @@ div.nav-bar-selected, .nav-bar:hover {
 }
 .path-entry span {
     margin-top: 0.5em;
+}
+.path-entry img {
+    image-rendering: -moz-crisp-edges; /* Firefox */
+    image-rendering: -o-crisp-edges; /* Opera */
+    image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+}
+.path-entry .legend-name {
+    font-weight: bolder;
 }
 /* #endregion Optimal Path */

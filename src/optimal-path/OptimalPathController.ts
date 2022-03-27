@@ -1,9 +1,11 @@
-import { KEYWORDS, LEGENDS, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
+import { KEYWORDS, LEGENDS, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
 import { Navigation } from "../Navigation";
 import $, { Cash } from "cash-dom";
 import { StorageHelper } from "../storage-helper";
 import { ChallengeEntry } from "../challenge/ChallengeEntry";
 import pathHtml from "../../content/path.html";
+import { NavigationController } from "../NavigationController";
+import { ChallengeController } from "../challenge/ChallengeController";
 
 
 /**
@@ -23,8 +25,9 @@ export class OptimalPathController extends Navigation {
             this.keywordCount = new Map();
 
             this.beginCalculation();
-            this.parseResults();
             // We want the results split up into category, then sorted by max value possible
+            this.parseResults();
+            $(".path-entry").on("click", this.handleEntryClick);
 
         }
     }
@@ -41,9 +44,10 @@ export class OptimalPathController extends Navigation {
         let curSection = $("<div>").addClass("entries");
         legendResults.forEach(e => {
             if (e[1] > 0) {
-                let newElem = $("<div>").attr("class", "path-entry");
-                newElem.append($(`<img>`).attr("style", "width: 32px").attr("src", `res/images/legend-icons/${e[0].replace(" ", "_")}_Icon.svg`));
-                newElem.append($("<span>").text(`${e[0]}: ${e[1]}`));
+                let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
+                newElem.append($(`<img>`).attr("style", "width: 10em").attr("src", `res/images/legends/${e[0].replace(" ", "-")}.png`));
+                newElem.append($("<span>").text(`${e[0]}`).addClass("legend-name"));
+                newElem.append($("<span>").text(`${e[1]}`));
                 curSection.append(newElem);
             }
         });
@@ -60,9 +64,9 @@ export class OptimalPathController extends Navigation {
         let curSection = $("<div>").addClass("entries");
         arr.forEach(e => {
             if (e[1] > -1) {
-                console.debug(e);
-                let newElem = $("<div>").attr("class", "path-entry");
-                newElem.append($("<span>").text(`${e[0]}: ${e[1]}`));
+                let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
+                newElem.append($("<span>").text(`${e[0]}`).addClass("legend-name"));
+                newElem.append($("<span>").text(`${e[1]}`));
                 curSection.append(newElem);
             }
         });
@@ -107,7 +111,6 @@ export class OptimalPathController extends Navigation {
     private beginCalculation(): void {
         // this.keywordCount = OptimalPathController.buildConstKeywordLists();
         this.parseKeywords();
-        console.debug("beginCalculation");
         // Start by going through each challenge's keywords, incrementing a counter when finding one
         KEYWORDS.forEach(element => {
             // Init the map
@@ -128,8 +131,6 @@ export class OptimalPathController extends Navigation {
                 }
             }
         });
-        console.debug(this.challengeKeywordMap);
-        console.debug(this.keywordCount);
     }
 
     private parseKeywords(): void {
@@ -142,5 +143,19 @@ export class OptimalPathController extends Navigation {
             result.set(element, 0);
         });
         return result;
+    }
+
+    public handleEntryClick(event: Event) {
+        if (event.target == null) {
+            console.error("handleEntryClick event.target is null!");
+            return;
+        }
+        let filterName: string = $(<Element>event.currentTarget).attr("name") ?? "";
+        if (filterName == "") {
+            console.error("Something went wrong with the click, filter name was not found.");
+            return;
+        }
+        ChallengeController.currentFilter = filterName;
+        NavigationController.handleTabClick(TAB_CHALLENGES);
     }
 }

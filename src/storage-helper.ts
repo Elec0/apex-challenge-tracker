@@ -223,11 +223,30 @@ export class StorageHelper {
         let result: Array<ChallengeEntry> = new Array(0);
 
         curWeekData.forEach(d => {
-            // ts apparently doesn't consider this enough checking for undefined
+            // ts apparently doesn't consider this enough checking for undefined,
             // hence the '!'
             if (this.challenges.has(d))
                 result.push(this.challenges.get(d)!);
         });
+        return result;
+    }
+    
+    /** 
+     * Collect all challenges that contain `filterText` in the text.
+     * If `filterText` is blank, call {@link getDataToRender}.
+     */
+    public static getDataToRenderFilter(filterText: string): Array<ChallengeEntry> {
+        if (filterText == "")
+            return this.getDataToRender();
+
+        let result: Array<ChallengeEntry> = new Array(0);
+        let filterLower = filterText.toLowerCase();
+
+        this.challenges.forEach((val, key) => {
+            if (val.text.toLowerCase().includes(filterLower))
+                result.push(val);
+        });
+
         return result;
     }
 

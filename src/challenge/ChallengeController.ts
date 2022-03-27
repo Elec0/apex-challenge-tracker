@@ -8,6 +8,8 @@ import challengeHtml from "./../../content/challenge.html";
 import { TAB_CHALLENGES } from "../constants";
 
 export class ChallengeController extends Navigation {
+    public static currentFilter: string = "";
+
     navigateTo(): void {
         if (!this.isShowing) {
             super.navigateTo();
@@ -16,14 +18,17 @@ export class ChallengeController extends Navigation {
             $("#left-bar").removeAttr("style");
             ChallengeController.loadChallenges();
             ChallengeController.createWeekButtons();
+            ChallengeController.setupFilterButtons();
         }
     }
     navigateAway(): void {
         super.navigateAway();
         $("#left-bar").attr("style", "display:none");
         $("#left-bar").empty();
-        $("#challenge-content-area").remove();
+        $("#challenge-outer-area").remove();
         $("#challenge-editor").remove();
+        // Clear the filter when we leave, since if it's set we automatically display it
+        ChallengeController.currentFilter = "";
     }
 
     /** Retrieve the input values and save them */
@@ -61,7 +66,7 @@ export class ChallengeController extends Navigation {
     }
 
     public static loadChallenges() {
-        StorageHelper.getDataToRender().forEach(challenge => {
+        StorageHelper.getDataToRenderFilter(this.currentFilter).forEach(challenge => {
             
             ChallengeRenderer.render(challenge);
         });
@@ -72,13 +77,30 @@ export class ChallengeController extends Navigation {
         $("#challenge-content-area").append(btnAdd);
     }
 
+    public static setupFilterButtons() {
+        // Set up the click handler for search icon, and text type handler
+        $("#search-icon").on("click", this.handleClickSearch);
+        $("#btn-filter").on("click", this.handleClickFilter);
+        let spanFilter = $("span[for-data='filter']");
+        spanFilter.on("keydown", e => this.handleKeyboardFilter(e));
+        // Clear the filter and re-call the filter method
+        $("#btn-filter-clear").on("click", e => { spanFilter.text(""); this.handleClickFilter(e) });
+
+        // Since this method is only called when we navigate to the tab, 
+        // if the filter is already set, that means we're coming in from optimal path
+        // so expand the search bar and populate it with the current filter.
+        if (this.currentFilter != "") {
+            spanFilter.text(this.currentFilter);
+            $("#search-icon").trigger("click");
+        }
+    }
+
     public static createWeekButtons() {
         // Create the week buttons
         const leftBar = $("#left-bar");
         for (let i = 0; i < StorageHelper.weekData.length + 1; ++i) {
             let newBtn = $("<div>")
                 .addClass("nav-bar nav-blur")
-                // .attr("week", i.toString())
                 .text(`Week ${i}`);
             if (i == 0) {
                 newBtn.text("Daily");
@@ -113,6 +135,36 @@ export class ChallengeController extends Navigation {
         }
         // Reload challenges with entry method, it will handle the set week
         ChallengeController.loadChallenges();   
+    }
+    
+    /** Clicking the search magnifying icon. Make it expand with the class. */
+    public static handleClickSearch(event: Event) {
+        if ($(this).hasClass("selected")) {
+            $(this).removeClass("selected");
+            $("#challenge-filter-area").removeClass("selected");
+        }
+        else {
+            $(this).addClass("selected");
+            $("#challenge-filter-area").addClass("selected");    
+        }
+    }
+
+    /** Handling when the filter button is clicked. Reload challenges with filter applied */
+    public static handleClickFilter(event: Event) {
+        let val: string = escapeHtml($("span[for-data='filter']").text());
+        console.log("Filter by '%s'", val);
+        ChallengeController.currentFilter = val;
+        $("#challenge-content-area").empty();
+        ChallengeController.loadChallenges();
+    }
+
+    /** If they hit enter in the filter textbox, apply it. */
+    public static handleKeyboardFilter(event: KeyboardEvent) {
+        if (event.key == "Enter") {
+            ChallengeController.handleClickFilter(event);
+            // Intercept the command, don't put a newline
+            return false;
+        }
     }
 
     /** Calls {@link ChallengeRenderer.render} with `renderMode`=`2` */
