@@ -145,6 +145,7 @@ body {
 #add-challenge {
     width: 50%;
     height: 2em;
+    background-color: rgba(55, 55, 60, 0.7);
 }
 #add-challenge > span {
     padding-top: 0.1em;
@@ -413,14 +414,14 @@ div.nav-bar-selected, .nav-bar:hover {
 #challenge-filter-area {
     display: flex;
     /* width: fit-content; */
-    width: 1.4em; /* 1em from the search icon, .4 is 2x padding */
+    width: 2.4em; /* 1em from the search icon, .4 is 2x padding */
     background-color: rgba(56, 55, 55, 0.8);
     color: lightgrey;
     box-sizing: border-box;
     overflow: hidden;
     padding: 0.2em;
     transition-property: width;
-    transition-duration: 200ms;
+    transition-duration: 400ms;
 
 }
 #challenge-filter-area.selected {
@@ -466,7 +467,7 @@ span.filter-bar-textbox {
 #path-content {
     display: inline-flex;
     flex-direction: row;
-    row-gap: 1em;
+    /* row-gap: 1em; */
     flex-wrap: wrap;
     padding-left: 2em;
     padding-right: 2em;
@@ -493,7 +494,13 @@ div.entries {
     display: inline-flex;
     align-items: center;
     flex-direction: column;
+    justify-content: flex-end;
     margin-right: 1em;
+}
+.path-entry-text {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
 }
 .path-entry span {
     margin-top: 0.5em;
