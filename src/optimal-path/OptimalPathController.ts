@@ -50,7 +50,7 @@ export class OptimalPathController extends Navigation {
         legendResults.forEach(e => {
             if (e[1] > 0) {
                 let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
-                newElem.append($("<img>").attr("style", "width: 10em").attr("src", `res/images/legends/${e[0].replace(" ", "-")}.png`));
+                newElem.append($("<img>").attr("style", "width: 10em").attr("src", `res/images/legends/${e[0].replace(" ", "-").toLowerCase()}.png`));
                 newElem.append($("<div>").addClass("path-entry-text")
                     .append($("<span>").text(`${e[0]}`).addClass("legend-name"))
                     .append($("<span>").text(`${e[1]}`)));
