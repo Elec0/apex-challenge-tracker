@@ -4,6 +4,7 @@ import { StorageHelper } from "./storage-helper";
 import settingsHtml from "./../content/settings.html";
 import { TAB_SETTINGS } from "./constants";
 
+// TODO: Add sorting on load as check option. ChallengeController.loadChallenges
 export class SettingsController extends Navigation {
 
     /** Called after the html is added to the page, set up our listeners and logic */

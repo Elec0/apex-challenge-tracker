@@ -1,6 +1,6 @@
 import { ChallengeController } from "./challenge/ChallengeController";
 import { ChallengeEntry } from "./challenge/ChallengeEntry";
-import { KEY_WEEK_DATA, KEY_CHALLENGES } from "./constants";
+import { KEY_WEEK_DATA, KEY_CHALLENGES, MODES } from "./constants";
 
 export class StorageHelper {
     /**
@@ -236,7 +236,12 @@ export class StorageHelper {
      * 
      * If `filterText` is blank, call {@link getDataToRender}.
      * 
-     * If there's a comma, after that will be the mode
+     * If there's a comma, after that will be the mode.
+     * 
+     * "Ash" => Challenges with Ash
+     * "Ash, BR" => Ash & BR mode
+     * ",BR" => All BR challenges
+     * "," => All challenges
      */
     public static getDataToRenderFilter(filterText: string): Array<ChallengeEntry> {
         if (filterText == "")
@@ -244,13 +249,21 @@ export class StorageHelper {
 
         let result: Array<ChallengeEntry> = new Array(0);
         let filterLower = filterText.toLowerCase();
-        // let filterMode = 
+        let filterMode = "";
         if (filterText.includes(",")) {
-
+            let spl: string[] = filterText.split(",");
+            filterLower = spl[0].trim();
+            filterMode = spl[1].trim();
         }
 
         this.challenges.forEach((val, key) => {
-            if (val.text.toLowerCase().includes(filterLower))
+            // Check if the challenge text includes our filter text
+            let include: boolean = val.text.toLowerCase().includes(filterLower);
+            // See if we need to check the mode
+            if (filterMode != "") // If the entered mode text includes the string key value of the challenge mode
+                include = include && filterMode.toLocaleUpperCase() == MODES[val.mode].toLocaleUpperCase();
+
+            if (include)
                 result.push(val);
         });
 

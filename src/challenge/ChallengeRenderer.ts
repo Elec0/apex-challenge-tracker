@@ -24,11 +24,11 @@ import { ChallengeController } from "./ChallengeController";
         </div>
     </div>
 
-    TODO: Instead of ordering, add a sort button
     TODO: Add easy increase/decrease of challenges
-    TODO: Customize interval?
     TODO: Handle shorter windows, currently in editing it jumps to next line
- */
+    
+    TODO: Customize interval?
+*/
 export class ChallengeRenderer {
     /**
      * 
@@ -51,11 +51,18 @@ export class ChallengeRenderer {
         // Create our progress bar
         $("<div>").addClass("challenge-bar-interior bar-angle")
             .append($("<div>").addClass("challenge-bar-progress bar-angle").attr("style", `width:${Math.floor((challenge.progress / challenge.max) * 100)}%`))
-            .append($("<span>").text(`${challenge.progress}/${challenge.max}`))
+            .append($("<div>").addClass("challenge-bar-progress-text")
+                .append($("<span>").text(`${challenge.progress}/${challenge.max}`)))
+            .append($("<div>").addClass("challenge-bar-progress-stepper")
+                .append($("<div>").addClass("dot-half")
+                    .append($("<div>").addClass("dot minus").html("<img src='res/images/minus.png'/>")))
+                .append($("<div>").addClass("dot-half")
+                    .append($("<div>").addClass("dot plus").html("<img src='res/images/plus.png'/>"))))
             .appendTo(barData);
 
         newBar.append(this.starify(challenge));
         newBar.append(this.setupEditButton(challenge));
+        this.setupIncrementButtons(newBar, challenge);
 
         if (renderMode == 2) {
             let oldElem = $(`#${challenge.id}`);
@@ -130,6 +137,16 @@ export class ChallengeRenderer {
         return res;
     }
 
+    private static setupIncrementButtons(bar: Cash, challenge: ChallengeEntry) {
+        // .append($("<div>").addClass("dot-half")
+        // .append($("<div>").addClass("dot minus")
+        let halves: Cash = bar.find(".dot-half");
+        let minus: Cash = halves.has(".dot.minus");
+        let plus: Cash = halves.has(".dot.plus");
+        minus.on("click", e => ChallengeController.handleClickMinus(challenge));
+        plus.on("click", e => ChallengeController.handleClickPlus(challenge));
+    }
+
     /**
      * Start edit mode.
      * Swap all the fields with text boxes, add a save button & listen for tab & enter keys.
@@ -137,26 +154,26 @@ export class ChallengeRenderer {
      *
      * On submit, save the data to storage, clear and reload the entire challenge list.
      */
-         public static handleEditButtonClick(challenge: ChallengeEntry) {
-            let clickedElem = $(`#${challenge.id}`);
-            let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
-    
-            cloneElem.find("div.edit-checkmark").on("click", e => ChallengeController.handleEditSave(e, challenge));
-            cloneElem.find("div.edit-delete").on("click", e => ChallengeController.handleEditDelete(e, challenge));
-            // Setup the ability to press enter and save the challenge
-            cloneElem.on("keydown", e => ChallengeController.handleKeyboardEvent(e, challenge));
-    
-            // Make the selector have the correct formatting
-            cloneElem.find("select.edit-mode").attr("data-chosen", `${MODES[challenge.mode]}`).val(MODES[challenge.mode]);
-    
-            // Set the span inputs to have the existing data, if it exists
-            cloneElem.find("span[for-data='title']").text(challenge.text);
-            cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
-            cloneElem.find("span[for-data='max']").text(challenge.max.toString());
-            cloneElem.find("span[for-data='value']").text(challenge.value.toString());
-    
-            // Drop the display html and replace it with our new edit layout
-            clickedElem.empty();
-            clickedElem.append(cloneElem);
-        }
+        public static handleEditButtonClick(challenge: ChallengeEntry) {
+        let clickedElem = $(`#${challenge.id}`);
+        let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
+
+        cloneElem.find("div.edit-checkmark").on("click", e => ChallengeController.handleEditSave(e, challenge));
+        cloneElem.find("div.edit-delete").on("click", e => ChallengeController.handleEditDelete(e, challenge));
+        // Setup the ability to press enter and save the challenge
+        cloneElem.on("keydown", e => ChallengeController.handleKeyboardEvent(e, challenge));
+
+        // Make the selector have the correct formatting
+        cloneElem.find("select.edit-mode").attr("data-chosen", `${MODES[challenge.mode]}`).val(MODES[challenge.mode]);
+
+        // Set the span inputs to have the existing data, if it exists
+        cloneElem.find("span[for-data='title']").text(challenge.text);
+        cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
+        cloneElem.find("span[for-data='max']").text(challenge.max.toString());
+        cloneElem.find("span[for-data='value']").text(challenge.value.toString());
+
+        // Drop the display html and replace it with our new edit layout
+        clickedElem.empty();
+        clickedElem.append(cloneElem);
+    }
 }

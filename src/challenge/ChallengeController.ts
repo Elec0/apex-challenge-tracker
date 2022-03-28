@@ -67,7 +67,14 @@ export class ChallengeController extends Navigation {
     }
 
     public static loadChallenges() {
-        StorageHelper.getDataToRenderFilter(this.currentFilter).forEach(challenge => {
+        let sort: boolean = true;
+        let dataToRender = StorageHelper.getDataToRenderFilter(this.currentFilter);
+
+        // See if we want to order the challenges by value
+        if (sort)
+            dataToRender = dataToRender.sort((e1, e2) => e2.value - e1.value);
+
+        dataToRender.forEach(challenge => {
             ChallengeRenderer.render(challenge);
         });
 
@@ -165,6 +172,17 @@ export class ChallengeController extends Navigation {
             // Intercept the command, don't put a newline
             return false;
         }
+    }
+
+    public static handleClickMinus(challenge: ChallengeEntry) {
+        challenge.progress = challenge.progress - 1;
+        StorageHelper.saveChallenge(challenge);
+        ChallengeController.reloadChallenge(challenge);
+    }
+    public static handleClickPlus(challenge: ChallengeEntry) {
+        challenge.progress = challenge.progress + 1;
+        StorageHelper.saveChallenge(challenge);
+        ChallengeController.reloadChallenge(challenge);
     }
 
     /** Calls {@link ChallengeRenderer.render} with `renderMode`=`2` */

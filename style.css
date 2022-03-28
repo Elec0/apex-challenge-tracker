@@ -252,7 +252,7 @@ div.nav-bar-selected, .nav-bar:hover {
 
 .challenge-bar-interior {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
     width: 95%;
     min-height: 1.5em;
     background-color: rgba(27, 27, 27, 0.8);
@@ -284,11 +284,71 @@ div.nav-bar-selected, .nav-bar:hover {
     height: 100%;
     padding: 0.5% 1% 0.5% 1%;
     background-color: rgb(140, 65, 55);
+    z-index: -1;
 }
 
-/* Make the progress bar look like it's slanted */
-.bar-angle {
-    clip-path: polygon(0 0, calc(100% - 1.5em) 0, 100% 100%, 0% 100%);
+.challenge-bar-progress-text {
+    display: inline-flex;
+    width: 2em;
+    height: 100%;
+    align-items: center;
+    padding-left: 0.2em;
+}
+
+.challenge-bar-progress-stepper {
+    display: inline-flex;
+    align-content: center;
+    /* 3.5em is the size of the angle on the bar */
+    width: calc(100% - 4em);
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 100ms;
+}
+
+.challenge-bar-progress-stepper:hover {
+    opacity: 1;
+}
+
+.dot {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+    background-color: transparent;
+}
+
+.dot.plus {
+    background: no-repeat url("res/images/plus.png") 0% / 100%;
+    pointer-events: none;
+}
+.dot.minus {
+    background: no-repeat url("res/images/minus.png") 0% / 100%;
+    pointer-events: none;
+}
+.dot-half:hover .dot.minus {
+    background: no-repeat url("res/images/minus-hover.png") 0% / 100%;
+    filter: brightness(1.5);
+}
+.dot-half:hover .dot.plus {
+    background: no-repeat url("res/images/plus-hover.png") 0% / 100%;
+    filter: brightness(1.5);
+}
+.dot-half {
+    display: inline-flex;
+    flex-grow: 0.5;
+    cursor: pointer;
+}
+.dot-half:nth-child(2) {
+    justify-content: flex-end;
+}
+
+.dot > img {
+    opacity: 0;
+    height: 1em;
 }
 
 .keyword {
@@ -343,6 +403,9 @@ div.nav-bar-selected, .nav-bar:hover {
 }
 /* Make the icon visible when hovering on the entire div */
 .challenge-bar:hover .edit-icon {
+    opacity: 1;
+}
+.challenge-bar:hover .dot-icon {
     opacity: 1;
 }
 .challenge-editor {
@@ -506,7 +569,7 @@ div.entries {
 .path-entry span {
     margin-top: 0.5em;
 }
-.path-entry img {
+.path-entry img, .image-crisp {
     image-rendering: -moz-crisp-edges; /* Firefox */
     image-rendering: -o-crisp-edges; /* Opera */
     image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
@@ -517,3 +580,13 @@ div.entries {
     font-weight: bolder;
 }
 /* #endregion Optimal Path */
+
+/* #region Widgets */
+/* Make the progress bar look like it's slanted */
+.bar-angle {
+    clip-path: polygon(0 0, calc(100% - 1.5em) 0, 100% 100%, 0% 100%);
+}
+
+
+
+/* #endregion */
