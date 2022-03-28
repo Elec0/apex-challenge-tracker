@@ -289,7 +289,7 @@ div.nav-bar-selected, .nav-bar:hover {
 
 .challenge-bar-progress-text {
     display: inline-flex;
-    width: 2em;
+    /* width: 2em; */
     height: 100%;
     align-items: center;
     padding-left: 0.2em;
@@ -299,10 +299,15 @@ div.nav-bar-selected, .nav-bar:hover {
     display: inline-flex;
     align-content: center;
     /* 3.5em is the size of the angle on the bar */
-    width: calc(100% - 4em);
+    /* width: calc(100% - 5em); */
+    /* Use this to allow the inside text to grow */
+    flex-grow: 1;
     height: 100%;
+    margin-left: 1em;
+    margin-right: 2em;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
     opacity: 0;
     transition-property: opacity;
     transition-duration: 100ms;
@@ -310,6 +315,12 @@ div.nav-bar-selected, .nav-bar:hover {
 
 .challenge-bar-progress-stepper:hover {
     opacity: 1;
+}
+
+.stepper-divide {
+    width: 1.5em;
+    height: 100%;
+    background-color: white;
 }
 
 .dot {
@@ -322,19 +333,19 @@ div.nav-bar-selected, .nav-bar:hover {
 }
 
 .dot.plus {
-    background: no-repeat url("res/images/plus.png") 0% / 100%;
+    background: no-repeat url("res/images/plus.svg") 0% / 100%;
     pointer-events: none;
 }
 .dot.minus {
-    background: no-repeat url("res/images/minus.png") 0% / 100%;
+    background: no-repeat url("res/images/minus.svg") 0% / 100%;
     pointer-events: none;
 }
 .dot-half:hover .dot.minus {
-    background: no-repeat url("res/images/minus-hover.png") 0% / 100%;
+    background: no-repeat url("res/images/minus-hover.svg") 0% / 100%;
     filter: brightness(1.5);
 }
 .dot-half:hover .dot.plus {
-    background: no-repeat url("res/images/plus-hover.png") 0% / 100%;
+    background: no-repeat url("res/images/plus-hover.svg") 0% / 100%;
     filter: brightness(1.5);
 }
 .dot-half {
@@ -342,7 +353,7 @@ div.nav-bar-selected, .nav-bar:hover {
     flex-grow: 0.5;
     cursor: pointer;
 }
-.dot-half:nth-child(2) {
+.dot-half:last-child {
     justify-content: flex-end;
 }
 

@@ -24,7 +24,6 @@ import { ChallengeController } from "./ChallengeController";
         </div>
     </div>
 
-    TODO: Add easy increase/decrease of challenges
     TODO: Handle shorter windows, currently in editing it jumps to next line
     
     TODO: Customize interval?
@@ -52,12 +51,17 @@ export class ChallengeRenderer {
         $("<div>").addClass("challenge-bar-interior bar-angle")
             .append($("<div>").addClass("challenge-bar-progress bar-angle").attr("style", `width:${Math.floor((challenge.progress / challenge.max) * 100)}%`))
             .append($("<div>").addClass("challenge-bar-progress-text")
-                .append($("<span>").text(`${challenge.progress}/${challenge.max}`)))
+                .append($("<span>").text(`${challenge.progress}/${challenge.max}`))
+            )
             .append($("<div>").addClass("challenge-bar-progress-stepper")
                 .append($("<div>").addClass("dot-half")
-                    .append($("<div>").addClass("dot minus").html("<img src='res/images/minus.png'/>")))
+                    .append($("<div>").addClass("dot minus").html("<img src='res/images/minus.svg'/>"))
+                )
+                .append($("<div>").addClass("stepper-divide tab-angle"))
                 .append($("<div>").addClass("dot-half")
-                    .append($("<div>").addClass("dot plus").html("<img src='res/images/plus.png'/>"))))
+                    .append($("<div>").addClass("dot plus").html("<img src='res/images/plus.svg'/>"))
+                )
+            )
             .appendTo(barData);
 
         newBar.append(this.starify(challenge));

@@ -175,14 +175,44 @@ export class ChallengeController extends Navigation {
     }
 
     public static handleClickMinus(challenge: ChallengeEntry) {
-        challenge.progress = challenge.progress - 1;
+        challenge.progress = challenge.progress - ChallengeController.getIntervalValue(challenge.max);
         StorageHelper.saveChallenge(challenge);
         ChallengeController.reloadChallenge(challenge);
     }
     public static handleClickPlus(challenge: ChallengeEntry) {
-        challenge.progress = challenge.progress + 1;
+        challenge.progress = challenge.progress + ChallengeController.getIntervalValue(challenge.max);
         StorageHelper.saveChallenge(challenge);
         ChallengeController.reloadChallenge(challenge);
+
+        for (let i of [1, 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 7000, 10000, 100000000])
+            console.debug(ChallengeController.getIntervalValue(i));
+    }
+
+    /**
+     * Not all challenges should have the same interval. +1 on a 5000 damage 
+     * one makes no sense and is useless.
+     * 
+     * max 5: interval      = 1
+     * max 100: interval    = 10
+     * max 1000: interval   = 100
+     * max 5000: interval   = 500
+     * -- Most challenges will fall into the previous zones --
+     * max 10000: interval  = 1000
+     */
+    // public static getIntervalValue(challenge: ChallengeEntry): number {
+    public static getIntervalValue(max: number): number {
+        // Get the order of magnitude of the challenge
+        const oom: number = Math.trunc(Math.log10(max));
+
+        // Basic level is one order of magnitude lower than the max value is
+        let ret = Math.pow(10, Math.max(oom, 1) - 1);
+        
+        if (oom == 2 && max > 500)
+            ret = 100;
+        else if (oom == 3 && max >= 5000)
+            ret = 500;
+        
+        return ret;
     }
 
     /** Calls {@link ChallengeRenderer.render} with `renderMode`=`2` */

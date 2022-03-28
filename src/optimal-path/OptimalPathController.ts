@@ -1,4 +1,4 @@
-import { KEYWORDS, LEGENDS, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
+import { KEYWORDS, LEGENDS, MODES, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
 import { Navigation } from "../Navigation";
 import $, { Cash } from "cash-dom";
 import { StorageHelper } from "../storage-helper";
@@ -8,14 +8,17 @@ import { NavigationController } from "../NavigationController";
 import { ChallengeController } from "../challenge/ChallengeController";
 
 
+type Count = Array<[string, number]>;
+
 /**
  * TODO: Weigh challenges closer to completion higher?
  */
 export class OptimalPathController extends Navigation {
+   
     private keywordCount: Map<string, number> = new Map();
     /** List of keywords present in a given challenge */
     private challengeKeywordMap: Map<ChallengeEntry, Array<string>> = new Map();
-
+    
     navigateTo(): void {
         if (!this.isShowing) {
             super.navigateTo();
@@ -37,9 +40,11 @@ export class OptimalPathController extends Navigation {
     }
 
     private parseResults(): void {
-        let [legendResults, weaponTypeResults, weaponResults] = this.getCountedResults();
-        console.debug(legendResults, weaponTypeResults, weaponResults);
+        // Get the actual results
+        let [legendResults, weaponTypeResults, 
+            weaponResults, modeResults] = this.getCountedResults();
 
+        // Create the outline for our legends, since it's slightly different than the others
         $("#path-content").append(this.makeTitleElem("Legends"));
         let curSection = $("<div>").addClass("entries");
         legendResults.forEach(e => {
@@ -54,6 +59,9 @@ export class OptimalPathController extends Navigation {
         });
         $("#path-content").append(curSection);
 
+        $("#path-content").append(this.makeTitleElem("Modes"));        
+        $("#path-content").append(this.parseSpecificResults(modeResults, true));
+
         $("#path-content").append(this.makeTitleElem("Weapon Types"));        
         $("#path-content").append(this.parseSpecificResults(weaponTypeResults));
 
@@ -61,11 +69,12 @@ export class OptimalPathController extends Navigation {
         $("#path-content").append(this.parseSpecificResults(weaponResults));
     }
 
-    private parseSpecificResults(arr: Array<[string, number]>): Cash {
+    /** Pull out duplicate code for creating these two tables. */
+    private parseSpecificResults(arr: Array<[string, number]>, mode: boolean = false): Cash {
         let curSection = $("<div>").addClass("entries");
         arr.forEach(e => {
             if (e[1] > -1) {
-                let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
+                let newElem = $("<div>").attr("class", "path-entry").attr(`${mode ? "mode-" :""}name`, e[0]);
                 newElem.append($("<span>").text(`${e[0]}`).addClass("legend-name"));
                 newElem.append($("<span>").text(`${e[1]}`));
                 curSection.append(newElem);
@@ -79,13 +88,16 @@ export class OptimalPathController extends Navigation {
             .append($("<h2>").addClass("title-break").text(text));
     }
 
-    private getCountedResults(): [ Array<[string, number]>, 
-                                    Array<[string, number]>, 
-                                    Array<[string, number]> ] {
-        let legendCount: Array<[string, number]> = new Array();
-        let weaponCount: Array<[string, number]> = new Array();
-        let weaponTypeCount: Array<[string, number]> = new Array();
-
+    private getCountedResults(): Count[] {
+        let legendCount: Count = new Array();
+        let weaponCount: Count = new Array();
+        let weaponTypeCount: Count = new Array();
+        let modeCount: Count = new Array();
+        for (let i of [0, 1, 2, 3])
+            modeCount.push([MODES[i], this.keywordCount.get(`Mode${i}`)!]);
+        
+        // We have the complete list of keywords and counts
+        // turn that into 3 separate lists that we can sort and return.
         for (let [key, value] of this.keywordCount) {
             if (LEGENDS.includes(key)) {
                 legendCount.push([key, value]);
@@ -99,10 +111,13 @@ export class OptimalPathController extends Navigation {
         }
 
         // Now sort it, descending order
-        let legendCountSorted = legendCount.sort((n1, n2) => n2[1] - n1[1]);
-        let weaponTypeCountSorted = weaponTypeCount.sort((n1, n2) => n2[1] - n1[1]);
-        let weaponCountSorted = weaponCount.sort((n1, n2) => n2[1] - n1[1]);
-        return [legendCountSorted, weaponTypeCountSorted, weaponCountSorted];
+        let sorter = (n1: [string, number], n2: [string, number]): number => n2[1] - n1[1];
+        
+        let legendCountSorted       = legendCount.sort(sorter);
+        let weaponTypeCountSorted   = weaponTypeCount.sort(sorter);
+        let weaponCountSorted       = weaponCount.sort(sorter);
+        let modeCountSorted         = modeCount.sort(sorter);
+        return [legendCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted];
     }
 
     /**
@@ -110,8 +125,16 @@ export class OptimalPathController extends Navigation {
      * This is currently k*n, should probably refactor
      */
     private beginCalculation(): void {
-        // this.keywordCount = OptimalPathController.buildConstKeywordLists();
         this.parseKeywords();
+        // If this is our first loop through the challenges, we're going to count the
+        // mode points, but only the first one
+        let firstLoop: boolean = true;
+        // These match up to the modes enum
+        this.keywordCount.set("Mode0", 0);
+        this.keywordCount.set("Mode1", 0);
+        this.keywordCount.set("Mode2", 0);
+        this.keywordCount.set("Mode3", 0);
+        
         // Start by going through each challenge's keywords, incrementing a counter when finding one
         KEYWORDS.forEach(element => {
             // Init the map
@@ -121,7 +144,7 @@ export class OptimalPathController extends Navigation {
                 // Shouldn't process anything if the challenge is done
                 if (value.isCompleted())
                     continue;
-
+                
                 if (value.text.indexOf(element) != -1) {
                     let cA: Array<string> = this.challengeKeywordMap.get(value) ?? new Array();
                     cA.push(element);
@@ -130,29 +153,32 @@ export class OptimalPathController extends Navigation {
                     // Add challenge's star value to tally
                     this.keywordCount.set(element, (this.keywordCount.get(element) ?? 0) + value.value);
                 }
+
+                if (firstLoop) {
+                    if (!Number.isInteger(value.mode)) {
+                        console.warn("Got a mode that wasn't an integer!", value);
+                        continue;
+                    }
+                    // This value for sure exists, we just set it
+                    this.keywordCount.set(`Mode${value.mode}`, this.keywordCount.get(`Mode${value.mode}`)! + value.value);
+                }
             }
+            firstLoop = false; // No double counting
         });
     }
 
     private parseKeywords(): void {
     }
 
-    public static buildConstKeywordLists(): Map<string, number> {
-        let result: Map<string, number> = new Map();
-        // Init the empty map with counts
-        KEYWORDS.forEach(element => {
-            result.set(element, 0);
-        });
-        return result;
-    }
-
+    /** When a path element is clicked, redirect to the main page w/ the filter applied. */
     public handleEntryClick(event: Event) {
         if (event.target == null) {
             console.error("handleEntryClick event.target is null!");
             return;
         }
-        let filterName: string = $(<Element>event.currentTarget).attr("name") ?? "";
-        if (filterName == "") {
+        let filterName: string = $(<Element>event.currentTarget).attr("name") ?? 
+                                 "," + ($(<Element>event.currentTarget).attr("mode-name") ?? "");
+        if (filterName == "" || filterName == ",") {
             console.error("Something went wrong with the click, filter name was not found.");
             return;
         }
