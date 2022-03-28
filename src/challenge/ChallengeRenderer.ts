@@ -1,9 +1,7 @@
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "./ChallengeEntry";
 import { KEYWORDS } from "../constants";
-import { StorageHelper } from "../storage-helper";
-import { escapeHtml } from "../utils";
-import { MODES, ModeStrings } from "../constants";
+import { MODES } from "../constants";
 import { ChallengeController } from "./ChallengeController";
 
 
@@ -24,9 +22,12 @@ import { ChallengeController } from "./ChallengeController";
         </div>
     </div>
 
+    TODO: Add Help/Tutorial
     TODO: Handle shorter windows, currently in editing it jumps to next line
-    
+
     TODO: Customize interval?
+    TODO: Weigh challenges closer to completion higher?
+    TODO: Switch to using actual input elements, and not divs and spans, for accessibility
 */
 export class ChallengeRenderer {
     /**
@@ -171,7 +172,8 @@ export class ChallengeRenderer {
         cloneElem.find("select.edit-mode").attr("data-chosen", `${MODES[challenge.mode]}`).val(MODES[challenge.mode]);
 
         // Set the span inputs to have the existing data, if it exists
-        cloneElem.find("span[for-data='title']").text(challenge.text);
+        let title = cloneElem.find("span[for-data='title']");
+        title.text(challenge.text);
         cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
         cloneElem.find("span[for-data='max']").text(challenge.max.toString());
         cloneElem.find("span[for-data='value']").text(challenge.value.toString());
@@ -179,5 +181,8 @@ export class ChallengeRenderer {
         // Drop the display html and replace it with our new edit layout
         clickedElem.empty();
         clickedElem.append(cloneElem);
+
+        if (title[0] != undefined)
+            title[0].focus();
     }
 }

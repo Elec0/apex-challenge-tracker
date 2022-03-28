@@ -1,4 +1,3 @@
-import { ChallengeController } from "./challenge/ChallengeController";
 import { ChallengeEntry } from "./challenge/ChallengeEntry";
 import { KEY_WEEK_DATA, KEY_CHALLENGES, MODES } from "./constants";
 

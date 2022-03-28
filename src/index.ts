@@ -1,11 +1,7 @@
-import {storageAvailable, escapeHtml} from "./utils";
-import $, { Cash } from "cash-dom";
-import { ChallengeRenderer } from "./challenge/ChallengeRenderer";
-import { ChallengeEntry } from "./challenge/ChallengeEntry";
+import { storageAvailable } from "./utils";
+import $ from "cash-dom";
 import { NavigationController } from "./NavigationController";
 import { StorageHelper } from "./storage-helper";
-import { Navigation } from "./Navigation";
-// import css from "./../style.css";
 
 $(function () {
     if(!storageAvailable("localStorage")) {

@@ -11,7 +11,7 @@ import { ChallengeController } from "../challenge/ChallengeController";
 type Count = Array<[string, number]>;
 
 /**
- * TODO: Weigh challenges closer to completion higher?
+ * 
  */
 export class OptimalPathController extends Navigation {
    

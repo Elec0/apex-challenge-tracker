@@ -1,5 +1,5 @@
 import { ChallengeRenderer } from "./ChallengeRenderer";
-import { ModeStrings, MODES } from "../constants";
+import { MODES } from "../constants";
 import { StorageHelper } from "../storage-helper";
 
 /**

@@ -5,7 +5,7 @@ import { escapeHtml } from "../utils";
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { Navigation } from "../Navigation";
 import challengeHtml from "./../../content/challenge.html";
-import { MODES, ModeStrings, TAB_CHALLENGES } from "../constants";
+import { MODES } from "../constants";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
@@ -19,6 +19,7 @@ export class ChallengeController extends Navigation {
             ChallengeController.loadChallenges();
             ChallengeController.createWeekButtons();
             ChallengeController.setupFilterButtons();
+            ChallengeController.setupHotkeys();
         }
     }
     navigateAway(): void {
@@ -27,6 +28,7 @@ export class ChallengeController extends Navigation {
         $("#left-bar").empty();
         $("#challenge-outer-area").remove();
         $("#challenge-editor").remove();
+        ChallengeController.teardownHotkeys();
         // Clear the filter when we leave, since if it's set we automatically display it
         ChallengeController.currentFilter = "";
     }
@@ -78,7 +80,8 @@ export class ChallengeController extends Navigation {
             ChallengeRenderer.render(challenge);
         });
 
-        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur tab-button").attr("id", "add-challenge")
+        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur tab-button")
+            .attr("id", "add-challenge").attr("tabindex", "0")
             .append($("<span>").text("New Challenge"));
         btnAdd.on("click", e => this.handleAddChallenge(e));
         $("#challenge-content-area").append(btnAdd);
@@ -100,6 +103,29 @@ export class ChallengeController extends Navigation {
             spanFilter.text(this.currentFilter);
             $("#search-icon").trigger("click");
         }
+    }
+
+    /** 
+     * Create the shortcut keys
+     * 
+     * Create new challenge: n
+     */
+    public static setupHotkeys() {
+        $("body").on("keyup", (e: KeyboardEvent) => {
+            if (e.target == undefined)
+                return;
+            if ((<HTMLElement>e.target).nodeName == "BODY") {
+                if (e.key === "n") {
+                    console.debug("Add new challenge with shortcut");
+                    ChallengeController.handleAddChallenge(null);
+                }
+            }
+        });
+    }
+
+    /** Remove all shortcut keys */
+    public static teardownHotkeys() {
+        $("body").off("keyup");
     }
 
     public static createWeekButtons() {
@@ -147,13 +173,14 @@ export class ChallengeController extends Navigation {
     /** Clicking the search magnifying icon. Make it expand with the class. */
     public static handleClickSearch(event: Event) {
         if ($(this).hasClass("selected")) {
-            $(this).removeClass("selected");
-            $("#challenge-filter-area").removeClass("selected");
+            $("span[for-data='filter']").removeAttr("contenteditable");
         }
         else {
-            $(this).addClass("selected");
-            $("#challenge-filter-area").addClass("selected");    
+            $("span[for-data='filter']").attr("contenteditable", "true");
         }
+
+        $(this).toggleClass("selected");
+        $("#challenge-filter-area").toggleClass("selected");        
     }
 
     /** Handling when the filter button is clicked. Reload challenges with filter applied */
@@ -175,17 +202,26 @@ export class ChallengeController extends Navigation {
     }
 
     public static handleClickMinus(challenge: ChallengeEntry) {
+        if (challenge.progress == 0)
+            return;
+
         challenge.progress = challenge.progress - ChallengeController.getIntervalValue(challenge.max);
+        // No underflowing
+        if (challenge.progress < 0)
+            challenge.progress = 0;
         StorageHelper.saveChallenge(challenge);
         ChallengeController.reloadChallenge(challenge);
     }
     public static handleClickPlus(challenge: ChallengeEntry) {
+        if (challenge.progress == challenge.max)
+            return;
+
         challenge.progress = challenge.progress + ChallengeController.getIntervalValue(challenge.max);
+        // No overflowing
+        if (challenge.progress > challenge.max)
+            challenge.progress = challenge.max;
         StorageHelper.saveChallenge(challenge);
         ChallengeController.reloadChallenge(challenge);
-
-        for (let i of [1, 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 7000, 10000, 100000000])
-            console.debug(ChallengeController.getIntervalValue(i));
     }
 
     /**
