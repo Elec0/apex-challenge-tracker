@@ -5,7 +5,8 @@ import { escapeHtml } from "../utils";
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { Navigation } from "../Navigation";
 import challengeHtml from "./../../content/challenge.html";
-import { MODES } from "../constants";
+import helpHtml from "./../../content/help.html";
+import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES} from "../constants";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
@@ -131,6 +132,21 @@ export class ChallengeController extends Navigation {
     public static createWeekButtons() {
         // Create the week buttons
         const leftBar = $("#left-bar");
+
+        let helpBtn = $("<div>")
+            .addClass("nav-bar nav-blur")
+            .html("<span id='help-caret'>&gt;</span> Help")
+        helpBtn.on("click", ChallengeController.handleClickHelp);
+        leftBar.append(helpBtn);
+        leftBar.append(helpHtml);
+
+        let keywordTemplate = (name: string, arr: string[]) => `<h4>${name}</h4><span>${arr.join("<span class='comma'>,</span> ")}</span>`;
+        // const keywordTemplate: string = `<h4>Legends</h4><span>${LEGENDS.join("<span class='comma'>,</span> ")}</span>`;
+        $("#help-keywords")
+            .append($("<div class='keyword'>").html(keywordTemplate("Legends", LEGENDS)))
+            .append($("<div class='keyword'>").html(keywordTemplate("Weapon Types", WEAPON_TYPES)))
+            .append($("<div class='keyword'>").html(keywordTemplate("Weapons", WEAPON_NAMES)));
+
         for (let i = 0; i < StorageHelper.weekData.length + 1; ++i) {
             let newBtn = $("<div>")
                 .addClass("nav-bar nav-blur")
@@ -180,7 +196,7 @@ export class ChallengeController extends Navigation {
         }
 
         $(this).toggleClass("selected");
-        $("#challenge-filter-area").toggleClass("selected");        
+        $("#challenge-filter-area").toggleClass("selected");
     }
 
     /** Handling when the filter button is clicked. Reload challenges with filter applied */
@@ -249,6 +265,19 @@ export class ChallengeController extends Navigation {
             ret = 500;
         
         return ret;
+    }
+
+    public static handleClickHelp(event: Event) {
+        if ($(this).hasClass("nav-bar-selected")) {
+            // Deselect
+
+        }
+        else {
+        }
+        $(this).toggleClass("nav-bar-selected");
+        $("#help-caret").toggleClass("selected");
+        $("#help-content").toggleClass("selected");
+        console.log(this);
     }
 
     /** Calls {@link ChallengeRenderer.render} with `renderMode`=`2` */
