@@ -6,7 +6,7 @@ import { ChallengeRenderer } from "./ChallengeRenderer";
 import { Navigation } from "../Navigation";
 import challengeHtml from "./../../content/challenge.html";
 import helpHtml from "./../../content/help.html";
-import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES} from "../constants";
+import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX} from "../constants";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
@@ -67,6 +67,24 @@ export class ChallengeController extends Navigation {
         if (event.key == "Enter") {
             ChallengeController.handleEditSave(event, challenge);
         }
+    }
+    
+    /** When text is entered into the challenge title during edit mode */
+    public static handleTypeChallenge(event: Event, challenge: ChallengeEntry) {
+        if (event.target == undefined)
+            return;
+        let maxElem = $(`#${challenge.id}`).find("span[for-data='max']");
+
+        // If the user has entered something, don't try and overwrite it
+        if (maxElem.attr("data-entered") == "true")
+            return;
+
+        let curElem: HTMLElement = (<HTMLElement>event.target);
+        if (curElem.textContent == null || curElem.textContent.match(NUMBER_REGEX) == null) 
+            return;
+        let m: RegExpMatchArray = curElem.textContent.match(NUMBER_REGEX)!;
+
+        maxElem.text(m[0]);
     }
 
     public static loadChallenges() {

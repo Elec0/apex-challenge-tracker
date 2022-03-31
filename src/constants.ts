@@ -13,6 +13,8 @@ export const WEAPON_NAMES: string[] = ["HAVOC", "VK-47 Flatline", "Hemlock", "R-
 /** All weapon types */
 export const WEAPON_TYPES: string[] = ["Assault rifle", "Sub machine gun", "LMG", "Marksman", "Sniper rifle", "Shotgun", "Pistol"]
 
+/** Regex to apply to keywordify numbers */
+export const NUMBER_REGEX: RegExp = /\d+/;
 /** Mode abbreviations and names. */
 export enum MODES {
     All,

@@ -1,6 +1,6 @@
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "./ChallengeEntry";
-import { KEYWORDS } from "../constants";
+import { KEYWORDS, NUMBER_REGEX } from "../constants";
 import { MODES } from "../constants";
 import { ChallengeController } from "./ChallengeController";
 
@@ -97,6 +97,13 @@ export class ChallengeRenderer {
                 challengeText = `${challengeText.substring(0, index)}<span class='keyword'>${elem}</span>${challengeText.substring(index + elem.length)}`;
             }
         });
+
+        let m: RegExpMatchArray | null = challengeText.match(NUMBER_REGEX);
+        if (m != null && m.index != null) {
+            let num: string = m[0];
+            challengeText = `${challengeText.substring(0, m.index)}<span class='keyword'>${num}</span>${challengeText.substring(m.index + num.length)}`;
+        }
+            
         return $("<span>").html(challengeText);
     }
 
@@ -174,8 +181,12 @@ export class ChallengeRenderer {
         // Set the span inputs to have the existing data, if it exists
         let title = cloneElem.find("span[for-data='title']");
         title.text(challenge.text);
+        title.on("input", e => ChallengeController.handleTypeChallenge(e, challenge));
+
         cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
-        cloneElem.find("span[for-data='max']").text(challenge.max.toString());
+        cloneElem.find("span[for-data='max']").text(challenge.max.toString())
+            .attr("data-entered", String(challenge.max != 1)) // Keep track if the user enters data here
+            .on("input", e => { $(e.target).attr("data-entered", "true"); });
         cloneElem.find("span[for-data='value']").text(challenge.value.toString());
 
         // Drop the display html and replace it with our new edit layout
