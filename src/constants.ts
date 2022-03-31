@@ -11,7 +11,8 @@ export const WEAPON_NAMES: string[] = ["HAVOC", "VK-47 Flatline", "Hemlock", "R-
                                        "RE-45", "P2020", "Wingman"];
 
 /** All weapon types */
-export const WEAPON_TYPES: string[] = ["Assault rifle", "Sub machine gun", "LMG", "Marksman", "Sniper rifle", "Shotgun", "Pistol"]
+export const WEAPON_TYPES: string[] = ["assault rifles", "sub machine guns", "light machine guns", 
+    "marksman weapons", "sniper rifles", "shotguns", "pistols"];
 
 /** Regex to apply to keywordify numbers */
 export const NUMBER_REGEX: RegExp = /\d+/;
