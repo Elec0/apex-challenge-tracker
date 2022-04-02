@@ -65,7 +65,7 @@ export class OptimalPathController extends Navigation {
         $("#path-content").append(this.makeTitleElem("Weapon Types"));        
         $("#path-content").append(this.parseSpecificResults(weaponTypeResults));
 
-        $("#path-content").append(this.makeTitleElem("Weapon"));
+        $("#path-content").append(this.makeTitleElem("Weapons"));
         $("#path-content").append(this.parseSpecificResults(weaponResults));
     }
 

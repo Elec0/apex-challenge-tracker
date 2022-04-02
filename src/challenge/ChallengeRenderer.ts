@@ -21,13 +21,6 @@ import { ChallengeController } from "./ChallengeController";
             <img src="res/images/star-five.png" class="star-five"></img>
         </div>
     </div>
-
-    TODO: Add Help/Tutorial
-    TODO: Handle shorter windows, currently in editing it jumps to next line
-
-    TODO: Customize interval?
-    TODO: Weigh challenges closer to completion higher?
-    TODO: Switch to using actual input elements, and not divs and spans, for accessibility
 */
 export class ChallengeRenderer {
     /**
