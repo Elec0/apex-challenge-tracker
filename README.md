@@ -19,3 +19,8 @@ npm run dev
 My website can't run Node, so I wrote it such that it runs without that. It's a purely frontend site that uses the `localStorage` part of the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API)
 
 I tried to write it in some kind of not-stupid way, but I haven't done much with web recently, so most of this is new to me.
+
+## Credits
+* Apex Background: [xGhostx](https://wall.alphacoders.com/big.php?i=992033)  
+* Legend icons: [EA's website](https://www.ea.com/games/apex-legends/about/characters)
+* Misc icons: idk some random websites + I made some
