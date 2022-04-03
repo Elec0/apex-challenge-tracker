@@ -34,6 +34,9 @@ export class ChallengeRenderer {
         console.debug("Render", challenge);
 
         let newBar = $("<div>").addClass("challenge-bar challenge-bar-blur").attr("id", challenge.id);
+        if (challenge.isCompleted())
+            newBar.addClass("challenge-bar-completed");
+
         let barData = $("<div>").addClass("challenge-bar-data").appendTo(newBar);
         // Create our title element
         $("<div>").addClass("challenge-bar-title")
@@ -42,10 +45,16 @@ export class ChallengeRenderer {
             .appendTo(barData);
 
         // Create our progress bar
+        let barText: string;
+        if (challenge.isCompleted())
+            barText = "Completed";
+        else
+            barText = `${challenge.progress}/${challenge.max}`;
+            
         $("<div>").addClass("challenge-bar-interior bar-angle")
             .append($("<div>").addClass("challenge-bar-progress bar-angle").attr("style", `width:${Math.floor((challenge.progress / challenge.max) * 100)}%`))
             .append($("<div>").addClass("challenge-bar-progress-text")
-                .append($("<span>").text(`${challenge.progress}/${challenge.max}`))
+                .append($("<span>").text(barText))
             )
             .append($("<div>").addClass("challenge-bar-progress-stepper")
                 .append($("<div>").addClass("dot-half")
