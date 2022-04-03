@@ -35,6 +35,8 @@ export const TAB_OPTIMAL_PATH: string = "Optimal-Path";
 /** ID correspondig to the tab for Settings */
 export const TAB_SETTINGS: string = "Settings";
 
+/** Total number of week data to store. There's 12 weeks + a daily, so 13 */
+export const WEEKS_NUM: number = 13;
 // --- JSON Keys ---
 export const KEY_CHALLENGES: string = "allChallenges";
 export const KEY_WEEK_DATA: string = "weekData";

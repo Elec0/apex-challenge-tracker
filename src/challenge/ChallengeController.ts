@@ -5,8 +5,8 @@ import { escapeHtml } from "../utils";
 import { ChallengeRenderer } from "./ChallengeRenderer";
 import { Navigation } from "../Navigation";
 import challengeHtml from "./../../content/challenge.html";
-import helpHtml from "./../../content/help.html";
-import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX} from "../constants";
+import { MODES, NUMBER_REGEX } from "../constants";
+import { LeftBarRenderer } from "./LeftBarRenderer";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
@@ -18,7 +18,7 @@ export class ChallengeController extends Navigation {
             $("#root-container").append(challengeHtml);
             $("#left-bar").removeAttr("style");
             ChallengeController.loadChallenges();
-            ChallengeController.createWeekButtons();
+            LeftBarRenderer.createWeekButtons();
             ChallengeController.setupFilterButtons();
             ChallengeController.setupHotkeys();
         }
@@ -37,11 +37,11 @@ export class ChallengeController extends Navigation {
     /** Retrieve the input values and save them */
     public static handleEditSave(event: any, challenge: ChallengeEntry) {
         let cloneElem = $(`#${challenge.id}`);
-        let modeSelector = cloneElem.find("select.edit-mode").val();
-        let titleText = cloneElem.find("span[for-data='title']").text();
-        let progressText = cloneElem.find("span[for-data='progress']").text();
-        let maxText = cloneElem.find("span[for-data='max']").text();
-        let valueText = cloneElem.find("span[for-data='value']").text();
+        let modeSelector    = cloneElem.find("select.edit-mode").val();
+        let titleText       = cloneElem.find("span[for-data='title']").text();
+        let progressText    = cloneElem.find("span[for-data='progress']").text();
+        let maxText         = cloneElem.find("span[for-data='max']").text();
+        let valueText       = cloneElem.find("span[for-data='value']").text();
 
         challenge.text = escapeHtml(titleText as string);
         // Turning a string variable into an enum string key is strange
@@ -58,7 +58,11 @@ export class ChallengeController extends Navigation {
     /** Delete this challenge from the DOM and storage. */
     public static handleEditDelete(event: any, challenge: ChallengeEntry) {
         let elem = $(`#${challenge.id}`);
-        console.debug("Deleted challenge successfully?", StorageHelper.deleteChallenge(challenge));
+        let deleted = StorageHelper.deleteChallenge(challenge);
+        console.debug("Deleted challenge successfully?", deleted);
+        if (deleted) // No need to refresh if it was never saved
+            LeftBarRenderer.renderWeekButton();
+
         elem.remove();
     }
 
@@ -102,7 +106,7 @@ export class ChallengeController extends Navigation {
         let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur tab-button")
             .attr("id", "add-challenge").attr("tabindex", "0")
             .append($("<span>").text("New Challenge"));
-        btnAdd.on("click", e => this.handleAddChallenge(e));
+        btnAdd.on("click", e => this.handleClickAddChallenge(e));
         $("#challenge-content-area").append(btnAdd);
     }
 
@@ -136,7 +140,7 @@ export class ChallengeController extends Navigation {
             if ((<HTMLElement>e.target).nodeName == "BODY") {
                 if (e.key === "n") {
                     console.debug("Add new challenge with shortcut");
-                    ChallengeController.handleAddChallenge(null);
+                    ChallengeController.handleClickAddChallenge(null);
                 }
             }
         });
@@ -147,61 +151,11 @@ export class ChallengeController extends Navigation {
         $("body").off("keyup");
     }
 
-    public static createWeekButtons() {
-        // Create the week buttons
-        const leftBar = $("#left-bar");
-
-        let helpBtn = $("<div>")
-            .addClass("nav-bar nav-blur")
-            .html("<span id='help-caret'>&gt;</span> Help")
-        helpBtn.on("click", ChallengeController.handleClickHelp);
-        leftBar.append(helpBtn);
-        leftBar.append(helpHtml);
-
-        let keywordTemplate = (name: string, arr: string[]) => `<h4>${name}</h4><span>${arr.join("<span class='comma'>,</span> ")}</span>`;
-        // const keywordTemplate: string = `<h4>Legends</h4><span>${LEGENDS.join("<span class='comma'>,</span> ")}</span>`;
-        $("#help-keywords")
-            .append($("<div class='keyword'>").html(keywordTemplate("Legends", LEGENDS)))
-            .append($("<div class='keyword'>").html(keywordTemplate("Weapon Types", WEAPON_TYPES)))
-            .append($("<div class='keyword'>").html(keywordTemplate("Weapons", WEAPON_NAMES)));
-
-        for (let i = 0; i < StorageHelper.weekData.length + 1; ++i) {
-            let newBtn = $("<div>")
-                .addClass("nav-bar nav-blur")
-                .text(`Week ${i}`);
-            if (i == 0) {
-                newBtn.text("Daily");
-                newBtn.addClass("nav-bar-selected");
-            }
-            newBtn.on("click", e => ChallengeController.handleChangeWeek(e, i));
-            leftBar.append(newBtn);
-        }
-    }
-
     /** Add a new, blank, challenge entry and set it to edit mode. */
-    public static handleAddChallenge(event: any) {
+    public static handleClickAddChallenge(event: any) {
         let newChallenge: ChallengeEntry = new ChallengeEntry("", 0, 1, 0);
         ChallengeRenderer.render(newChallenge);
         ChallengeRenderer.handleEditButtonClick(newChallenge);
-    }
-
-    /** Change what week is being displayed by updating StorageHelper */
-    private static handleChangeWeek(event: Event, week: number) {
-        if (week < 0 || week > 12) {
-            console.error("Requested week is outside of 0-12 range.");
-            return;
-        }
-        StorageHelper.currentWeek = week;
-        // Clear our challenges
-        $("#challenge-content-area").empty();
-
-        // Unset selected class from week button, and set selected for new one
-        $(".nav-bar-selected").removeClass("nav-bar-selected");
-        if (event.target != null) {
-            $(<Element>event.target).addClass("nav-bar-selected");
-        }
-        // Reload challenges with entry method, it will handle the set week
-        ChallengeController.loadChallenges();   
     }
     
     /** Clicking the search magnifying icon. Make it expand with the class. */
@@ -298,8 +252,13 @@ export class ChallengeController extends Navigation {
         console.log(this);
     }
 
-    /** Calls {@link ChallengeRenderer.render} with `renderMode`=`2` */
+    /** 
+     * Calls {@link ChallengeRenderer.render} with `renderMode`=`2` 
+     * Also reloads the current week button
+    */
     public static reloadChallenge(challenge: ChallengeEntry) {
         ChallengeRenderer.render(challenge, 2);
+        // Good chance the week button should be updated, so go ahead and do it
+        LeftBarRenderer.renderWeekButton();
     }
 }

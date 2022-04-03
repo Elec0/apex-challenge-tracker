@@ -1,5 +1,5 @@
 import { ChallengeEntry } from "./challenge/ChallengeEntry";
-import { KEY_WEEK_DATA, KEY_CHALLENGES, MODES } from "./constants";
+import { KEY_WEEK_DATA, KEY_CHALLENGES, MODES, WEEKS_NUM } from "./constants";
 
 export class StorageHelper {
     /**
@@ -19,9 +19,10 @@ export class StorageHelper {
      * // Daily challenges are 0, 2, 5
      * // Week 1 has challenges 3, 7
      */
-    private static _weekData: Array<Array<string>> = new Array<Array<string>>(12);
+    private static _weekData: Array<Array<string>> = new Array<Array<string>>(WEEKS_NUM);
     /** Current week to display, index of {@link _weekData}. */
     public static currentWeek: number = 0;
+
     private static _storage = window.localStorage;
 
     /** Set up our 2D week array */
@@ -184,11 +185,11 @@ export class StorageHelper {
         }
 
         // Check our saved length
-        if (this.weekData.length < 12) {
-            console.warn(`Week array is too short, expanding from ${this.weekData.length} to 13.`);
+        if (this.weekData.length < WEEKS_NUM) {
+            console.warn(`Week array is too short, expanding from ${this.weekData.length} to ${WEEKS_NUM}.`);
             console.debug(this.weekData);
 
-            for(let i = 0; i <= 12 - this.weekData.length; ++i) {
+            for(let i = 0; i <= WEEKS_NUM - this.weekData.length; ++i) {
                 this.weekData.push(new Array<string>());
             }
             found = true;
@@ -267,6 +268,18 @@ export class StorageHelper {
         });
 
         return result;
+    }
+
+    /** Return how many challenges have been completed within the provided week */
+    public static getWeekCompleted(week: number): number {
+        if (this.weekData.length <= week) {
+            console.warn("Tried to get an invalid week index!", week);
+            return -1;
+        }
+        
+        let res: number = 0;
+        this.weekData[week].forEach( e => res += this.challenges.get(e)!.isCompleted() ? 1 : 0);
+        return res;
     }
 
     /** Delete everything we have in storage. */
