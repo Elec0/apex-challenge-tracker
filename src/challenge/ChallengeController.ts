@@ -61,7 +61,7 @@ export class ChallengeController extends Navigation {
         let deleted = StorageHelper.deleteChallenge(challenge);
         console.debug("Deleted challenge successfully?", deleted);
         if (deleted) // No need to refresh if it was never saved
-            LeftBarRenderer.renderWeekButton();
+            LeftBarRenderer.renderWeekButton(challenge.week);
 
         elem.remove();
     }
@@ -259,6 +259,6 @@ export class ChallengeController extends Navigation {
     public static reloadChallenge(challenge: ChallengeEntry) {
         ChallengeRenderer.render(challenge, 2);
         // Good chance the week button should be updated, so go ahead and do it
-        LeftBarRenderer.renderWeekButton();
+        LeftBarRenderer.renderWeekButton(challenge.week);
     }
 }
