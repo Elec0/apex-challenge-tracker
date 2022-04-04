@@ -10,6 +10,7 @@ import { LeftBarRenderer } from "./LeftBarRenderer";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
+    public static currentFilterShowCompleted: boolean = false;
 
     navigateTo(): void {
         if (!this.isShowing) {
@@ -93,7 +94,7 @@ export class ChallengeController extends Navigation {
 
     public static loadChallenges() {
         let sort: boolean = true;
-        let dataToRender = StorageHelper.getDataToRenderFilter(this.currentFilter);
+        let dataToRender = StorageHelper.getDataToRenderFilter(this.currentFilter, this.currentFilterShowCompleted);
 
         // See if we want to order the challenges by value
         if (sort)
@@ -114,10 +115,17 @@ export class ChallengeController extends Navigation {
         // Set up the click handler for search icon, and text type handler
         $("#search-icon").on("click", this.handleClickSearch);
         $("#btn-filter").on("click", this.handleClickFilter);
-        let spanFilter = $("span[for-data='filter']");
+
+        let spanFilter = $("[for-data='filter']");
         spanFilter.on("keydown", e => this.handleKeyboardFilter(e));
         // Clear the filter and re-call the filter method
         $("#btn-filter-clear").on("click", e => { spanFilter.text(""); this.handleClickFilter(e) });
+        let btnCompleted = $("#btn-filter-completed");
+        btnCompleted.on("click", e => { 
+            btnCompleted.toggleClass("tab-selected"); 
+            this.currentFilterShowCompleted = btnCompleted.hasClass("tab-selected");
+            this.handleClickFilter(e); 
+        });
 
         // Since this method is only called when we navigate to the tab, 
         // if the filter is already set, that means we're coming in from optimal path

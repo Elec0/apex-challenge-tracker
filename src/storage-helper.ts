@@ -243,7 +243,7 @@ export class StorageHelper {
      * ",BR" => All BR challenges
      * "," => All challenges
      */
-    public static getDataToRenderFilter(filterText: string): Array<ChallengeEntry> {
+    public static getDataToRenderFilter(filterText: string, showCompleted = false): Array<ChallengeEntry> {
         if (filterText == "")
             return this.getDataToRender();
 
@@ -257,6 +257,8 @@ export class StorageHelper {
         }
 
         this.challenges.forEach((val, key) => {
+            if (!showCompleted && val.isCompleted())
+                return;
             // Check if the challenge text includes our filter text
             let include: boolean = val.text.toLowerCase().includes(filterLower);
             // See if we need to check the mode
