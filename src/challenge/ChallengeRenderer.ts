@@ -184,10 +184,9 @@ export class ChallengeRenderer {
         let title = cloneElem.find("span[for-data='title']");
         let titleText = challenge.text;
         // Switch the escaped character out for the real one
-        if (titleText.includes(CHAR_APOSTROPHE)) {
-            console.log("Contains apos");
+        if (titleText.includes(CHAR_APOSTROPHE))
             titleText = titleText.replace(CHAR_APOSTROPHE, "'");
-        }
+            
         title.text(titleText);
         title.on("input", e => ChallengeController.handleTypeChallenge(e, challenge));
 
