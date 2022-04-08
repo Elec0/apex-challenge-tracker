@@ -163,7 +163,7 @@ export class ChallengeController extends Navigation {
     public static handleClickAddChallenge(event: any) {
         let newChallenge: ChallengeEntry = new ChallengeEntry("", 0, 1, 0);
         ChallengeRenderer.render(newChallenge);
-        ChallengeRenderer.handleEditButtonClick(newChallenge);
+        ChallengeRenderer.handleClickEditButton(newChallenge);
     }
     
     /** Clicking the search magnifying icon. Make it expand with the class. */

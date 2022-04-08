@@ -40,3 +40,6 @@ export const WEEKS_NUM: number = 13;
 // --- JSON Keys ---
 export const KEY_CHALLENGES: string = "allChallenges";
 export const KEY_WEEK_DATA: string = "weekData";
+// ---
+
+export const CHAR_APOSTROPHE: string = "&#39;";

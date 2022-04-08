@@ -1,6 +1,6 @@
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "./ChallengeEntry";
-import { KEYWORDS, NUMBER_REGEX } from "../constants";
+import { CHAR_APOSTROPHE, KEYWORDS, NUMBER_REGEX } from "../constants";
 import { MODES } from "../constants";
 import { ChallengeController } from "./ChallengeController";
 
@@ -141,13 +141,13 @@ export class ChallengeRenderer {
         return res;
     }
 
-    /** Create the edit div & setup the click listener for {@link handleEditButtonClick} */
+    /** Create the edit div & setup the click listener for {@link handleClickEditButton} */
     private static setupEditButton(challenge: ChallengeEntry): Cash {
         let res = $("<div>").addClass("edit-icon").attr("id", "")
             .append($("<img>").attr("src", "res/images/edit-icon-32x32.png"));
 
         // The image has pointer events disabled, so we will always get the div out of the click
-        res.on("click", (event) => this.handleEditButtonClick(challenge));
+        res.on("click", (event) => this.handleClickEditButton(challenge));
         return res;
     }
 
@@ -168,7 +168,7 @@ export class ChallengeRenderer {
      *
      * On submit, save the data to storage, clear and reload the entire challenge list.
      */
-        public static handleEditButtonClick(challenge: ChallengeEntry) {
+        public static handleClickEditButton(challenge: ChallengeEntry) {
         let clickedElem = $(`#${challenge.id}`);
         let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
 
@@ -182,7 +182,13 @@ export class ChallengeRenderer {
 
         // Set the span inputs to have the existing data, if it exists
         let title = cloneElem.find("span[for-data='title']");
-        title.text(challenge.text);
+        let titleText = challenge.text;
+        // Switch the escaped character out for the real one
+        if (titleText.includes(CHAR_APOSTROPHE)) {
+            console.log("Contains apos");
+            titleText = titleText.replace(CHAR_APOSTROPHE, "'");
+        }
+        title.text(titleText);
         title.on("input", e => ChallengeController.handleTypeChallenge(e, challenge));
 
         cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
