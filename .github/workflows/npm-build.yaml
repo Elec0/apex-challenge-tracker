@@ -8,12 +8,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    name: Node sample
+  name: Node sample
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '14'
           cache: 'npm'
-      - run: npm install
-      - run: npm run build
+      - run: |
+        npm install
+        npm run build
+
+      - name: Upload files
+          uses: SamKirkland/FTP-Deploy-Action@4.3.0
+          with:
+            server: ftp.elec0.com
+            username: github-action@apex.elec0.com
+            password: ${{ secrets.ftp_password }}
+            exclude: |
+              **/.git*
+              **/.git*/**
+              **/node_modules/**
+              **/src/**
+              **/test/**
+              **/*.json
+              webpack.config.js
+              README.md
