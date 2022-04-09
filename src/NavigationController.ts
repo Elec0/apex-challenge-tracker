@@ -1,9 +1,7 @@
-import $, { Cash } from "cash-dom";
 import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
 import { SettingsController } from "./SettingsController";
 import { ChallengeController } from "./challenge/ChallengeController";
 import { OptimalPathController } from "./optimal-path/OptimalPathController";
-import { Navigation } from "./Navigation";
 
 
 export class NavigationController {
