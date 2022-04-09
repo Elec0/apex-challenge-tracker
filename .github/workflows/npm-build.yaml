@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-  name: Node sample
+    name: Node sample
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
