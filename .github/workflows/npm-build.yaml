@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     name: Node sample
     steps:
       - uses: actions/checkout@v3
@@ -17,4 +17,4 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-      - run: npm test
+      - run: npm run-script build
