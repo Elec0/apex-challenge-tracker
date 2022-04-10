@@ -2,7 +2,6 @@ import { KEYWORDS, LEGENDS, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, W
 import { Navigation } from "../Navigation";
 import $, { Cash } from "cash-dom";
 import { StorageHelper } from "../storage-helper";
-import { ChallengeEntry } from "../challenge/ChallengeEntry";
 import pathHtml from "../../content/path.html";
 import { NavigationController } from "../NavigationController";
 import { ChallengeController } from "../challenge/ChallengeController";
@@ -146,22 +145,18 @@ export class OptimalPathController extends Navigation {
                 
                 if (value.text.includes(element)) {
                     // Add challenge's star value to tally
-                    // this.keywordCount.set(element, (this.keywordCount.get(element) ?? 0) + value.value);
                     // Add it twice: once to the 0th, which has all totals of everything
                     this.modeKeywordCount[0].set(element, (this.modeKeywordCount[0].get(element) ?? 0) + value.value);
                     // Then again to the one with the matching mode
                     let offsetMode: number = value.mode + 1;
                     this.modeKeywordCount[offsetMode].set(element, (this.modeKeywordCount[offsetMode].get(element) ?? 0) + value.value);
                     
-                    // We want each challenge with 'All' mode to be included in every mode sum, since a challenge
+                    // We want each challenge with 'All' mode to be included in every applicable keyword sum, since a challenge
                     // with All applies to all the modes, in addition to being able to be filtered by All only.
-                    // In addition to adding it to each keyword, we need to add it to the mode total in index 0 as well
                     if (value.mode == MODES["All"]) {
+                        // j is the whole array index, which is offset by 1 since 0th is all totals
                         for (let j = 2; j < this.modeKeywordCount.length; ++j) {
                             this.modeKeywordCount[j].set(element, (this.modeKeywordCount[j].get(element) ?? 0) + value.value);
-                            // j is the whole array index, which is offset by 1 since 0th is all totals
-                            // this.modeKeywordCount[0].set(`Mode${j - 1}`, 
-                            //         (this.modeKeywordCount[0].get(`Mode${j - 1}`) ?? 0) + value.value);
                         }
                     }
                 }
@@ -175,7 +170,7 @@ export class OptimalPathController extends Navigation {
                     // This mode+x value might not exist
                     this.modeKeywordCount[0].set(`Mode${value.mode}`, 
                                                 (this.modeKeywordCount[0].get(`Mode${value.mode}`) ?? 0) + value.value);
-                    // Add the count for this challenge to all others if it's 'All'
+                    // Add the count for this challenge to all other modes if it's 'All'
                     if (value.mode == MODES["All"]) {
                         // j is the whole array index, which is offset by 1 since 0th is all totals
                         for (let j = 2; j < this.modeKeywordCount.length; ++j) {
