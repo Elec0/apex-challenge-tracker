@@ -252,7 +252,7 @@ export class StorageHelper {
         let filterMode = "";
         if (filterText.includes(",")) {
             let spl: string[] = filterText.split(",");
-            filterLower = spl[0].trim();
+            filterLower = spl[0].trim().toLowerCase();
             filterMode = spl[1].trim();
         }
 
@@ -263,8 +263,9 @@ export class StorageHelper {
             let include: boolean = val.text.toLowerCase().includes(filterLower);
             // See if we need to check the mode
             if (filterMode != "") // If the entered mode text includes the string key value of the challenge mode
-                include = include && filterMode.toLocaleUpperCase() == MODES[val.mode].toLocaleUpperCase();
-
+                include = include && (filterMode.toLocaleUpperCase().includes(MODES[val.mode].toLocaleUpperCase())
+                        || (filterMode.includes("*") && val.mode == MODES.All));
+                        
             if (include)
                 result.push(val);
         });

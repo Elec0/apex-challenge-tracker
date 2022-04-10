@@ -24,6 +24,7 @@ export enum MODES {
     C
 }
 export type ModeStrings = keyof typeof MODES;
+export const NumModes: number = Object.keys(MODES).length / 2;
 
 /** Full list of keywords, built from concatenating the subtypes below */
 export const KEYWORDS: string[] = LEGENDS.concat(WEAPON_NAMES, WEAPON_TYPES);
