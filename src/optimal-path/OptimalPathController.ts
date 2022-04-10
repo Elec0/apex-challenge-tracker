@@ -1,4 +1,4 @@
-import { KEYWORDS, LEGENDS, MODES, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
+import { KEYWORDS, LEGENDS, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
 import { Navigation } from "../Navigation";
 import $, { Cash } from "cash-dom";
 import { StorageHelper } from "../storage-helper";
@@ -6,32 +6,43 @@ import { ChallengeEntry } from "../challenge/ChallengeEntry";
 import pathHtml from "../../content/path.html";
 import { NavigationController } from "../NavigationController";
 import { ChallengeController } from "../challenge/ChallengeController";
+import { OptimalPathRenderer } from "./OptimalPathRenderer";
 
 
-type Count = Array<[string, number]>;
+export type Count = Array<[string, number]>;
 
 /**
  * 
  */
 export class OptimalPathController extends Navigation {
    
-    private keywordCount: Map<string, number> = new Map();
-    /** List of keywords present in a given challenge */
-    private challengeKeywordMap: Map<ChallengeEntry, Array<string>> = new Map();
+    /** Index of modeKeywordCount that we are currently displaying (what mode is selected) */
+    public currentKeywordMode: number = 0;
+    /** 
+     * A summed value of each keyword, separated by mode
+     * 0 = All challenges, no filter
+     * 1 = MODES.All
+     * 2 = MODES.BR
+     * 3 = MODES.A
+     * 4 = MODES.C
+     * 
+     * Ex:
+     * 
+     * modeKeywordCount[2]["Ash"] is value of challenges that need ash in mode 2 (BR)
+     * 
+     * Special case: index 0 contains the aggregated stars of each mode, stored as 'Mode0-4'
+     */
+    private modeKeywordCount: Array<Map<string, number>> = new Array(NumModes + 1);
+
+    private pathRenderer: OptimalPathRenderer = new OptimalPathRenderer(this);
     
     navigateTo(): void {
         if (!this.isShowing) {
             super.navigateTo();
             this.setHash(TAB_OPTIMAL_PATH);
             $("#root-container").append(pathHtml);
-            this.challengeKeywordMap = new Map();
-            this.keywordCount = new Map();
-
-            this.beginCalculation();
-            // We want the results split up into category, then sorted by max value possible
-            this.parseResults();
-            $(".path-entry").on("click", this.handleEntryClick);
-
+            
+            this.loadPathContent();
         }
     }
     navigateAway(): void {
@@ -39,66 +50,45 @@ export class OptimalPathController extends Navigation {
         $("#path-content-area").remove();
     }
 
+    /** We want the results split up into category, then sorted by max value possible */
+    private loadPathContent() {
+        // Ensure we start with empty slate
+        $("#path-content").empty();
+        this.modeKeywordCount = new Array(NumModes + 1);
+
+        this.beginCalculation();
+        this.parseResults();
+        // Make `this` in the method be the object
+        $(".path-entry").on("click", this.handleClickEntry.bind(this));
+    }
+
     private parseResults(): void {
         // Get the actual results
-        let [legendResults, weaponTypeResults, 
-            weaponResults, modeResults] = this.getCountedResults();
-
-        // Create the outline for our legends, since it's slightly different than the others
-        $("#path-content").append(this.makeTitleElem("Legends"));
-        let curSection = $("<div>").addClass("entries");
-        legendResults.forEach(e => {
-            if (e[1] > 0) {
-                let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
-                newElem.append($("<img>").attr("style", "width: 10em").attr("src", `res/images/legends/${e[0].replace(" ", "-").toLowerCase()}.png`));
-                newElem.append($("<div>").addClass("path-entry-text")
-                    .append($("<span>").text(`${e[0]}`).addClass("legend-name"))
-                    .append($("<span>").text(`${e[1]}`)));
-                curSection.append(newElem);
-            }
-        });
-        $("#path-content").append(curSection);
-
-        $("#path-content").append(this.makeTitleElem("Modes"));        
-        $("#path-content").append(this.parseSpecificResults(modeResults, true));
-
-        $("#path-content").append(this.makeTitleElem("Weapon Types"));        
-        $("#path-content").append(this.parseSpecificResults(weaponTypeResults));
-
-        $("#path-content").append(this.makeTitleElem("Weapons"));
-        $("#path-content").append(this.parseSpecificResults(weaponResults));
+        this.pathRenderer.createPathElements(this.getCountedResults());
+        
     }
 
-    /** Pull out duplicate code for creating these two tables. */
-    private parseSpecificResults(arr: Array<[string, number]>, mode: boolean = false): Cash {
-        let curSection = $("<div>").addClass("entries");
-        arr.forEach(e => {
-            if (e[1] > -1) {
-                let newElem = $("<div>").attr("class", "path-entry").attr(`${mode ? "mode-" :""}name`, e[0]);
-                newElem.append($("<span>").text(`${e[0]}`).addClass("legend-name"));
-                newElem.append($("<span>").text(`${e[1]}`));
-                curSection.append(newElem);
-            }
-        });
-        return curSection;
-    }
-
-    private makeTitleElem(text: string): Cash {
-        return $("<div>").addClass("title-break")
-            .append($("<h2>").addClass("title-break").text(text));
-    }
-
+    /**
+     * Filter and sort challenge counts
+     * 
+     * Which to display is selected via index by {@link currentKeywordMode}.
+     * 
+     * modeCountSorted is always the same, as it reads from index 0.
+     * @returns 4 arrays of {@link Count}: legendCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted
+     */
     private getCountedResults(): Count[] {
         let legendCount: Count = new Array();
         let weaponCount: Count = new Array();
         let weaponTypeCount: Count = new Array();
         let modeCount: Count = new Array();
         for (let i of [0, 1, 2, 3])
-            modeCount.push([MODES[i], this.keywordCount.get(`Mode${i}`)!]);
+            modeCount.push([MODES[i], this.modeKeywordCount[0].get(`Mode${i}`)!]);
         
+        console.debug(`Selected mode: ${this.currentKeywordMode}`);
+
         // We have the complete list of keywords and counts
         // turn that into 3 separate lists that we can sort and return.
-        for (let [key, value] of this.keywordCount) {
+        for (let [key, value] of this.modeKeywordCount[this.currentKeywordMode]) {
             if (LEGENDS.includes(key)) {
                 legendCount.push([key, value]);
             }
@@ -121,68 +111,149 @@ export class OptimalPathController extends Navigation {
     }
 
     /**
+     * Note: this only needs to be called once, the all the other calculations we might
+     * need to display are stored at different indexes
+     * 
      * Start calculation of optimal path
-     * This is currently k*n, should probably refactor
+     * 
+     * Sum the following:
+     * 1. Stars in all common modes
+     * 2. Stars for each KEYWORD
+     * 3. Stars for each KEYWORD, separated by mode
      */
     private beginCalculation(): void {
-        this.parseKeywords();
         // If this is our first loop through the challenges, we're going to count the
         // mode points, but only the first one
         let firstLoop: boolean = true;
-        // These match up to the modes enum
-        this.keywordCount.set("Mode0", 0);
-        this.keywordCount.set("Mode1", 0);
-        this.keywordCount.set("Mode2", 0);
-        this.keywordCount.set("Mode3", 0);
-        
+
+        // Init the array<map> outside of the main loop
+        for (let i = 0; i < this.modeKeywordCount.length; ++i) {
+            if (this.modeKeywordCount[i] == undefined)
+                this.modeKeywordCount[i] = new Map();
+        }
         // Start by going through each challenge's keywords, incrementing a counter when finding one
         KEYWORDS.forEach(element => {
             // Init the map
-            this.keywordCount.set(element, 0);
+            // i in = index
+            for (let i in this.modeKeywordCount) {
+                this.modeKeywordCount[i].set(element, 0);
+            }
 
             for (let [key, value] of StorageHelper.challenges) {
                 // Shouldn't process anything if the challenge is done
                 if (value.isCompleted())
                     continue;
                 
-                if (value.text.indexOf(element) != -1) {
-                    let cA: Array<string> = this.challengeKeywordMap.get(value) ?? new Array();
-                    cA.push(element);
-
-                    this.challengeKeywordMap.set(value, cA);
+                if (value.text.includes(element)) {
                     // Add challenge's star value to tally
-                    this.keywordCount.set(element, (this.keywordCount.get(element) ?? 0) + value.value);
+                    // this.keywordCount.set(element, (this.keywordCount.get(element) ?? 0) + value.value);
+                    // Add it twice: once to the 0th, which has all totals of everything
+                    this.modeKeywordCount[0].set(element, (this.modeKeywordCount[0].get(element) ?? 0) + value.value);
+                    // Then again to the one with the matching mode
+                    let offsetMode: number = value.mode + 1;
+                    this.modeKeywordCount[offsetMode].set(element, (this.modeKeywordCount[offsetMode].get(element) ?? 0) + value.value);
+                    
+                    // We want each challenge with 'All' mode to be included in every mode sum, since a challenge
+                    // with All applies to all the modes, in addition to being able to be filtered by All only.
+                    // In addition to adding it to each keyword, we need to add it to the mode total in index 0 as well
+                    if (value.mode == MODES["All"]) {
+                        for (let j = 2; j < this.modeKeywordCount.length; ++j) {
+                            this.modeKeywordCount[j].set(element, (this.modeKeywordCount[j].get(element) ?? 0) + value.value);
+                            // j is the whole array index, which is offset by 1 since 0th is all totals
+                            // this.modeKeywordCount[0].set(`Mode${j - 1}`, 
+                            //         (this.modeKeywordCount[0].get(`Mode${j - 1}`) ?? 0) + value.value);
+                        }
+                    }
                 }
 
+                // If this is the first time through challenges, sum up the values into their respective modes
                 if (firstLoop) {
                     if (!Number.isInteger(value.mode)) {
                         console.warn("Got a mode that wasn't an integer!", value);
                         continue;
                     }
-                    // This value for sure exists, we just set it
-                    this.keywordCount.set(`Mode${value.mode}`, this.keywordCount.get(`Mode${value.mode}`)! + value.value);
+                    // This mode+x value might not exist
+                    this.modeKeywordCount[0].set(`Mode${value.mode}`, 
+                                                (this.modeKeywordCount[0].get(`Mode${value.mode}`) ?? 0) + value.value);
+                    // Add the count for this challenge to all others if it's 'All'
+                    if (value.mode == MODES["All"]) {
+                        // j is the whole array index, which is offset by 1 since 0th is all totals
+                        for (let j = 2; j < this.modeKeywordCount.length; ++j) {
+                            this.modeKeywordCount[0].set(`Mode${j - 1}`, 
+                                (this.modeKeywordCount[0].get(`Mode${j - 1}`) ?? 0) + value.value);
+                        }
+                    }
                 }
             }
             firstLoop = false; // No double counting
         });
     }
 
-    private parseKeywords(): void {
-    }
-
     /** When a path element is clicked, redirect to the main page w/ the filter applied. */
-    public handleEntryClick(event: Event) {
+    public handleClickEntry(event: Event) {
         if (event.target == null) {
             console.error("handleEntryClick event.target is null!");
             return;
         }
-        let filterName: string = $(<Element>event.currentTarget).attr("name") ?? 
-                                 "," + ($(<Element>event.currentTarget).attr("mode-name") ?? "");
+        // Determine if they clicked a mode
+        let cTarget: Cash = $(<Element>event.currentTarget);
+        if (cTarget.attr("mode-name") != undefined) {
+            this.handleClickModeEntry(cTarget);
+            return;
+        }
+
+        // Append the mode filter if we have a non-0 mode selected
+        // Include All challenges, since they are included in the displayed calculations
+        // Not technically needed for 'All', but whatever
+        let filterName: string = (cTarget.attr("name") ?? "") + 
+                                 (this.currentKeywordMode != 0 ? `,${MODES[this.currentKeywordMode - 1]}*` : "");
+
         if (filterName == "" || filterName == ",") {
             console.error("Something went wrong with the click, filter name was not found.");
             return;
         }
         ChallengeController.currentFilter = filterName;
         NavigationController.handleTabClick(TAB_CHALLENGES);
+    }
+
+    /** Called when an element that is `.path-entry[mode-name]` is clicked */
+    public handleClickModeEntry(elem: Cash) {
+        let oldSelected: Cash = $(".path-entry[mode-name].selected");
+        console.debug("oldSelected", oldSelected);
+        if (oldSelected.length) {
+            this.handleDeselectMode(oldSelected);
+        }
+        // If we're just deselecting, reload the content, we've already called handleDeselectMode
+        if (oldSelected.attr("mode-name") == elem.attr("mode-name")) {
+            this.loadPathContent();
+            return;
+        }
+
+        // We are selecting something
+        this.handleSelectMode(elem);
+    }
+
+    /** 
+     * Remove the border, and unfilter everything. Don't reload path content here, as if we're selecting something
+     * else we'd do the whole load twice.
+     */
+    private handleDeselectMode(elem: Cash) {
+        if (elem.length > 1) {
+            console.warn(`Something weird happened! Expected selector of 1, got ${elem.length} instead`);
+        }
+        elem.removeClass("selected");
+        this.currentKeywordMode = 0;
+    }
+
+    /** Add class, which is border, and set currentKeywordMode. Then re-filter everything. */
+    private handleSelectMode(elem: Cash) {
+        elem.addClass("selected");
+        const modeName: string = elem.attr("mode-name")!;
+        // Enums are, in fact, still dumb
+        const indexOfName: number = parseInt(Object.keys(MODES)[Object.values(MODES).indexOf(modeName as unknown as MODES)]) + 1;
+
+        this.currentKeywordMode = indexOfName;
+        console.debug(`Selected mode index ${indexOfName-1}: '${MODES[indexOfName-1]}'`);
+        this.loadPathContent();
     }
 }

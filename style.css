@@ -18,6 +18,15 @@
 
     --tab-entry-margin-right: -1.3em;
     --btn-margin-left: -1.3em;
+
+    /* Normal colors */
+    --color-tab-blur-select-hover:  rgba(194, 18, 42, 0.5);
+    --color-tab-blur-background:    rgba(55, 55, 60, 0.5);
+    --color-tab-blur-bracket:       rgba(40, 40, 44, 0.8);
+
+    --color-tab-entry-background:   rgba(55, 55, 60, 0.8);
+    --color-tab-selected-hover:     rgba(194, 18, 42, 0.8);
+    --color-tab-sel-border:         rgb(255, 78, 29);
 }
 
 /* #region root elements */
@@ -100,17 +109,17 @@ body {
 /* if backdrop support, override other options with higher specificity */
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     div.tab-blur {
-        background-color: rgba(55, 55, 60, 0.5);
+        background-color: var(--color-tab-blur-background);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
     }
     div.tab-selected, div.tab-blur:hover {
-        background-color: rgba(194, 18, 42, 0.5);
+        background-color: var(--color-tab-blur-select-hover);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
     }
     div.tab-bracket-blur {
-        background-color: rgba(40, 40, 44, 0.8);
+        background-color: var(--color-tab-blur-bracket);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
     }
@@ -123,14 +132,14 @@ body {
     align-items: center;
     justify-content: center;
     margin-right: var(--tab-entry-margin-right);
-    background-color: rgba(55, 55, 60, 0.8);
+    background-color: var(--color-tab-entry-background);
     border-bottom: 0.3em solid rgb(142, 142, 143);
     color: #ABABAB;
     cursor: pointer;
 }
 .tab-selected, .tab-entry:hover {
-    background-color: rgba(194, 18, 42, 0.8);
-    border-bottom: 0.3em solid rgb(255, 78, 29);
+    background-color: var(--color-tab-selected-hover);
+    border-bottom: 0.3em solid var(--color-tab-selected-hover-border);
     color: #F5F5F5;
 }
 .tab-angle {
@@ -700,6 +709,17 @@ div.entries {
 }
 .path-entry .legend-name {
     font-weight: bolder;
+}
+.path-entry[mode-name] {
+    border-color: transparent;
+    border-width: 1px;
+    border-style: solid;
+    min-width: 1.5em;
+}
+.path-entry[mode-name].selected {
+    border-color: var(--color-tab-sel-border);
+    border-width: 1px;
+    border-style: solid;
 }
 /* #endregion Optimal Path */
 
