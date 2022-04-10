@@ -265,7 +265,7 @@ export class StorageHelper {
             if (filterMode != "") // If the entered mode text includes the string key value of the challenge mode
                 include = include && (filterMode.toLocaleUpperCase().includes(MODES[val.mode].toLocaleUpperCase())
                         || (filterMode.includes("*") && val.mode == MODES.All));
-            console.debug("filter: ", val, filterLower, filterMode, include);
+                        
             if (include)
                 result.push(val);
         });

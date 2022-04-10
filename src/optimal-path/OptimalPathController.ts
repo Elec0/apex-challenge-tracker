@@ -83,8 +83,6 @@ export class OptimalPathController extends Navigation {
         for (let i of [0, 1, 2, 3])
             modeCount.push([MODES[i], this.modeKeywordCount[0].get(`Mode${i}`)!]);
         
-        console.debug(`Selected mode: ${this.currentKeywordMode}`);
-
         // We have the complete list of keywords and counts
         // turn that into 3 separate lists that we can sort and return.
         for (let [key, value] of this.modeKeywordCount[this.currentKeywordMode]) {
@@ -207,6 +205,8 @@ export class OptimalPathController extends Navigation {
             console.error("Something went wrong with the click, filter name was not found.");
             return;
         }
+        console.debug("Click", cTarget.attr("name"));
+
         ChallengeController.currentFilter = filterName;
         NavigationController.handleTabClick(TAB_CHALLENGES);
     }
@@ -214,10 +214,11 @@ export class OptimalPathController extends Navigation {
     /** Called when an element that is `.path-entry[mode-name]` is clicked */
     public handleClickModeEntry(elem: Cash) {
         let oldSelected: Cash = $(".path-entry[mode-name].selected");
-        console.debug("oldSelected", oldSelected);
+        
         if (oldSelected.length) {
             this.handleDeselectMode(oldSelected);
         }
+        console.debug("Click mode", elem.attr("mode-name"));
         // If we're just deselecting, reload the content, we've already called handleDeselectMode
         if (oldSelected.attr("mode-name") == elem.attr("mode-name")) {
             this.loadPathContent();
