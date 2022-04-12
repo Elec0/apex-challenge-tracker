@@ -26,6 +26,19 @@ Adding an asterisk will also include the challenges with the 'All' mode.
 ## Challenges 
 This is the data entry & filter section. 
 
+Enter challenges here according to week on the left. 
+
+Pressing `N` while focused on the main area of the site will create a new, blank, challenge. 
+Pressing `Enter` will save the challenge.
+Challenges support tab-navigation, so you can enter an entire week's challenges without touching the mouse,
+if you so choose.
+
+While entering challenge text, the first number will be copied into the Max progress box, but only if
+no other number has been entered there yet (it won't overwrite anything you manually put in.)
+
+After saving, the challenge will be parsed for keywords, and they will be highlighted in yellow. The list of keywords
+can be found on the site, under the Help menu on the left. They are case sensitive.
+
 ## Optimal Path
 The primary feature, processing all entered challenges and showing what modes, characters, and weapon types are best to use to earn the maximum points.
 
