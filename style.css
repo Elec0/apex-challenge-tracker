@@ -28,6 +28,12 @@
     --color-tab-selected-hover:     rgba(194, 18, 42, 0.8);
     --color-tab-selected-hover-border: rgb(142, 142, 143);
     --color-tab-sel-border:         rgb(255, 78, 29);
+
+    --color-background-challenge-bar-interior: rgba(27, 27, 27, 0.8);
+    --color-challenge-bar-interior: rgb(240, 144, 116);
+
+    --color-background-input-text: var(--color-background-challenge-bar-interior);
+    --color-input-text: rgb(240, 144, 116);
 }
 /* #region root elements */
 html {
@@ -43,6 +49,10 @@ body {
     margin-right: 0em;
     background: url("res/images/backgrounds/apex-background.jpg") no-repeat center center fixed;
     background-size: cover;
+}
+hr {
+    width: 100%;
+    display: none;
 }
 /* #endregion */
 
@@ -108,12 +118,12 @@ body {
 }
 /* if backdrop support, override other options with higher specificity */
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-    div.tab-blur {
+    div .tab-blur {
         background-color: var(--color-tab-blur-background);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
     }
-    div.tab-selected, div.tab-blur:hover {
+    div.tab-selected, div .tab-blur:hover {
         background-color: var(--color-tab-blur-select-hover);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
@@ -161,6 +171,9 @@ body {
 }
 .tab-button {
     flex-grow: 0;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 #add-challenge {
     width: 50%;
@@ -624,6 +637,12 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     width: 1em;
     height: 1em;
 }
+#challenge-filter-area input[type="button"] {
+    letter-spacing: unset;
+    font-weight: normal;
+    text-transform: none;
+    padding-top: 0.1em;
+}
 
 .filter-bar-textbox {
     margin-left: 1em;
@@ -643,7 +662,7 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     margin-bottom: 1%;
     background-color: rgba(56, 55, 55, 0.8);
     color: lightgrey;
-    
+    column-gap: 1em;
 }
 
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
@@ -654,6 +673,17 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     }
 }
 
+#import-export-area {
+    display: inline-flex;
+    /* flex-direction: column; */
+    flex-wrap: wrap;
+    flex-basis: 25%;
+    column-gap: 0.5em;
+    row-gap: 0.25em;
+}
+#import-export-area input {
+    flex-grow: 1;
+}
 /* #endregion Settings */
 
 /* #region Optimal Path */
@@ -761,5 +791,13 @@ input[type="button"] {
     box-sizing: content-box;
     font-size: inherit;
     font-family: inherit;
+}
+
+textarea {
+    background-color: var(--color-background-input-text);
+    color: var(--color-input-text);
+}
+textarea:focus-visible {
+    outline: solid var(--color-tab-selected-hover) 1px;
 }
 /* #endregion */
