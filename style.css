@@ -16,7 +16,7 @@
     --scrollbar-bg: transparent;
     --scrollbar-color: rgba(0,0,0,0.25);
 
-    --tab-entry-margin-right: -1.3em;
+    --tab-angle-margin-right: -1.3em;
     --btn-margin-left: -1.3em;
 
     /* Normal colors */
@@ -131,7 +131,6 @@ body {
     height: 3em;
     align-items: center;
     justify-content: center;
-    margin-right: var(--tab-entry-margin-right);
     background-color: var(--color-tab-entry-background);
     border-bottom: 0.3em solid rgb(142, 142, 143);
     color: #ABABAB;
@@ -143,6 +142,7 @@ body {
     color: #F5F5F5;
 }
 .tab-angle {
+    margin-right: var(--tab-angle-margin-right);
     clip-path: polygon(0 0, calc(100% - 1.5em) 0, 100% 100%, calc(0% + 1.5em) 100%);
 }
 .tab-angle-right {
