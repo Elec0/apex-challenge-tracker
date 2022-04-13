@@ -263,9 +263,10 @@ export class StorageHelper {
             let include: boolean = val.text.toLowerCase().includes(filterLower);
             // See if we need to check the mode
             if (filterMode != "") // If the entered mode text includes the string key value of the challenge mode
-                include = include && (filterMode.toLocaleUpperCase().includes(MODES[val.mode].toLocaleUpperCase())
+                // The regex handles the A/All case: need to not match 'A' when ',All' is the filter
+                include = include && (new RegExp(MODES[val.mode].toLocaleUpperCase() + "(\\*|$)").test(filterMode.toLocaleUpperCase())
                         || (filterMode.includes("*") && val.mode == MODES.All));
-                        
+
             if (include)
                 result.push(val);
         });
