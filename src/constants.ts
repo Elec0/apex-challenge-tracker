@@ -39,8 +39,14 @@ export const TAB_SETTINGS: string = "Settings";
 /** Total number of week data to store. There's 12 weeks + a daily, so 13 */
 export const WEEKS_NUM: number = 13;
 // --- JSON Keys ---
+/** @deprecated */
 export const KEY_CHALLENGES: string = "allChallenges";
+/** @deprecated */
 export const KEY_WEEK_DATA: string = "weekData";
+/** Challenge data compressed via utf16 lz-string */
+export const KEY_CHALLENGES_LZ: string = "allChallengesCompressed";
+/** Week data compressed via utf16 lz-string */
+export const KEY_WEEK_DATA_LZ: string = "weekDataCompressed";
 // ---
 
 export const CHAR_APOSTROPHE: string = "&#39;";

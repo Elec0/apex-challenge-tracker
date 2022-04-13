@@ -1,5 +1,6 @@
 import { ChallengeEntry } from "./challenge/ChallengeEntry";
-import { KEY_WEEK_DATA, KEY_CHALLENGES, MODES, WEEKS_NUM } from "./constants";
+import { KEY_WEEK_DATA, KEY_CHALLENGES, KEY_CHALLENGES_LZ, KEY_WEEK_DATA_LZ, MODES, WEEKS_NUM } from "./constants";
+import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 
 export class StorageHelper {
     /**
@@ -25,6 +26,9 @@ export class StorageHelper {
 
     private static _storage = window.localStorage;
 
+    /** Track if we have checked for compression migration this load. Want to do it as little as possible */
+    private static checkedMigration: boolean = false;
+
     /** Set up our 2D week array */
     public static init() {
         for(let i = 0; i < this._weekData.length; ++i) {
@@ -32,11 +36,11 @@ export class StorageHelper {
         }
     }
     
-    public static getValue(key: string): any {
+    public static getValue(key: string) {
         return this._storage.getItem(key);
     }
 
-    public static setValue(key: string, val: any) {
+    public static setValue(key: string, val: string) {
         this._storage.setItem(key, val);
     }
 
@@ -122,14 +126,45 @@ export class StorageHelper {
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
         console.debug("Saving to storage:", this.challenges, this.weekData);
-        this.setValue(KEY_CHALLENGES, JSON.stringify(Array.from(this.challenges)));
-        this.setValue(KEY_WEEK_DATA, JSON.stringify(this.weekData));
+        this.setValue(KEY_CHALLENGES_LZ, this.compressChallenges());
+        this.setValue(KEY_WEEK_DATA_LZ, this.compressWeekData());
+    }
+
+    /** Return the JSON representation of the current challenge data */
+    public static stringifyChallenges(): string {
+        return JSON.stringify(Array.from(this.challenges));
+    }
+
+    /** Compress the {@link stringifyChallenges} result with lz-string */
+    public static compressChallenges(): string {
+        return compressToUTF16(this.stringifyChallenges());
+    }
+
+    /** Return the JSON representation of the current week data */
+    public static stringifyWeekData(): string {
+        return JSON.stringify(this.weekData);
+    }
+
+    /** Compress the {@link stringifyWeekData} result with lz-string */
+    public static compressWeekData(): string {
+        return compressToUTF16(this.stringifyWeekData());
+    }
+
+    /** For use in settings, output our data in a format we can later also import */
+    public static exportData(): string {
+        return `{"${KEY_CHALLENGES_LZ}": ${this.compressChallenges()},
+                "${KEY_WEEK_DATA_LZ}": ${this.compressWeekData()}}`;
     }
 
     /** Load all the data out of storage */
     public static loadFromStorage() {
-        let storChallenges: string = this.getValue(KEY_CHALLENGES);
-        let storWeeks: string = this.getValue(KEY_WEEK_DATA);
+        if (!this.checkedMigration) {
+            this.checkCompressionMigration(); // We will now load compressed data properly
+        }
+
+        let storChallenges: string | null = this.getValue(KEY_CHALLENGES_LZ);
+        let storWeeks: string | null = this.getValue(KEY_WEEK_DATA_LZ);
+
         // console.debug("Load: raw string:", storChallenges);
         // console.debug("Load: raw string:", storWeeks);
 
@@ -137,6 +172,9 @@ export class StorageHelper {
         let challengeIds: Array<string> = [];
 
         if (storChallenges != null) {
+            storChallenges = decompressFromUTF16(storChallenges);
+            if (storChallenges == null) throw(new TypeError("Decompressed value was null!"));
+
             let jMap: Map<string, any> = new Map(JSON.parse(storChallenges));
             console.debug("Loaded map:", jMap);
 
@@ -150,6 +188,9 @@ export class StorageHelper {
         }
 
         if (storWeeks != null) {
+            storWeeks = decompressFromUTF16(storWeeks);
+            if (storWeeks == null) throw(new TypeError("Decompressed value was null!"));
+            
             let arr: Array<Array<string>> = JSON.parse(storWeeks);
             this._weekData = arr;
         }
@@ -307,6 +348,42 @@ export class StorageHelper {
     /** Generate a random hash */
     public static generateHash(): string {
         return StorageHelper.hashCode(Math.random().toString());
+    }
+
+    /** 
+     * Determine if the data in localStorage is old and uncompressed. If so, compress it 
+     * If it was compressed, return true, else return false
+     */
+     private static checkCompressionMigration(): boolean {
+        let dirty: boolean = false;
+        let data: string | null = this.getValue(KEY_CHALLENGES);
+        if (data != null) {
+            this.migrateData(KEY_CHALLENGES, data);
+            dirty = true;
+        }
+
+        data = this.getValue(KEY_WEEK_DATA);
+        if (data != null) {
+            this.migrateData(KEY_WEEK_DATA, data);
+            dirty = true;
+        }
+
+        this.checkedMigration = true;
+        return dirty;
+    }
+    /** Take the old data from storage, compress it, save it */
+    private static migrateData(key: string, data: string) {
+        console.warn(`Found old data at ${key}! Migrating to new compression methods`);
+        let newKey: string;
+        if (key == KEY_CHALLENGES) 
+            newKey = KEY_CHALLENGES_LZ;
+        else if (key == KEY_WEEK_DATA)
+            newKey = KEY_WEEK_DATA_LZ;
+        else 
+            throw(new Error(`Invalid key '${key}'!`));
+
+        this.setValue(newKey, compressToUTF16(data));
+        this._storage.removeItem(key);
     }
 }
 
