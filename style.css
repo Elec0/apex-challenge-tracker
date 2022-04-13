@@ -26,9 +26,9 @@
 
     --color-tab-entry-background:   rgba(55, 55, 60, 0.8);
     --color-tab-selected-hover:     rgba(194, 18, 42, 0.8);
+    --color-tab-selected-hover-border: rgb(142, 142, 143);
     --color-tab-sel-border:         rgb(255, 78, 29);
 }
-
 /* #region root elements */
 html {
     font-family: AgencyFB, Veranda;
