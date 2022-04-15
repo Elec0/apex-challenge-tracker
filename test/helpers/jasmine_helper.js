@@ -40,4 +40,4 @@ const localStorageMock = (() => {
   
 global.document = window.document;
 
-var R = global.R = require('../../dist/bundle.js');
+// var R = global.R = require('../../dist/bundle.js');
