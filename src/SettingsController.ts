@@ -1,8 +1,8 @@
 import $, { Cash } from "cash-dom";
-import { Navigation } from "./Navigation";
-import { StorageHelper } from "./storage-helper";
-import settingsHtml from "./../content/settings.html";
-import { TAB_SETTINGS } from "./constants";
+import { Navigation } from "src/Navigation";
+import { StorageHelper } from "src/storage-helper";
+import settingsHtml from "content/settings.html";
+import { TAB_SETTINGS } from "src/constants";
 
 export class SettingsController extends Navigation {
 

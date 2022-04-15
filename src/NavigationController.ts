@@ -1,7 +1,7 @@
-import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
-import { SettingsController } from "./SettingsController";
-import { ChallengeController } from "./challenge/ChallengeController";
-import { OptimalPathController } from "./optimal-path/OptimalPathController";
+import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "src/constants";
+import { SettingsController } from "src/SettingsController";
+import { ChallengeController } from "src/challenge/ChallengeController";
+import { OptimalPathController } from "src/optimal-path/OptimalPathController";
 
 
 export class NavigationController {

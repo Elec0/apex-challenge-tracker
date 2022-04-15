@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = {
   entry: { index: [ './src/index.ts' ] },
   devtool: 'inline-source-map',
+  
   module: {
     rules: [
       {
@@ -34,6 +35,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js', '.html'],
+    modules: [path.resolve(__dirname), "node_modules"]
   },
   output: {
     filename: 'bundle.js',

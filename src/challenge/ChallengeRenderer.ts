@@ -1,8 +1,8 @@
 import $, { Cash } from "cash-dom";
-import { ChallengeEntry } from "./ChallengeEntry";
-import { CHAR_APOSTROPHE, KEYWORDS, NUMBER_REGEX } from "../constants";
-import { MODES } from "../constants";
-import { ChallengeController } from "./ChallengeController";
+import { ChallengeEntry } from "src/challenge/ChallengeEntry";
+import { CHAR_APOSTROPHE, KEYWORDS, NUMBER_REGEX } from "src/constants";
+import { MODES } from "src/constants";
+import { ChallengeController } from "src/challenge/ChallengeController";
 
 
 /**

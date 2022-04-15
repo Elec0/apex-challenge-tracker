@@ -1,8 +1,8 @@
 import $, { Cash } from "cash-dom";
-import { StorageHelper } from "../storage-helper";
-import { ChallengeController } from "./ChallengeController";
-import helpHtml from "./../../content/help.html";
-import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM} from "../constants";
+import { StorageHelper } from "src/storage-helper";
+import { ChallengeController } from "src/challenge/ChallengeController";
+import helpHtml from "content/help.html";
+import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM} from "src/constants";
 
 export class LeftBarRenderer {
     /** Create the Help button + contents */

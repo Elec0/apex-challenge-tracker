@@ -6,6 +6,7 @@ const { window } = new JSDOM(initHTML);
 const { document } = (new JSDOM(initHTML)).window;
 
 global.document = document;
+console.warn("yeah it runs");
 
 if(Object.keys(window).length === 0) {
     // this hapens if contextify, one of jsdom's dependencies doesn't install correctly

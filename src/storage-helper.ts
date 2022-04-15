@@ -1,5 +1,5 @@
-import { ChallengeEntry } from "./challenge/ChallengeEntry";
-import { KEY_WEEK_DATA, KEY_CHALLENGES, KEY_CHALLENGES_LZ, KEY_WEEK_DATA_LZ, MODES, WEEKS_NUM } from "./constants";
+import { ChallengeEntry } from "src/challenge/ChallengeEntry";
+import { KEY_WEEK_DATA, KEY_CHALLENGES, KEY_CHALLENGES_LZ, KEY_WEEK_DATA_LZ, MODES, WEEKS_NUM } from "src/constants";
 import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 
 export class StorageHelper {

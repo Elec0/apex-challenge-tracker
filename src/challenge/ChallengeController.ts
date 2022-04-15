@@ -1,12 +1,12 @@
 import $, { Cash } from "cash-dom";
-import { ChallengeEntry } from "./ChallengeEntry";
-import { StorageHelper } from "../storage-helper";
-import { escapeHtml } from "../utils";
-import { ChallengeRenderer } from "./ChallengeRenderer";
-import { Navigation } from "../Navigation";
-import challengeHtml from "./../../content/challenge.html";
-import { MODES, NUMBER_REGEX } from "../constants";
-import { LeftBarRenderer } from "./LeftBarRenderer";
+import { ChallengeEntry } from "src/challenge/ChallengeEntry";
+import { StorageHelper } from "src/storage-helper";
+import { escapeHtml } from "src/utils";
+import { ChallengeRenderer } from "src/challenge/ChallengeRenderer";
+import { Navigation } from "src/Navigation";
+import challengeHtml from "content/challenge.html";
+import { MODES, NUMBER_REGEX } from "src/constants";
+import { LeftBarRenderer } from "src/challenge/LeftBarRenderer";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";

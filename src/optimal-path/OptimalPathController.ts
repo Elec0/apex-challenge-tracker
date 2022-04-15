@@ -1,10 +1,10 @@
 import { KEYWORDS, LEGENDS, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
-import { Navigation } from "../Navigation";
+import { Navigation } from "src/Navigation";
 import $, { Cash } from "cash-dom";
-import { StorageHelper } from "../storage-helper";
-import pathHtml from "../../content/path.html";
-import { NavigationController } from "../NavigationController";
-import { ChallengeController } from "../challenge/ChallengeController";
+import { StorageHelper } from "src/storage-helper";
+import pathHtml from "content/path.html";
+import { NavigationController } from "src/NavigationController";
+import { ChallengeController } from "src/challenge/ChallengeController";
 import { OptimalPathRenderer } from "./OptimalPathRenderer";
 
 

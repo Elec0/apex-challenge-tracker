@@ -1,10 +1,10 @@
-import { storageAvailable } from "./utils";
+import { localStorageAvailable } from "src/utils";
 import $ from "cash-dom";
-import { NavigationController } from "./NavigationController";
-import { StorageHelper } from "./storage-helper";
+import { NavigationController } from "src/NavigationController";
+import { StorageHelper } from "src/storage-helper";
 
 $(function () {
-    if(!storageAvailable("localStorage")) {
+    if(!localStorageAvailable()) {
         $("#main-content").html("<span style='color:white'>WebStorage not detected! Please enable it or install a modern browser.</span>");
         return;
     }
