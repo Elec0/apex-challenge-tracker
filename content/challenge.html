@@ -1,11 +1,12 @@
 <div id="challenge-outer-area">
     <div id="challenge-filter-area" class="challenge-bar-blur tab-angle-left">
-        <div id="search-icon" class="search-icon"><img src="res/images/search-icon.png" /></div>
-        <span contenteditable="false" for-data="filter" class="challenge-bar-interior filter-bar-textbox bar-angle edit-text"></span>
+        <div id="search-icon" class="search-icon" data-cy="filter-icon"><img src="res/images/search-icon.png" /></div>
+        <span contenteditable="false" for-data="filter" 
+            class="challenge-bar-interior filter-bar-textbox bar-angle edit-text" data-cy="filter-text"></span>
 
-        <input type="button" class="tab-entry tab-angle tab-blur tab-button" id="btn-filter" value="Filter"/>
-        <input type="button" class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-clear" value="Clear"/>
-        <input type="button" class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-completed" value="Show Completed" />
+        <input type="button" class="tab-entry tab-angle tab-blur tab-button" id="btn-filter" value="Filter" data-cy="filter-btnFilter" />
+        <input type="button" class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-clear" value="Clear" data-cy="filter-btnClear" />
+        <input type="button" class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-completed" value="Show Completed" data-cy="filter-btnCompleted" />
     </div>
     <div id="challenge-content-area"></div>
 </div>

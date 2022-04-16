@@ -45,32 +45,9 @@ export class ChallengeRenderer {
             .append(this.keywordify(challenge.text))
             .appendTo(barData);
 
-        // Create our progress bar
-        let barText: string;
-        if (challenge.isCompleted())
-            barText = "Completed";
-        else
-            barText = `${challenge.progress}/${challenge.max}`;
-            
-        $("<div>").addClass("challenge-bar-interior bar-angle")
-            .append($("<div>").addClass("challenge-bar-progress bar-angle").attr("style", `width:${Math.floor((challenge.progress / challenge.max) * 100)}%`))
-            .append($("<div>").addClass("challenge-bar-progress-text")
-                .append($("<span>").text(barText))
-            )
-            .append($("<div>").addClass("challenge-bar-progress-stepper")
-                .append($("<div>").addClass("dot-half")
-                    .append($("<div>").addClass("dot minus").html("<img src='res/images/minus.svg'/>"))
-                )
-                .append($("<div>").addClass("stepper-divide tab-angle"))
-                .append($("<div>").addClass("dot-half")
-                    .append($("<div>").addClass("dot plus").html("<img src='res/images/plus.svg'/>"))
-                )
-            )
-            .appendTo(barData);
-
+        barData.append(this.progressBar(challenge));
         newBar.append(this.starify(challenge));
         newBar.append(this.setupEditButton(challenge));
-        this.setupIncrementButtons(newBar, challenge);
 
         if (renderMode == 2) {
             let oldElem = $(`#${challenge.id}`);
@@ -119,7 +96,8 @@ export class ChallengeRenderer {
     public static modeify(mode: MODES): Cash {
         const modeString: string = MODES[mode].toLocaleString().toLocaleLowerCase();
         if (mode != MODES.All) { // 0th is All, so don't show that
-            return $("<span>").addClass("cb-type type-" + modeString).text(modeString.toLocaleUpperCase());
+            return $("<span>").addClass("cb-type type-" + modeString).text(modeString.toLocaleUpperCase())
+                .attr("data-cy", "mode");
         }
         else {
             return $("<span>");
@@ -131,20 +109,52 @@ export class ChallengeRenderer {
      * @returns {Cash} `div` element
      */
     private static starify(challenge: ChallengeEntry): Cash {
-        let res = $("<div>").addClass("star-container")
-            .append($("<span>").text(`+${challenge.value}`));
+        let res = $("<div>").addClass("star-container").attr("data-cy", "star-container")
+            .append($("<span>").text(`+${challenge.value}`))
+            .append($("<div>").addClass("star-five icon"));
         if (!challenge.event) {
-            res.append($("<img>").attr("src", "res/images/star-five.svg").addClass("star-five"));
+            res.find("div.star-five").append($("<img>").attr("src", "res/images/star-five.svg"));
         }
         else {
-            res.append($("<img>").attr("src", "res/images/ticket.png").addClass("star-five"));
+            res.find("div.star-five").append($("<img>").attr("src", "res/images/ticket.png"));
         }
         return res;
     }
 
+    /** 
+     * Create challenge progress bar, which includes +/- buttons
+     * @param {ChallengeEntry} challenge - Challenge to get data from
+     * @returns {Cash} `div` element
+     */
+    private static progressBar(challenge: ChallengeEntry): Cash {
+        // Create our progress bar
+        let barText: string;
+        if (challenge.isCompleted())
+            barText = "Completed";
+        else
+            barText = `${challenge.progress}/${challenge.max}`;
+            
+        let bar = $("<div>").addClass("challenge-bar-interior bar-angle")
+            .append($("<div>").addClass("challenge-bar-progress bar-angle").attr("style", `width:${Math.floor((challenge.progress / challenge.max) * 100)}%`))
+            .append($("<div>").addClass("challenge-bar-progress-text")
+                .append($("<span>").text(barText))
+            )
+            .append($("<div>").addClass("challenge-bar-progress-stepper")
+                .append($("<div>").addClass("dot-half")
+                    .append($("<div>").addClass("dot minus").html("<img src='res/images/minus.svg'/>").attr("data-cy", "dot-minus"))
+                )
+                .append($("<div>").addClass("stepper-divide tab-angle"))
+                .append($("<div>").addClass("dot-half")
+                    .append($("<div>").addClass("dot plus").html("<img src='res/images/plus.svg'/>").attr("data-cy", "dot-plus"))
+                )
+            )
+        this.setupIncrementButtons(bar, challenge);
+        return bar;
+    }
+
     /** Create the edit div & setup the click listener for {@link handleClickEditButton} */
     private static setupEditButton(challenge: ChallengeEntry): Cash {
-        let res = $("<div>").addClass("edit-icon").attr("id", "")
+        let res = $("<div>").addClass("edit-icon icon").attr("id", "").attr("data-cy", "edit-button")
             .append($("<img>").attr("src", "res/images/edit-icon-32x32.png"));
 
         // The image has pointer events disabled, so we will always get the div out of the click
@@ -153,8 +163,6 @@ export class ChallengeRenderer {
     }
 
     private static setupIncrementButtons(bar: Cash, challenge: ChallengeEntry) {
-        // .append($("<div>").addClass("dot-half")
-        // .append($("<div>").addClass("dot minus")
         let halves: Cash = bar.find(".dot-half");
         let minus: Cash = halves.has(".dot.minus");
         let plus: Cash = halves.has(".dot.plus");

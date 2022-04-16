@@ -400,6 +400,7 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     padding-right: 2em;
     width: fit-content;
     min-width: 1em;
+    min-height: 0em;
     overflow-wrap: normal;
 }
 
@@ -515,16 +516,20 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     font-weight: bold;
     margin-right: 0.5em;
 }
-.star-five {
-    width: 2.5em;
-    height: 2.5em;
+.icon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 1em;
+    vertical-align: top;
+}
+/* Until/unless all our images are SVGs it doesn't make sense to scale them based
+on relative measures, just use the png image sizes */
+.icon img {
+    max-height: 32px;
 }
 /* Do the edit icon with CSS since sizing is easier this way */
 .edit-icon {
-    display: inline-flex;
     opacity: 0;
-    align-items: center;
-    margin-left: 1em;
     background: no-repeat url("res/images/edit-icon-32x32.png") 50% / 100%;
     transition-property: opacity;
     transition-duration: 100ms;
@@ -534,10 +539,7 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     filter: brightness(1.5);
 }
 .edit-icon img, .search-icon img {
-    vertical-align: top;
-    width: 100%;
     opacity: 0;
-    pointer-events: none;
 }
 
 .search-icon {
@@ -552,7 +554,9 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     opacity: 1;
 }
 .challenge-editor {
-    width: inherit;
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: space-between;
 }
 .edit-mode {
     display: inline-block;
@@ -583,9 +587,6 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
 .challenge-editor .star-container .edit-text-div {
     box-sizing: border-box;
 }
-/* .challenge-editor .edit-text[type="number"] {
-    width: 5em;
-} */
 .challenge-editor-line-1 {
     display: inline-flex;
     flex-direction: row;
