@@ -3,6 +3,7 @@ import { ChallengeEntry } from "src/challenge/ChallengeEntry";
 import { CHAR_APOSTROPHE, KEYWORDS, NUMBER_REGEX } from "src/constants";
 import { MODES } from "src/constants";
 import { ChallengeController } from "src/challenge/ChallengeController";
+import challengeEditorHtml from "content/challenge-editor.html";
 
 
 /**
@@ -170,7 +171,7 @@ export class ChallengeRenderer {
      */
         public static handleClickEditButton(challenge: ChallengeEntry) {
         let clickedElem = $(`#${challenge.id}`);
-        let cloneElem = $("#challenge-editor").clone().removeAttr("style").attr("id", `edit-${challenge.order}`);
+        let cloneElem = $(challengeEditorHtml).clone().removeAttr("style").attr("id", `edit-${challenge.id}`);
 
         cloneElem.find("div.edit-checkmark").on("click", e => ChallengeController.handleEditSave(e, challenge));
         cloneElem.find("div.edit-delete").on("click", e => ChallengeController.handleEditDelete(e, challenge));
