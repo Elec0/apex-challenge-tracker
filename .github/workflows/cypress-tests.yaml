@@ -24,28 +24,25 @@ jobs:
           if-no-files-found: error
           path: dist
 
-  # run-firefox-tests:
-  #   runs-on: ubuntu-latest
-  #   container: cypress/browsers:node14.17.0-chrome91-ff89
-  #   needs: install
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  run-firefox-tests:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node14.17.0-chrome91-ff89
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Download the build folders
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: build
-  #         path: dist
-
-  #     # Install NPM dependencies, cache them correctly
-  #     # and run all Cypress tests
-  #     - name: Cypress run
-  #       uses: cypress-io/github-action@v2
-  #       with:
-  #         # Specify Browser since container image is compile with Firefox
-  #         browser: firefox
-  #         start: npm start
+      - name: Download the build folders
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: dist
+      # Run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          browser: firefox
+          start: npm start
 
   run-chrome-tests:
     runs-on: ubuntu-latest
