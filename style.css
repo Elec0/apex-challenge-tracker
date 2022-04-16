@@ -105,7 +105,7 @@ hr {
     letter-spacing: 0.05em;
     font-weight: bold;
     text-transform: uppercase;
-    pointer-events: none;
+        /* pointer-events: none; */
 
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */

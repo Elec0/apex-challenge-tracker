@@ -44,9 +44,8 @@ function setupFirstTime() {
  */
 function setupListeners() {
     // Setup our nav button listener
-    $(".tab-entry").on("click", (e) => {
-       NavigationController.handleTabClick(e.target.id);
-    });
+    NavigationController.setupTabClickListeners();
+    
     window.addEventListener('hashchange', () => {
         // Move to the new hash when it's changed
         NavigationController.navToHash();
