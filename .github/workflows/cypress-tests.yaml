@@ -27,6 +27,7 @@ jobs:
   run-firefox-tests:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome91-ff89
+    needs: install
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -44,11 +45,12 @@ jobs:
         with:
           # Specify Browser since container image is compile with Firefox
           browser: firefox
-          build: npm run build
+          start: npm start
 
   run-chrome-tests:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome91-ff89
+    needs: install
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -66,4 +68,4 @@ jobs:
         with:
           # Specify Browser since container image is compile with Firefox
           browser: chrome
-          build: npm run build
+          start: npm start
