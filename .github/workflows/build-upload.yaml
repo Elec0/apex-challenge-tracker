@@ -25,13 +25,14 @@ jobs:
         with:
           server: ftp.elec0.com
           username: github-action@apex.elec0.com
-          password: ${{ secrets.ftp_password }}
+          password: ${{ secrets.FTP_PASSWORD }}
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
             **/src/**
             **/test/**
+            **/cypress/**
             **/*.json
             webpack.config.js
             README.md
