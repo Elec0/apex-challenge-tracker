@@ -22,9 +22,7 @@ jobs:
         with:
           name: build
           if-no-files-found: error
-          path: |
-            dist
-            node_modules/html-server
+          path: dist
 
   run-firefox-tests:
     runs-on: ubuntu-latest
@@ -38,9 +36,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build
-          path: |
-            dist
-            node_modules/html-server
+          path: dist
+
+      - name: Install http-server
+        run: npm install http-server
+
       # Run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v2.9.7
@@ -64,9 +64,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build
-          path: |
-            dist
-            node_modules/html-server
+          path: dist
+
+      - name: Install http-server
+        run: npm install http-server
+
       # Run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v2.9.7
