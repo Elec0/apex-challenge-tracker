@@ -1,5 +1,5 @@
 import $, { Cash } from "cash-dom";
-import { MODES } from "../constants";
+import { MODES } from "src/constants";
 import { Count, OptimalPathController } from "./OptimalPathController";
 
 export class OptimalPathRenderer {

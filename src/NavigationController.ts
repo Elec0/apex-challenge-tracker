@@ -1,7 +1,8 @@
-import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "./constants";
-import { SettingsController } from "./SettingsController";
-import { ChallengeController } from "./challenge/ChallengeController";
-import { OptimalPathController } from "./optimal-path/OptimalPathController";
+import { TAB_CHALLENGES, TAB_OPTIMAL_PATH, TAB_SETTINGS } from "src/constants";
+import { SettingsController } from "src/SettingsController";
+import { ChallengeController } from "src/challenge/ChallengeController";
+import { OptimalPathController } from "src/optimal-path/OptimalPathController";
+import $ from "cash-dom";
 
 
 export class NavigationController {
@@ -17,6 +18,17 @@ export class NavigationController {
             // so we need to manually load the content for the first time
             NavigationController.challengeController.navigateTo();
         }
+    }
+
+    public static setupTabClickListeners() {
+        $(".tab-entry").on("click", (e) => {
+            NavigationController.handleTabClick(e.target.id);
+        });
+        // Temporary hack before converting the clickable divs to buttons
+        $("#header > div > span").on("click", (e: MouseEvent) => {
+            e.stopPropagation();
+            (<HTMLElement>e.currentTarget).parentElement?.click();
+        });
     }
 
     /** Handle changing selected tab and navigation */

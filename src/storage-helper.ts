@@ -1,5 +1,6 @@
-import { ChallengeEntry } from "./challenge/ChallengeEntry";
-import { KEY_WEEK_DATA, KEY_CHALLENGES, MODES, WEEKS_NUM } from "./constants";
+import { ChallengeEntry } from "src/challenge/ChallengeEntry";
+import { KEY_WEEK_DATA, KEY_CHALLENGES, KEY_CHALLENGES_LZ, KEY_WEEK_DATA_LZ, MODES, WEEKS_NUM } from "src/constants";
+import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 
 export class StorageHelper {
     /**
@@ -25,6 +26,9 @@ export class StorageHelper {
 
     private static _storage = window.localStorage;
 
+    /** Track if we have checked for compression migration this load. Want to do it as little as possible */
+    private static checkedMigration: boolean = false;
+
     /** Set up our 2D week array */
     public static init() {
         for(let i = 0; i < this._weekData.length; ++i) {
@@ -32,11 +36,11 @@ export class StorageHelper {
         }
     }
     
-    public static getValue(key: string): any {
+    public static getValue(key: string) {
         return this._storage.getItem(key);
     }
 
-    public static setValue(key: string, val: any) {
+    public static setValue(key: string, val: string) {
         this._storage.setItem(key, val);
     }
 
@@ -122,14 +126,97 @@ export class StorageHelper {
     /** Explicitly save the current data to storage */
     public static saveToStorage() {
         console.debug("Saving to storage:", this.challenges, this.weekData);
-        this.setValue(KEY_CHALLENGES, JSON.stringify(Array.from(this.challenges)));
-        this.setValue(KEY_WEEK_DATA, JSON.stringify(this.weekData));
+        this.setValue(KEY_CHALLENGES_LZ, this.compressChallenges());
+        this.setValue(KEY_WEEK_DATA_LZ, this.compressWeekData());
+    }
+
+    /** Return the JSON representation of the current challenge data */
+    public static stringifyChallenges(): string {
+        return JSON.stringify(Array.from(this.challenges));
+    }
+
+    /** Compress the {@link stringifyChallenges} result with lz-string */
+    public static compressChallenges(): string {
+        return compressToUTF16(this.stringifyChallenges());
+    }
+
+    /** Return the JSON representation of the current week data */
+    public static stringifyWeekData(): string {
+        return JSON.stringify(this.weekData);
+    }
+
+    /** Compress the {@link stringifyWeekData} result with lz-string */
+    public static compressWeekData(): string {
+        return compressToUTF16(this.stringifyWeekData());
+    }
+
+    /** 
+     * For use in settings, output our data in a format we can later also import 
+     * Export as utf-16 byte array because I imagine trying to copy a whole ass block of unicode
+     * might be problematic for some people, or Notepad.
+     */
+    public static exportData(): string {
+        return `{"${KEY_CHALLENGES_LZ}": [${this.stringToUTF16Bytes(this.compressChallenges())}],` +
+                `"${KEY_WEEK_DATA_LZ}": [${this.stringToUTF16Bytes(this.compressWeekData())}]}`;
+    }
+
+    /**
+     * Bringing data back in from the user
+     * We effectively just duplicate the loading method from storage, but run verification
+     * on the incoming data before we trust it
+     */
+    public static importData(data: string): boolean {
+        // This being empty will stop anything happening for challenges in verifyData
+        let challengeIds: Array<string> = [];
+        let challenges: Map<string, ChallengeEntry> = this.challenges;
+        let weekData: string[][] = this.weekData;
+
+        let incoming = JSON.parse(data);
+        if (incoming[KEY_CHALLENGES_LZ] != null) {
+            console.info("Importing: Found challenge data");
+            // We expect this to be an array of numbers. If it isn't we're (probably) going to crash
+            let newChallengeData: number[] = incoming[KEY_CHALLENGES_LZ];
+            let newDataString = decompressFromUTF16(this.utf16BytesToString(newChallengeData));
+            if (newDataString == null) throw(new TypeError("Decompressed value was null!"));
+            
+            // We've got the data in the plaintext format we expect from storage, now parse it
+            let challengeArray = this.loadChallengesFromString(newDataString);
+            // Construct our temporary objects
+            challengeArray.forEach((value: [string, ChallengeEntry]) => {
+                challenges.set(value[1].id, value[1]);
+                challengeIds.push(value[0]);
+            });
+        }
+
+        if (incoming[KEY_WEEK_DATA_LZ] != null) {
+            console.info("Importing: Found week data");
+            let newWeekData: number[] = incoming[KEY_WEEK_DATA_LZ];
+            let newDataString = decompressFromUTF16(this.utf16BytesToString(newWeekData));
+            if (newDataString == null) throw(new TypeError("Decompressed value was null!"));
+
+            weekData = JSON.parse(newDataString);
+        }
+
+        if(!this.verifyData(challengeIds, challenges, weekData)) {
+            console.info("Importing: Data has been verified, saving")
+            // Replace our current objects and save everything
+            this._challenges = challenges;
+            this._weekData = weekData;
+            this.saveToStorage();
+            return true;
+        }
+        return false;
     }
 
     /** Load all the data out of storage */
     public static loadFromStorage() {
-        let storChallenges: string = this.getValue(KEY_CHALLENGES);
-        let storWeeks: string = this.getValue(KEY_WEEK_DATA);
+        if (!this.checkedMigration) {
+            this.checkCompressionMigration(); // We will now load compressed data properly
+        }
+
+        let storChallenges: string | null = this.getValue(KEY_CHALLENGES_LZ);
+        let storWeeks: string | null = this.getValue(KEY_WEEK_DATA_LZ);
+
         // console.debug("Load: raw string:", storChallenges);
         // console.debug("Load: raw string:", storWeeks);
 
@@ -137,26 +224,40 @@ export class StorageHelper {
         let challengeIds: Array<string> = [];
 
         if (storChallenges != null) {
-            let jMap: Map<string, any> = new Map(JSON.parse(storChallenges));
-            console.debug("Loaded map:", jMap);
+            storChallenges = decompressFromUTF16(storChallenges);
+            if (storChallenges == null) throw(new TypeError("Decompressed value was null!"));
 
-            jMap.forEach((value, key) => {
-                let newObj: ChallengeEntry = ChallengeEntry.loadFromJson(value);
-                // Saving the data while loading it is really bad, so let's not
-                this.setChallenge(newObj, false);
-                challengeIds.push(key);
-            })
-            console.debug("Loaded challenge map:", this.challenges);
+            let challengeArray = this.loadChallengesFromString(storChallenges);
+            challengeArray.forEach((value: [string, ChallengeEntry]) => {
+                this.setChallenge(value[1], false);
+                challengeIds.push(value[0]);
+            });
+            console.debug("Loaded challenge map:", this.challenges);            
         }
 
         if (storWeeks != null) {
+            storWeeks = decompressFromUTF16(storWeeks);
+            if (storWeeks == null) throw(new TypeError("Decompressed value was null!"));
+            
             let arr: Array<Array<string>> = JSON.parse(storWeeks);
             this._weekData = arr;
         }
         // Verify the data, and save it if anything changed.
-        if(this.verifyData(challengeIds)) {
+        if(this.verifyData(challengeIds, this.challenges, this.weekData)) {
             this.saveToStorage();
         }
+    }
+
+    private static loadChallengesFromString(challenges: string): Array<[string, ChallengeEntry]> {
+        let result: Array<[string, ChallengeEntry]> = [];
+        let jMap: Map<string, any> = new Map(JSON.parse(challenges));
+        console.debug("Loaded map:", jMap);
+
+        jMap.forEach((value, key) => {
+            let newObj: ChallengeEntry = ChallengeEntry.loadFromJson(value);
+            result.push([key, newObj]);
+        });
+        return result;
     }
 
     /**
@@ -166,42 +267,43 @@ export class StorageHelper {
      * Don't want to accidentally blow up the storage usage with excess orphans.
      * @returns boolean, true if any invalid data was found
      */
-    private static verifyData(challengeIds: Array<string>): boolean {
+    private static verifyData(challengeIds: Array<string>, challenges: Map<string, ChallengeEntry>,
+                                weekData: string[][]): boolean {
         let found: boolean = false;
         for(let i = 0; i < challengeIds.length; ++i) {
             // We just constructed the challengeIds array from the loaded list
             // of challenges, so each of them *will* exist right now.
-            let cWeek = this.challenges.get(challengeIds[i])!.week
+            let cWeek = challenges.get(challengeIds[i])!.week
             // Check the week assigned to the challenge to see if the challenge
             // is present in the week
-            if (this.weekData[cWeek].indexOf(challengeIds[i]) == -1) {
+            if (weekData[cWeek].indexOf(challengeIds[i]) == -1) {
                 // Problem: the challenge exists but isnt in the week it expects to be
                 // Solution: delete the challenge and do a pass through week data at the end
                 console.error("Found orphan challenge! Deleting! This should not happen.", `Expected to be in week ${cWeek}.`, 
-                              this.challenges.get(challengeIds[i]));
-                this.challenges.delete(challengeIds[i]);
+                              challenges.get(challengeIds[i]));
+                challenges.delete(challengeIds[i]);
                 found = true;
             }
         }
 
         // Check our saved length
-        if (this.weekData.length < WEEKS_NUM) {
-            console.warn(`Week array is too short, expanding from ${this.weekData.length} to ${WEEKS_NUM}.`);
-            console.debug(this.weekData);
+        if (weekData.length < WEEKS_NUM) {
+            console.warn(`Week array is too short, expanding from ${weekData.length} to ${WEEKS_NUM}.`);
+            console.debug(weekData);
 
-            for(let i = 0; i <= WEEKS_NUM - this.weekData.length; ++i) {
-                this.weekData.push(new Array<string>());
+            for(let i = 0; i <= WEEKS_NUM - weekData.length; ++i) {
+                weekData.push(new Array<string>());
             }
             found = true;
-            console.debug(this.weekData);
+            console.debug(weekData);
         }
         // Now ensure each entry in the weeks arrays exists
-        for(let i = 0; i < this.weekData.length; ++i) {
+        for(let i = 0; i < weekData.length; ++i) {
             let toRemove: Array<number> = []; // Keep track of what indexes to remove, if any
 
-            for(let j = 0; j < this.weekData[i].length; ++j) {
-                let curId = this.weekData[i][j];
-                if (!this.challenges.has(curId)) {
+            for(let j = 0; j < weekData[i].length; ++j) {
+                let curId = weekData[i][j];
+                if (!challenges.has(curId)) {
                     console.error("Week expects challenge that does not exist!", `Week ${i}[${j}] expects ${curId}`);
                     toRemove.push(j);
                     found = true;
@@ -209,7 +311,7 @@ export class StorageHelper {
             }
             for(let j = 0; j < toRemove.length; ++j) {
                 // Remove the invalid indexes
-                this.weekData[i].splice(toRemove[j], 1);
+                weekData[i].splice(toRemove[j], 1);
             }
         }
 
@@ -304,9 +406,63 @@ export class StorageHelper {
         return hash.toString();
     };
 
+    /** Convert string to utf 16 byte array.  */
+    public static stringToUTF16Bytes(str: string): number[] {
+        let bytes: number[] = [];
+        for (let i = 0; i < str.length; ++i) {
+            bytes.push(str.charCodeAt(i));
+        }
+        return bytes;
+    }
+
+    /** Convert utf 16 byte array to string */
+    public static utf16BytesToString(bytes: number[]): string {
+        let res: string = "";
+        bytes.forEach( e => {
+            res = res.concat(String.fromCharCode(e));
+        });
+        return res;
+    }
+
     /** Generate a random hash */
     public static generateHash(): string {
         return StorageHelper.hashCode(Math.random().toString());
+    }
+
+    /** 
+     * Determine if the data in localStorage is old and uncompressed. If so, compress it 
+     * If it was compressed, return true, else return false
+     */
+     private static checkCompressionMigration(): boolean {
+        let dirty: boolean = false;
+        let data: string | null = this.getValue(KEY_CHALLENGES);
+        if (data != null) {
+            this.migrateData(KEY_CHALLENGES, data);
+            dirty = true;
+        }
+
+        data = this.getValue(KEY_WEEK_DATA);
+        if (data != null) {
+            this.migrateData(KEY_WEEK_DATA, data);
+            dirty = true;
+        }
+
+        this.checkedMigration = true;
+        return dirty;
+    }
+    /** Take the old data from storage, compress it, save it */
+    private static migrateData(key: string, data: string) {
+        console.warn(`Found old data at ${key}! Migrating to new compression methods`);
+        let newKey: string;
+        if (key == KEY_CHALLENGES) 
+            newKey = KEY_CHALLENGES_LZ;
+        else if (key == KEY_WEEK_DATA)
+            newKey = KEY_WEEK_DATA_LZ;
+        else 
+            throw(new Error(`Invalid key '${key}'!`));
+
+        this.setValue(newKey, compressToUTF16(data));
+        this._storage.removeItem(key);
     }
 }
 

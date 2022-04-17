@@ -1,7 +1,7 @@
-export function storageAvailable(type) {
-    var storage;
+type ourType = Window["localStorage" | "sessionStorage"]
+export function localStorageAvailable() {
+    var storage: Storage = window.localStorage;
     try {
-        storage = window[type];
         var x = '__storage_test__';
         storage.setItem(x, x);
         storage.removeItem(x);
@@ -34,8 +34,8 @@ var entityMap = {
     '=': '&#x3D;'
   };
   
-export function escapeHtml (string) {
+export function escapeHtml (string: string) {
     return String(string).replace(/[&<>"'`=\/]/g, function (s) {
-      return entityMap[s];
+      return entityMap[s as keyof typeof entityMap];
     });
   }

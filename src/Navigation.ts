@@ -1,10 +1,11 @@
 import $ from "cash-dom";
+import { INavigation } from "src/INavigation"
 
 // Other background images
 /* background-image: url("https://cdnb.artstation.com/p/assets/images/images/040/012/643/large/derek-bentley-derekbentley-season10-lobby-03.jpg?1627586423"); */
 /* background-image: url("https://images6.alphacoders.com/992/992280.jpg"); */
 
-export abstract class Navigation implements INavigation{
+export abstract class Navigation implements INavigation {
     public static currentPage: Navigation;
 
     public isShowing: boolean = false;

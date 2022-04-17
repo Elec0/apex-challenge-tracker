@@ -1,8 +1,8 @@
 import $, { Cash } from "cash-dom";
-import { StorageHelper } from "../storage-helper";
-import { ChallengeController } from "./ChallengeController";
-import helpHtml from "./../../content/help.html";
-import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM} from "../constants";
+import { StorageHelper } from "src/storage-helper";
+import { ChallengeController } from "src/challenge/ChallengeController";
+import helpHtml from "content/help.html";
+import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM} from "src/constants";
 
 export class LeftBarRenderer {
     /** Create the Help button + contents */
@@ -10,7 +10,7 @@ export class LeftBarRenderer {
         let helpElements = $("<div>");
 
         let helpBtn = $("<div>")
-            .addClass("nav-bar nav-blur")
+            .addClass("nav-bar nav-blur").attr("data-cy", "lb-help")
             .html("<span id='help-caret'>&gt;</span> Help")
         helpBtn.on("click", ChallengeController.handleClickHelp);
         helpElements.append(helpBtn);
@@ -50,9 +50,10 @@ export class LeftBarRenderer {
         let newBtn = $("<div>")
             .addClass("nav-bar nav-blur")
             .attr("id", `weekbtn${weekNum}`)
+            .attr("data-cy", `lb-week-${weekNum}`)
             .text(`Week ${weekNum} ${prog}`);
         if (weekNum == 0) {
-            newBtn.text("Daily");
+            newBtn.text("Daily").attr("data-cy", `lb-week-daily`);
         }
         if (StorageHelper.currentWeek == weekNum) {
             newBtn.addClass("nav-bar-selected");

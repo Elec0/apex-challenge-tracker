@@ -1,0 +1,30 @@
+<!-- Template editor, the IDs will be changed by Challenge.ts.
+Already inside 'challenge-bar challenge-bar-blur' -->
+<div id="challenge-editor" class="challenge-editor" style="display:none">
+    <div style="display: inline-block">
+        <div class="challenge-editor-line-1">
+            <span>Mode: </span>
+            <select name="edit-mode" class="edit-mode" onchange="this.dataset.chosen=this.value;">
+                <option value="All">All</option>
+                <option value="BR">BR</option>
+                <option value="A">A</option>
+                <option value="C">C</option>
+            </select>
+            <span>Title: </span><span contenteditable="true" for-data="title" class="challenge-bar-interior bar-angle edit-text"></span>
+        </div>
+        <div class="challenge-editor-line-2">
+            <span>Progress: </span>
+            <span contenteditable="true" type="number" for-data="progress" class="edit-text challenge-bar-interior bar-angle"></span> 
+            / <span contenteditable="true" type="number" for-data="max" class="edit-text challenge-bar-interior bar-angle"></span>
+        </div>
+    </div>
+    <div class="star-container">
+        <div class="edit-text-div">
+            <span contenteditable="true" type="number" for-data="value" 
+                class="edit-text challenge-bar-interior bar-angle" data-cy="edit-star"></span>
+        </div>
+        <div class="star-five icon"><img src="res/images/star-five.svg" /></div>
+        <div class="edit-icon icon edit-checkmark" data-cy="edit-checkmark"><img src="res/images/checkmark.png" /></div>
+        <div class="edit-icon icon edit-delete" data-cy="edit-delete"><img src="res/images/trashcan.png" /></div>
+    </div>
+</div>

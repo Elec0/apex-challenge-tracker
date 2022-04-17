@@ -1,7 +1,12 @@
 <div id="settings-content-area">
     <div class="settings-content settings-blur">
-        <div id="delete-data" class="tab-entry tab-blur tab-button">
-            <span class="no-select">Delete Stored Data</span>
+        <input type="button" class="tab-entry tab-blur tab-button" id="delete-data" value="Delete Stored Data" data-cy="delete-data" />
+
+        <div id="import-export-area">
+            <input type="button" class="tab-entry tab-blur tab-button" id="import-data" value="Import Data" data-cy="import-data" />
+            <input type="button" class="tab-entry tab-blur tab-button" id="export-data" value="Export Data" data-cy="export-data" />
+            <hr/>
+            <textarea class="" id="import-export-text" rows="4" cols="50" data-cy="import-export-text-data" ></textarea>
         </div>
     </div>
 </div>
