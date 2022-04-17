@@ -470,11 +470,9 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
 
 .dot.plus {
     background: no-repeat url("res/images/plus.svg") 0% / 100%;
-    pointer-events: none;
 }
 .dot.minus {
     background: no-repeat url("res/images/minus.svg") 0% / 100%;
-    pointer-events: none;
 }
 .dot-half:hover .dot.minus {
     background: no-repeat url("res/images/minus-hover.svg") 0% / 100%;
@@ -515,6 +513,16 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     font-size: 1.4em;
     font-weight: bold;
     margin-right: 0.5em;
+}
+.star-five {
+    background: no-repeat url("res/images/star-five.svg") 50% / 100%;
+}
+.star-five:hover {
+    background: no-repeat url("res/images/star-five-hover.svg") 50% / 100%;
+    filter: brightness(1.5);
+}
+.star-five > img {
+    opacity: 0;
 }
 .icon {
     display: inline-flex;
