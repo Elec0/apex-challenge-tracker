@@ -37,7 +37,10 @@ While entering challenge text, the first number will be copied into the Max prog
 no other number has been entered there yet (it won't overwrite anything you manually put in.)
 
 After saving, the challenge will be parsed for keywords, and they will be highlighted in yellow. The list of keywords
-can be found on the site, under the Help menu on the left. They are case sensitive.
+can be found on the site, under the Help menu on the left. They are case sensitive.  
+Clicking on the `(+)/(-)` icons on the progress bar will change the
+value without having to manually edit it.  
+Clicking the star will auto-complete the challenge.
 
 ## Optimal Path
 The primary feature, processing all entered challenges and showing what modes, characters, and weapon types are best to use to earn the maximum points.

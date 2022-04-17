@@ -111,9 +111,10 @@ export class ChallengeRenderer {
     private static starify(challenge: ChallengeEntry): Cash {
         let res = $("<div>").addClass("star-container").attr("data-cy", "star-container")
             .append($("<span>").text(`+${challenge.value}`))
-            .append($("<div>").addClass("star-five icon"));
+            .append($("<div>").addClass("star-five icon").attr("data-cy", "star-five"));
         if (!challenge.event) {
             res.find("div.star-five").append($("<img>").attr("src", "res/images/star-five.svg"));
+            res.find("img").on("click", e => ChallengeController.handleClickStar(challenge));
         }
         else {
             res.find("div.star-five").append($("<img>").attr("src", "res/images/ticket.png"));
@@ -139,7 +140,7 @@ export class ChallengeRenderer {
             .append($("<div>").addClass("challenge-bar-progress-text")
                 .append($("<span>").text(barText))
             )
-            .append($("<div>").addClass("challenge-bar-progress-stepper")
+            .append($("<div>").addClass("challenge-bar-progress-stepper no-select")
                 .append($("<div>").addClass("dot-half")
                     .append($("<div>").addClass("dot minus").html("<img src='res/images/minus.svg'/>").attr("data-cy", "dot-minus"))
                 )

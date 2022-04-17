@@ -220,6 +220,16 @@ export class ChallengeController extends Navigation {
         ChallengeController.reloadChallenge(challenge);
     }
 
+    /** Handle when the star is clicked: complete the challenge */
+    public static handleClickStar(challenge: ChallengeEntry) {
+        if (challenge.progress == challenge.max)
+            return;
+
+        challenge.progress = challenge.max;
+        StorageHelper.saveChallenge(challenge);
+        ChallengeController.reloadChallenge(challenge);
+    }
+
     /**
      * Not all challenges should have the same interval. +1 on a 5000 damage 
      * one makes no sense and is useless.
@@ -231,12 +241,12 @@ export class ChallengeController extends Navigation {
      * -- Most challenges will fall into the previous zones --
      * max 10000: interval  = 1000
      */
-    // public static getIntervalValue(challenge: ChallengeEntry): number {
     public static getIntervalValue(max: number): number {
         // Get the order of magnitude of the challenge
         const oom: number = Math.trunc(Math.log10(max));
 
         // Basic level is one order of magnitude lower than the max value is
+        // this a lot of math for essentially dividing by 10
         let ret = Math.pow(10, Math.max(oom, 1) - 1);
         
         if (oom == 2 && max > 500)
