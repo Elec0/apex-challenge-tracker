@@ -5,7 +5,7 @@ on: [push]
 jobs:
   install:
     runs-on: ubuntu-latest
-    container: cypress/included:9.5.4
+    container: cypress/browsers:node14.17.6-chrome100-ff98
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,7 +26,7 @@ jobs:
 
   run-firefox-tests:
     runs-on: ubuntu-latest
-    container: cypress/included:9.5.4
+    container: cypress/browsers:node14.17.6-chrome100-ff98
     needs: install
     steps:
       - name: Checkout
@@ -42,11 +42,15 @@ jobs:
         uses: cypress-io/github-action@v2.9.7
         with:
           browser: firefox
+          install: false
+          wait-on: 'http://localhost:8000'
+          wait-on-timeout: 120
+          parallel: true
           start: npm start
 
   run-chrome-tests:
     runs-on: ubuntu-latest
-    container: cypress/included:9.5.4
+    container: cypress/browsers:node14.17.6-chrome100-ff98
     needs: install
     steps:
       - name: Checkout
@@ -62,4 +66,8 @@ jobs:
         uses: cypress-io/github-action@v2.9.7
         with:
           browser: chrome
+          install: false
+          wait-on: 'http://localhost:8000'
+          wait-on-timeout: 120
+          parallel: true
           start: npm start
