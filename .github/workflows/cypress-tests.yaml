@@ -1,6 +1,9 @@
 name: Cypress Tests with installation job
 
-on: [push]
+on: 
+  push:
+    branches-ignore:
+      - master
 
 jobs:
   install:

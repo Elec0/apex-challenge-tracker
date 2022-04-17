@@ -1,4 +1,4 @@
-name: Bulid with NPM and upload
+name: NodeJS with Webpack
 
 on:
   workflow_dispatch:
