@@ -24,35 +24,6 @@ jobs:
           if-no-files-found: error
           path: dist
 
-  run-firefox-tests:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.6-chrome100-ff98
-    needs: install
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Download the build folders
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: dist
-
-      - name: Install http-server
-        run: npm install http-server
-
-      # Run all Cypress tests
-      - name: Cypress run
-        uses: cypress-io/github-action@v2.9.7
-        with:
-          browser: firefox
-          install: false
-          wait-on: 'http://localhost:8000'
-          wait-on-timeout: 120
-          record: false
-          parallel: false
-          start: npm start
-
   run-chrome-tests:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.6-chrome100-ff98
@@ -78,6 +49,4 @@ jobs:
           install: false
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
-          record: false
-          parallel: false
           start: npm start
