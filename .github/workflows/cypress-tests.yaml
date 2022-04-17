@@ -50,7 +50,7 @@ jobs:
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
           record: false
-          parallel: true
+          parallel: false
           start: npm start
 
   run-chrome-tests:
@@ -79,5 +79,5 @@ jobs:
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
           record: false
-          parallel: true
+          parallel: false
           start: npm start
