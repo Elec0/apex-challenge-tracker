@@ -5,7 +5,7 @@ on: [push]
 jobs:
   install:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.6-chrome100-ff98
+    container: cypress/included:9.5.4
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,7 +26,7 @@ jobs:
 
   run-firefox-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.6-chrome100-ff98
+    container: cypress/included:9.5.4
     needs: install
     steps:
       - name: Checkout
@@ -46,7 +46,7 @@ jobs:
 
   run-chrome-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.6-chrome100-ff98
+    container: cypress/included:9.5.4
     needs: install
     steps:
       - name: Checkout
