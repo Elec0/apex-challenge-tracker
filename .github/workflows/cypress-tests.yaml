@@ -49,6 +49,7 @@ jobs:
           install: false
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
+          record: false
           parallel: true
           start: npm start
 
@@ -77,5 +78,6 @@ jobs:
           install: false
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
+          record: false
           parallel: true
           start: npm start
