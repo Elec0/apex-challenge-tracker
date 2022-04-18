@@ -75,7 +75,7 @@ hr {
 #challenge-outer-area {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    flex-grow: 0.8;
 }
 
 #settings-content-area {
