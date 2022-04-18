@@ -35,4 +35,5 @@ jobs:
             **/cypress/**
             **/*.json
             webpack.config.js
+            jest.config.js
             README.md

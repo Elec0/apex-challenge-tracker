@@ -27,10 +27,12 @@
     --color-tab-entry-background:   rgba(55, 55, 60, 0.8);
     --color-tab-selected-hover:     rgba(194, 18, 42, 0.8);
     --color-tab-selected-hover-border: rgb(142, 142, 143);
-    --color-tab-sel-border:         rgb(255, 78, 29);
+    
+    --color-path-mode-border:       rgb(255, 78, 29);
 
     --color-background-challenge-bar-interior: rgba(27, 27, 27, 0.8);
     --color-challenge-bar-interior: rgb(240, 144, 116);
+    --color-challenge-bar-progress: rgb(140, 65, 55);
 
     --color-background-input-text: var(--color-background-challenge-bar-interior);
     --color-input-text: rgb(240, 144, 116);
@@ -419,7 +421,7 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     left: 0em;
     height: 100%;
     padding: 0.5% 1% 0.5% 1%;
-    background-color: rgb(140, 65, 55);
+    background-color: var(--color-challenge-bar-progress);
     z-index: -1;
 }
 
@@ -693,6 +695,12 @@ on relative measures, just use the png image sizes */
 #import-export-area input {
     flex-grow: 1;
 }
+#import-export-area > div {
+    display: inherit;
+    flex-basis: inherit;
+    column-gap: inherit;
+    row-gap: inherit;
+}
 /* #endregion Settings */
 
 /* #region Optimal Path */
@@ -790,6 +798,10 @@ div.entries {
     background-color: var(--scrollbar-bg, auto);
 }
 
+input, textarea {
+    font-size: inherit;
+    font-family: inherit;
+}
 input[type="button"] {
     display: flex;
     border-top: none;
@@ -798,15 +810,20 @@ input[type="button"] {
     padding: 0 0 0 0;
     white-space: nowrap;
     box-sizing: content-box;
-    font-size: inherit;
-    font-family: inherit;
+}
+input[type="text"] {
+    border-width: 0px;
+    outline-width: 0px;
+}
+input[type="text"]:focus-visible {
+    box-shadow: 0px -1px 0px 0px var(--color-challenge-bar-progress) inset;
 }
 
-textarea {
+textarea, input[type="text"] {
     background-color: var(--color-background-input-text);
     color: var(--color-input-text);
 }
 textarea:focus-visible {
-    outline: solid var(--color-tab-selected-hover) 1px;
+    outline: solid var(--color-challenge-bar-progress) 1px;
 }
 /* #endregion */
