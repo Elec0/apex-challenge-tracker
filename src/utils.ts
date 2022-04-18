@@ -34,8 +34,12 @@ var entityMap = {
     '=': '&#x3D;'
   };
   
-export function escapeHtml (string: string) {
-    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+  /** Escapes dangerous characters, returns empty if given null string */
+export function escapeHtml (toEscape: string | null): string {
+  if (toEscape == null)
+    return "";
+
+    return String(toEscape).replace(/[&<>"'`=\/]/g, function (s) {
       return entityMap[s as keyof typeof entityMap];
     });
   }

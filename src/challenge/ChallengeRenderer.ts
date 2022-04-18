@@ -1,9 +1,9 @@
 import $, { Cash } from "cash-dom";
 import { ChallengeEntry } from "src/challenge/ChallengeEntry";
-import { CHAR_APOSTROPHE, KEYWORDS, NUMBER_REGEX } from "src/constants";
+import { KEYWORDS, NUMBER_REGEX } from "src/constants";
 import { MODES } from "src/constants";
 import { ChallengeController } from "src/challenge/ChallengeController";
-import challengeEditorHtml from "content/challenge-editor.html";
+
 
 
 /**
@@ -159,7 +159,7 @@ export class ChallengeRenderer {
             .append($("<img>").attr("src", "res/images/edit-icon-32x32.png"));
 
         // The image has pointer events disabled, so we will always get the div out of the click
-        res.on("click", (event) => this.handleClickEditButton(challenge));
+        res.on("click", (event) => ChallengeController.handleClickEditButton(challenge));
         return res;
     }
 
@@ -169,48 +169,5 @@ export class ChallengeRenderer {
         let plus: Cash = halves.has(".dot.plus");
         minus.on("click", e => ChallengeController.handleClickMinus(challenge));
         plus.on("click", e => ChallengeController.handleClickPlus(challenge));
-    }
-
-    /**
-     * Start edit mode.
-     * Swap all the fields with text boxes, add a save button & listen for tab & enter keys.
-     * Add the IDs of the challenge to each input.
-     *
-     * On submit, save the data to storage, clear and reload the entire challenge list.
-     */
-        public static handleClickEditButton(challenge: ChallengeEntry) {
-        let clickedElem = $(`#${challenge.id}`);
-        let cloneElem = $(challengeEditorHtml).clone().removeAttr("style").attr("id", `edit-${challenge.id}`);
-
-        cloneElem.find("div.edit-checkmark").on("click", e => ChallengeController.handleEditSave(e, challenge));
-        cloneElem.find("div.edit-delete").on("click", e => ChallengeController.handleEditDelete(e, challenge));
-        // Setup the ability to press enter and save the challenge
-        cloneElem.on("keydown", e => ChallengeController.handleKeyboardEvent(e, challenge));
-
-        // Make the selector have the correct formatting
-        cloneElem.find("select.edit-mode").attr("data-chosen", `${MODES[challenge.mode]}`).val(MODES[challenge.mode]);
-
-        // Set the span inputs to have the existing data, if it exists
-        let title = cloneElem.find("span[for-data='title']");
-        let titleText = challenge.text;
-        // Switch the escaped character out for the real one
-        if (titleText.includes(CHAR_APOSTROPHE))
-            titleText = titleText.replace(CHAR_APOSTROPHE, "'");
-            
-        title.text(titleText);
-        title.on("input", e => ChallengeController.handleTypeChallenge(e, challenge));
-
-        cloneElem.find("span[for-data='progress']").text(challenge.progress.toString());
-        cloneElem.find("span[for-data='max']").text(challenge.max.toString())
-            .attr("data-entered", String(challenge.max != 1)) // Keep track if the user enters data here
-            .on("input", e => { $(e.target).attr("data-entered", "true"); });
-        cloneElem.find("span[for-data='value']").text(challenge.value.toString());
-
-        // Drop the display html and replace it with our new edit layout
-        clickedElem.empty();
-        clickedElem.append(cloneElem);
-
-        if (title[0] != undefined)
-            title[0].focus();
     }
 }

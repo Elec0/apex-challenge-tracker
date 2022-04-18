@@ -103,12 +103,7 @@ hr {
     justify-content: center;
     width: 100%;
 }
-.no-select, #header > div > span {
-    letter-spacing: 0.05em;
-    font-weight: bold;
-    text-transform: uppercase;
-        /* pointer-events: none; */
-
+.no-select {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -125,12 +120,12 @@ hr {
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
     }
-    div.tab-selected, div .tab-blur:hover {
+    div .tab-selected, div .tab-blur:hover {
         background-color: var(--color-tab-blur-select-hover);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
     }
-    div.tab-bracket-blur {
+    div .tab-bracket-blur {
         background-color: var(--color-tab-blur-bracket);
         -webkit-backdrop-filter: blur(3px);
         backdrop-filter: blur(3px);
@@ -147,6 +142,9 @@ hr {
     border-bottom: 0.3em solid rgb(142, 142, 143);
     color: #ABABAB;
     cursor: pointer;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 .tab-selected, .tab-entry:hover {
     background-color: var(--color-tab-selected-hover);
@@ -182,7 +180,7 @@ hr {
     height: 2em;
     background-color: rgba(55, 55, 60, 0.7);
 }
-#add-challenge > span {
+#add-challenge > * {
     padding-top: 0.1em;
 }
 /* #endregion */
@@ -400,9 +398,8 @@ div.nav-bar-selected, .nav-bar:hover:not(#help-content) {
     padding-left: 0.2em;
     padding-top: 0.2em;
     padding-right: 2em;
-    width: fit-content;
-    min-width: 1em;
-    min-height: 0em;
+    width: unset;
+    min-height: 0em; 
     overflow-wrap: normal;
 }
 
@@ -597,10 +594,19 @@ on relative measures, just use the png image sizes */
 .challenge-editor .star-container .edit-text-div {
     box-sizing: border-box;
 }
-.challenge-editor-line-1 {
+.challenge-editor .challenge-text-container {
     display: inline-flex;
+    max-width: 60%;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.challenge-editor-line-1 {
+    display: flex;
     flex-direction: row;
     align-items: center;
+}
+.challenge-editor-line-1 input[for-data="title"] {
+    width: 100%;
 }
 .challenge-editor-line-2 {
     margin-top: 0.2em;
@@ -811,19 +817,19 @@ input[type="button"] {
     white-space: nowrap;
     box-sizing: content-box;
 }
-input[type="text"] {
+input[type="text"], input[type="number"] {
     border-width: 0px;
     outline-width: 0px;
 }
-input[type="text"]:focus-visible {
+input[type="text"]:focus-visible, input[type="number"]:focus-visible {
     box-shadow: 0px -1px 0px 0px var(--color-challenge-bar-progress) inset;
 }
 
-textarea, input[type="text"] {
+textarea, input[type="text"], input[type="number"] {
     background-color: var(--color-background-input-text);
     color: var(--color-input-text);
 }
-textarea:focus-visible {
+textarea:focus-visible, select:focus-visible {
     outline: solid var(--color-challenge-bar-progress) 1px;
 }
 /* #endregion */
