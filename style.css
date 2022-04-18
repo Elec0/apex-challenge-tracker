@@ -103,7 +103,7 @@ hr {
     justify-content: center;
     width: 100%;
 }
-.no-select {
+.no-select, button {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -178,10 +178,6 @@ hr {
 #add-challenge {
     width: 50%;
     height: 2em;
-    background-color: rgba(55, 55, 60, 0.7);
-}
-#add-challenge > * {
-    padding-top: 0.1em;
 }
 /* #endregion */
 
@@ -564,6 +560,7 @@ on relative measures, just use the png image sizes */
     flex: 0 0 100%;
     display: flex;
     justify-content: space-between;
+    overflow: hidden;
 }
 .edit-mode {
     display: inline-block;
@@ -587,29 +584,49 @@ on relative measures, just use the png image sizes */
 }
 .challenge-editor .star-container {
     display: inline-flex;
-    float: right;
     height: 100%;
     align-content: center;
+    width: 40%;
+    flex-wrap: wrap;
+    flex-direction: row;
 }
 .challenge-editor .star-container .edit-text-div {
     box-sizing: border-box;
 }
-.challenge-editor .challenge-text-container {
+.challenge-text-container {
     display: inline-flex;
-    max-width: 60%;
     flex-direction: column;
-    flex-grow: 1;
+    width: 60%;
 }
 .challenge-editor-line-1 {
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
+    width: 100%;
 }
 .challenge-editor-line-1 input[for-data="title"] {
-    width: 100%;
+    flex-grow: 1;
 }
 .challenge-editor-line-2 {
     margin-top: 0.2em;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.line-2-inputs {
+    flex-grow: 1;
+    display: inline-flex;
+}
+.line-2-inputs > input[type="number"] {
+    width: 40%;
+}
+.line-2-inputs > span {
+    display: inline-flex;
+    width: 10%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
 }
 .edit-icon.edit-checkmark {
     opacity: 1;
@@ -654,14 +671,14 @@ on relative measures, just use the png image sizes */
     width: 1em;
     height: 1em;
 }
-#challenge-filter-area input[type="button"] {
+#challenge-filter-area :is(input[type="button"], button) {
     letter-spacing: unset;
     font-weight: normal;
     text-transform: none;
     padding-top: 0.1em;
 }
 
-.filter-bar-textbox {
+#filter-bar-textbox {
     margin-left: 1em;
     min-height: auto;
 }
@@ -706,6 +723,9 @@ on relative measures, just use the png image sizes */
     flex-basis: inherit;
     column-gap: inherit;
     row-gap: inherit;
+}
+#import-export-text {
+    width: 100%;
 }
 /* #endregion Settings */
 
@@ -804,11 +824,11 @@ div.entries {
     background-color: var(--scrollbar-bg, auto);
 }
 
-input, textarea {
+input, textarea, button {
     font-size: inherit;
     font-family: inherit;
 }
-input[type="button"] {
+input[type="button"], button {
     display: flex;
     border-top: none;
     border-left: none;
@@ -818,6 +838,8 @@ input[type="button"] {
     box-sizing: content-box;
 }
 input[type="text"], input[type="number"] {
+    margin-left: 0.5em;
+    min-width: 0em;
     border-width: 0px;
     outline-width: 0px;
 }

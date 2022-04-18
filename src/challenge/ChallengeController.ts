@@ -149,9 +149,8 @@ export class ChallengeController extends Navigation {
             ChallengeRenderer.render(challenge);
         });
 
-        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur tab-button")
-            .attr("id", "add-challenge").attr("tabindex", "0")
-            .append($("<span>").text("New Challenge"));
+        let btnAdd = $("<button>").addClass("tab-entry tab-angle tab-blur tab-button")
+            .attr("id", "add-challenge").attr("tabindex", "0").text("New Challenge");
         btnAdd.on("click", e => this.handleClickAddChallenge(e));
         $("#challenge-content-area").append(btnAdd);
     }

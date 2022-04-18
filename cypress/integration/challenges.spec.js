@@ -1,9 +1,15 @@
 /// <reference types="Cypress" />
 import { enterChallenge } from "../plugins/util-functions";
 
+before(() => {
+    cy.reload(true);
+});
+
 describe("Create a challenge", () => {
-    it("Creates, verifies, then deletes a new challenge", () => {
+    beforeEach(() => {
         cy.visit("/");
+    })
+    it("Creates, verifies, then deletes a new challenge", () => {
         cy.get("[data-cy='tab-challenges']").click();
 
         cy.get(".challenge-editor").should("not.exist");
@@ -26,8 +32,6 @@ describe("Create a challenge", () => {
     });
 
     it("Verifiy the interval buttons work properly with a newly created challenge", () => {
-        cy.visit("/");
-
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Kill peopl with sniper rifles as Ash.", "1", "10", "7");
 
@@ -43,8 +47,6 @@ describe("Create a challenge", () => {
     });
 
     it("Verifies the left bar properly counts challenges", () => {
-        cy.visit("/");
-
         enterChallenge("Kill people with sniper rifles as Ash.", "1", "10", "7", true);
 
         for(let i = 1; i < 13; ++i) {
