@@ -123,16 +123,16 @@ export class ChallengeController extends Navigation {
     public static handleTypeChallenge(event: Event, challenge: ChallengeEntry) {
         if (event.target == undefined)
             return;
-        let maxElem = $(`#${challenge.id}`).find("span[for-data='max']");
+        let maxElem = $(`#${challenge.id}`).find("[for-data='max']");
 
         // If the user has entered something, don't try and overwrite it
         if (maxElem.attr("data-entered") == "true")
             return;
 
-        let curElem: HTMLElement = (<HTMLElement>event.target);
-        if (curElem.textContent == null || curElem.textContent.match(NUMBER_REGEX) == null) 
+        let curElem: HTMLInputElement = (<HTMLInputElement>event.target);
+        if (curElem.value == null || curElem.value.match(NUMBER_REGEX) == null) 
             return;
-        let m: RegExpMatchArray = curElem.textContent.match(NUMBER_REGEX)!;
+        let m: RegExpMatchArray = curElem.value.match(NUMBER_REGEX)!;
 
         maxElem.val(m[0]);
     }
@@ -214,9 +214,11 @@ export class ChallengeController extends Navigation {
     public static handleClickSearch(event: Event) {
         if ($(this).hasClass("selected")) {
             $("[for-data='filter']").attr("disabled");
+            $("#challenge-filter-area > :is(input, button)").attr("tabindex", "-1");
         }
         else {
             $("[for-data='filter']").removeAttr("disabled");
+            $("#challenge-filter-area > :is(input, button)").removeAttr("tabindex");
         }
 
         $(this).toggleClass("selected");

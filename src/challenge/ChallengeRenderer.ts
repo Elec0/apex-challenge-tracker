@@ -9,19 +9,6 @@ import { ChallengeController } from "src/challenge/ChallengeController";
 /**
  * Private class to handle putting everything in the DOM.
  * Generate the following structure
- * @example
- *  <div class="challenge-bar">
-        <div class="challenge-bar-data">
-            <div class="challenge-bar-title"><span class="cb-type type-br">BR</span><span>Play 2 matches as <span class="keyword">Pathfinder</span></span></div>
-            <div class="challenge-bar-interior bar-angle">
-                <div class="challenge-bar-progress bar-angle">1/2</div>
-            </div>
-        </div>
-        <div class="star-container">
-            <span>+1</span>
-            <img src="res/images/star-five.png" class="star-five"></img>
-        </div>
-    </div>
 */
 export class ChallengeRenderer {
     /**

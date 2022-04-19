@@ -24,11 +24,6 @@ export class NavigationController {
         $(".tab-entry").on("click", (e) => {
             NavigationController.handleTabClick(e.target.id);
         });
-        // Temporary hack before converting the clickable divs to buttons
-        $("#header > div > span").on("click", (e: MouseEvent) => {
-            e.stopPropagation();
-            (<HTMLElement>e.currentTarget).parentElement?.click();
-        });
     }
 
     /** Handle changing selected tab and navigation */

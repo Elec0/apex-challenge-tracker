@@ -75,7 +75,8 @@ hr {
 #challenge-outer-area {
     display: flex;
     flex-direction: column;
-    flex-grow: 0.8;
+    flex: 0.8 0 0;
+    /* flex-grow: 0.8; */
 }
 
 #settings-content-area {
@@ -662,7 +663,6 @@ on relative measures, just use the png image sizes */
     padding: 0.2em;
     transition-property: width;
     transition-duration: 400ms;
-
 }
 #challenge-filter-area.selected {
     width: 100%;
@@ -677,12 +677,10 @@ on relative measures, just use the png image sizes */
     text-transform: none;
     padding-top: 0.1em;
 }
-
 #filter-bar-textbox {
     margin-left: 1em;
     min-height: auto;
 }
-
 #btn-filter, #btn-filter-clear, #btn-filter-completed {
     height: auto;
 }

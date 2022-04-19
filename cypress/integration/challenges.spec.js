@@ -1,11 +1,10 @@
 /// <reference types="Cypress" />
 import { enterChallenge } from "../plugins/util-functions";
 
-before(() => {
-    cy.reload(true);
-});
-
 describe("Create a challenge", () => {
+    before(() => {
+        cy.reload(true);
+    });
     beforeEach(() => {
         cy.visit("/");
     })
@@ -54,5 +53,21 @@ describe("Create a challenge", () => {
             enterChallenge("Kill people with sniper rifles as Ash.", "1", "10", "7", true);
             cy.contains(`Week ${i} (0/1)`);
         }
+    });
+
+    it.only("Verifies the auto-population and entering of challenges", () => {
+        cy.contains("New Challenge").click();
+        cy.get(".challenge-editor").should("be.visible");
+        cy.contains("Title:");
+        cy.contains("Progress:");
+    
+   
+        cy.get("[for-data='title']").type("Find 1500 eggs");
+        cy.get("[for-data='max']").should("have.value", 1500);
+
+        cy.get("[for-data='progress']").should("have.value", 0);
+        cy.get("[for-data='value']").should("have.value", 0);
+        
+        // cy.get("[data-cy='edit-checkmark']").click();
     });
 });

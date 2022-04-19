@@ -2,11 +2,14 @@
     <div id="challenge-filter-area" class="challenge-bar-blur tab-angle-left">
         <div id="search-icon" class="search-icon" data-cy="filter-icon"><img src="res/images/search-icon.png" /></div>
         <input type="text" for-data="filter" id="filter-bar-textbox"
-            class="challenge-bar-interior bar-angle edit-text" data-cy="filter-text"></span>
+                class="challenge-bar-interior bar-angle edit-text" data-cy="filter-text" tabindex="-1"></span>
 
-        <button class="tab-entry tab-angle tab-blur tab-button" id="btn-filter" data-cy="filter-btnFilter">Filter</button>
-        <button class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-clear" data-cy="filter-btnClear">Clear</button>
-        <button class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-completed" data-cy="filter-btnCompleted">Show Completed</button>
+        <button class="tab-entry tab-angle tab-blur tab-button" id="btn-filter" 
+                data-cy="filter-btnFilter" tabindex="-1">Filter</button>
+        <button class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-clear" 
+                data-cy="filter-btnClear" tabindex="-1">Clear</button>
+        <button class="tab-entry tab-angle tab-blur tab-button" id="btn-filter-completed" 
+                data-cy="filter-btnCompleted" tabindex="-1">Show Completed</button>
     </div>
     <div id="challenge-content-area"></div>
 </div>
