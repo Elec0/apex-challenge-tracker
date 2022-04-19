@@ -2,8 +2,13 @@
 import { enterChallenge } from "../plugins/util-functions";
 
 describe("Create a challenge", () => {
-    it("Creates, verifies, then deletes a new challenge", () => {
+    before(() => {
+        cy.reload(true);
+    });
+    beforeEach(() => {
         cy.visit("/");
+    })
+    it("Creates, verifies, then deletes a new challenge", () => {
         cy.get("[data-cy='tab-challenges']").click();
 
         cy.get(".challenge-editor").should("not.exist");
@@ -26,8 +31,6 @@ describe("Create a challenge", () => {
     });
 
     it("Verifiy the interval buttons work properly with a newly created challenge", () => {
-        cy.visit("/");
-
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Kill peopl with sniper rifles as Ash.", "1", "10", "7");
 
@@ -43,8 +46,6 @@ describe("Create a challenge", () => {
     });
 
     it("Verifies the left bar properly counts challenges", () => {
-        cy.visit("/");
-
         enterChallenge("Kill people with sniper rifles as Ash.", "1", "10", "7", true);
 
         for(let i = 1; i < 13; ++i) {
@@ -52,5 +53,21 @@ describe("Create a challenge", () => {
             enterChallenge("Kill people with sniper rifles as Ash.", "1", "10", "7", true);
             cy.contains(`Week ${i} (0/1)`);
         }
+    });
+
+    it("Verifies the auto-population and entering of challenges", () => {
+        cy.contains("New Challenge").click();
+        cy.get(".challenge-editor").should("be.visible");
+        cy.contains("Title:");
+        cy.contains("Progress:");
+    
+   
+        cy.get("[for-data='title']").type("Find 1500 eggs");
+        cy.get("[for-data='max']").should("have.value", 1500);
+
+        cy.get("[for-data='progress']").should("have.value", 0);
+        cy.get("[for-data='value']").should("have.value", 0);
+        
+        // cy.get("[data-cy='edit-checkmark']").click();
     });
 });

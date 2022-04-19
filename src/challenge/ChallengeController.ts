@@ -5,7 +5,8 @@ import { escapeHtml } from "src/utils";
 import { ChallengeRenderer } from "src/challenge/ChallengeRenderer";
 import { Navigation } from "src/Navigation";
 import challengeHtml from "content/challenge.html";
-import { MODES, NUMBER_REGEX } from "src/constants";
+import challengeEditorHtml from "content/challenge-editor.html";
+import { CHAR_APOSTROPHE, MODES, NUMBER_REGEX } from "src/constants";
 import { LeftBarRenderer } from "src/challenge/LeftBarRenderer";
 
 export class ChallengeController extends Navigation {
@@ -39,10 +40,10 @@ export class ChallengeController extends Navigation {
     public static handleEditSave(event: any, challenge: ChallengeEntry) {
         let cloneElem = $(`#${challenge.id}`);
         let modeSelector    = cloneElem.find("select.edit-mode").val();
-        let titleText       = cloneElem.find("span[for-data='title']").text();
-        let progressText    = cloneElem.find("span[for-data='progress']").text();
-        let maxText         = cloneElem.find("span[for-data='max']").text();
-        let valueText       = cloneElem.find("span[for-data='value']").text();
+        let titleText       = cloneElem.find("[for-data='title']").val();
+        let progressText    = cloneElem.find("[for-data='progress']").val();
+        let maxText         = cloneElem.find("[for-data='max']").val();
+        let valueText       = cloneElem.find("[for-data='value']").val();
 
         challenge.text = escapeHtml(titleText as string);
         // Turning a string variable into an enum string key is strange
@@ -67,6 +68,50 @@ export class ChallengeController extends Navigation {
         elem.remove();
     }
 
+    /**
+     * Start edit mode.
+     * Swap all the fields with text boxes, add a save button & listen for tab & enter keys.
+     * Add the IDs of the challenge to each input.
+     *
+     * On submit, save the data to storage, clear and reload the entire challenge list.
+     */
+     public static handleClickEditButton(challenge: ChallengeEntry) {
+        let clickedElem = $(`#${challenge.id}`);
+        let cloneElem = $(challengeEditorHtml).clone().removeAttr("style").attr("id", `edit-${challenge.id}`);
+
+        cloneElem.find("div.edit-checkmark").on("click", e => ChallengeController.handleEditSave(e, challenge));
+        cloneElem.find("div.edit-delete").on("click", e => ChallengeController.handleEditDelete(e, challenge));
+        // Setup the ability to press enter and save the challenge
+        cloneElem.on("keydown", e => ChallengeController.handleKeyboardEvent(e, challenge));
+
+        // Make the selector have the correct formatting
+        cloneElem.find("select.edit-mode").attr("data-chosen", `${MODES[challenge.mode]}`).val(MODES[challenge.mode]);
+
+        // Set the inputs to have the existing data, if it exists
+        let title = cloneElem.find("[for-data='title']");
+        console.debug(title);
+        let titleText = challenge.text;
+        // Switch the escaped character out for the real one
+        if (titleText.includes(CHAR_APOSTROPHE))
+            titleText = titleText.replace(CHAR_APOSTROPHE, "'");
+            
+        title.val(titleText);
+        title.on("input", e => ChallengeController.handleTypeChallenge(e, challenge));
+
+        cloneElem.find("[for-data='progress']").val(challenge.progress.toString());
+        cloneElem.find("[for-data='max']").val(challenge.max.toString())
+            .attr("data-entered", String(challenge.max != 1)) // Keep track if the user enters data here
+            .on("input", e => { $(e.target).attr("data-entered", "true"); });
+        cloneElem.find("[for-data='value']").val(challenge.value.toString());
+
+        // Drop the display html and replace it with our new edit layout
+        clickedElem.empty();
+        clickedElem.append(cloneElem);
+
+        if (title[0] != undefined)
+            title[0].focus();
+    }
+
     /** Check if the keyboard event is an enter press, and save the changes if so */
     public static handleKeyboardEvent(event: KeyboardEvent, challenge: ChallengeEntry) {
         if (event.key == "Enter") {
@@ -78,18 +123,18 @@ export class ChallengeController extends Navigation {
     public static handleTypeChallenge(event: Event, challenge: ChallengeEntry) {
         if (event.target == undefined)
             return;
-        let maxElem = $(`#${challenge.id}`).find("span[for-data='max']");
+        let maxElem = $(`#${challenge.id}`).find("[for-data='max']");
 
         // If the user has entered something, don't try and overwrite it
         if (maxElem.attr("data-entered") == "true")
             return;
 
-        let curElem: HTMLElement = (<HTMLElement>event.target);
-        if (curElem.textContent == null || curElem.textContent.match(NUMBER_REGEX) == null) 
+        let curElem: HTMLInputElement = (<HTMLInputElement>event.target);
+        if (curElem.value == null || curElem.value.match(NUMBER_REGEX) == null) 
             return;
-        let m: RegExpMatchArray = curElem.textContent.match(NUMBER_REGEX)!;
+        let m: RegExpMatchArray = curElem.value.match(NUMBER_REGEX)!;
 
-        maxElem.text(m[0]);
+        maxElem.val(m[0]);
     }
 
     public static loadChallenges() {
@@ -104,9 +149,8 @@ export class ChallengeController extends Navigation {
             ChallengeRenderer.render(challenge);
         });
 
-        let btnAdd = $("<div>").addClass("tab-entry tab-angle tab-blur tab-button")
-            .attr("id", "add-challenge").attr("tabindex", "0")
-            .append($("<span>").text("New Challenge"));
+        let btnAdd = $("<button>").addClass("tab-entry tab-angle tab-blur tab-button")
+            .attr("id", "add-challenge").attr("tabindex", "0").text("New Challenge");
         btnAdd.on("click", e => this.handleClickAddChallenge(e));
         $("#challenge-content-area").append(btnAdd);
     }
@@ -119,7 +163,7 @@ export class ChallengeController extends Navigation {
         let spanFilter = $("[for-data='filter']");
         spanFilter.on("keydown", e => this.handleKeyboardFilter(e));
         // Clear the filter and re-call the filter method
-        $("#btn-filter-clear").on("click", e => { spanFilter.text(""); this.handleClickFilter(e) });
+        $("#btn-filter-clear").on("click", e => { spanFilter.val(""); this.handleClickFilter(e) });
         let btnCompleted = $("#btn-filter-completed");
         btnCompleted.on("click", e => { 
             btnCompleted.toggleClass("tab-selected"); 
@@ -131,7 +175,7 @@ export class ChallengeController extends Navigation {
         // if the filter is already set, that means we're coming in from optimal path
         // so expand the search bar and populate it with the current filter.
         if (this.currentFilter != "") {
-            spanFilter.text(this.currentFilter);
+            spanFilter.val(this.currentFilter);
             $("#search-icon").trigger("click");
         }
     }
@@ -163,16 +207,18 @@ export class ChallengeController extends Navigation {
     public static handleClickAddChallenge(event: any) {
         let newChallenge: ChallengeEntry = new ChallengeEntry("", 0, 1, 0);
         ChallengeRenderer.render(newChallenge);
-        ChallengeRenderer.handleClickEditButton(newChallenge);
+        this.handleClickEditButton(newChallenge);
     }
     
     /** Clicking the search magnifying icon. Make it expand with the class. */
     public static handleClickSearch(event: Event) {
         if ($(this).hasClass("selected")) {
-            $("span[for-data='filter']").removeAttr("contenteditable");
+            $("[for-data='filter']").attr("disabled");
+            $("#challenge-filter-area > :is(input, button)").attr("tabindex", "-1");
         }
         else {
-            $("span[for-data='filter']").attr("contenteditable", "true");
+            $("[for-data='filter']").removeAttr("disabled");
+            $("#challenge-filter-area > :is(input, button)").removeAttr("tabindex");
         }
 
         $(this).toggleClass("selected");
@@ -181,7 +227,7 @@ export class ChallengeController extends Navigation {
 
     /** Handling when the filter button is clicked. Reload challenges with filter applied */
     public static handleClickFilter(event: Event) {
-        let val: string = escapeHtml($("span[for-data='filter']").text());
+        let val: string = escapeHtml($("[for-data='filter']").val() as string);
         console.log("Filter by '%s'", val);
         ChallengeController.currentFilter = val;
         $("#challenge-content-area").empty();
