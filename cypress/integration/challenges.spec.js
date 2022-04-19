@@ -55,7 +55,7 @@ describe("Create a challenge", () => {
         }
     });
 
-    it.only("Verifies the auto-population and entering of challenges", () => {
+    it("Verifies the auto-population and entering of challenges", () => {
         cy.contains("New Challenge").click();
         cy.get(".challenge-editor").should("be.visible");
         cy.contains("Title:");
