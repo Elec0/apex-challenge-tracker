@@ -305,16 +305,9 @@ export class ChallengeController extends Navigation {
     }
 
     public static handleClickHelp(event: Event) {
-        if ($(this).hasClass("nav-bar-selected")) {
-            // Deselect
-
-        }
-        else {
-        }
         $(this).toggleClass("nav-bar-selected");
         $("#help-caret").toggleClass("selected");
         $("#help-content").toggleClass("selected");
-        console.log(this);
     }
 
     /** 

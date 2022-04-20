@@ -3,6 +3,7 @@ import { StorageHelper } from "src/storage-helper";
 import { ChallengeController } from "src/challenge/ChallengeController";
 import helpHtml from "content/help.html";
 import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM} from "src/constants";
+import { VERSION } from "../globals";
 
 export class LeftBarRenderer {
     /** Create the Help button + contents */
@@ -20,7 +21,8 @@ export class LeftBarRenderer {
         helpElements.find("#help-keywords")
             .append($("<div class='keyword'>").html(keywordTemplate("Legends", LEGENDS)))
             .append($("<div class='keyword'>").html(keywordTemplate("Weapon Types", WEAPON_TYPES)))
-            .append($("<div class='keyword'>").html(keywordTemplate("Weapons", WEAPON_NAMES)));
+            .append($("<div class='keyword'>").html(keywordTemplate("Weapons", WEAPON_NAMES)))
+            .append($("<div class='keyword' style='color:lightgrey;'>").html(`Version ${VERSION}`));
         
         return helpElements;
     }

@@ -2,6 +2,7 @@ import { localStorageAvailable } from "src/utils";
 import $ from "cash-dom";
 import { NavigationController } from "src/NavigationController";
 import { StorageHelper } from "src/storage-helper";
+import { VERSION } from "./globals";
 
 $(function () {
     if(!localStorageAvailable()) {
@@ -15,28 +16,11 @@ $(function () {
  * Idk start running things
  */
 function initStuff() {
+    console.log(`Loading tracker v${VERSION}`);
     setupListeners();
 
-    if(StorageHelper.isFirstLoad()) {
-        console.log("First load, run setup");
-        // Time to run first time setup
-        // setupFirstTime();
-        // Init keywords
-    }
-    else {
-        console.log("Not first load, retrieve saved info");
-        StorageHelper.loadFromStorage();
-    }
     StorageHelper.loadFromStorage();
     NavigationController.init();
-}
-
-/**
- * Do first time shit:
- * 
- */
-function setupFirstTime() {
-    StorageHelper.setValue("started", "true");
 }
 
 /**
