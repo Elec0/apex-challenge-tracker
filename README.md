@@ -22,8 +22,10 @@ Text after a comma will be filtered as Modes.
 > 
 Adding an asterisk will also include the challenges with the 'All' mode. 
 > Ex: "Ash, A*"
+> 
 To display all challenges:
 > ","
+> 
 
 ## Challenges 
 This is the data entry & filter section. 
