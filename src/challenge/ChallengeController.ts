@@ -8,6 +8,7 @@ import challengeHtml from "content/challenge.html";
 import challengeEditorHtml from "content/challenge-editor.html";
 import { CHAR_APOSTROPHE, MODES, NUMBER_REGEX } from "src/constants";
 import { LeftBarRenderer } from "src/challenge/LeftBarRenderer";
+import { VERSION } from "../globals";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";
@@ -304,16 +305,9 @@ export class ChallengeController extends Navigation {
     }
 
     public static handleClickHelp(event: Event) {
-        if ($(this).hasClass("nav-bar-selected")) {
-            // Deselect
-
-        }
-        else {
-        }
         $(this).toggleClass("nav-bar-selected");
         $("#help-caret").toggleClass("selected");
         $("#help-content").toggleClass("selected");
-        console.log(this);
     }
 
     /** 

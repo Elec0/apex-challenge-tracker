@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QTTYFV6CH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-QTTYFV6CH6');
     </script>
@@ -13,20 +14,25 @@
     <link rel="icon" type="image/ico" href="res/images/favicon.ico">
     <title>Apex Legends Challenge Tracker</title>
 </head>
+
 <body>
     <div id="header">
         <div class="tab-bracket tab-angle-left tab-bracket-blur"></div>
-        <button class="tab-entry tab-angle tab-blur" id="Challenges" data-cy="tab-challenges" >Challenges</button>
+        <button class="tab-entry tab-angle tab-blur" id="Challenges" data-cy="tab-challenges">Challenges</button>
         <button class="tab-entry tab-angle tab-blur" id="Optimal-Path" data-cy="tab-path">Optimal Path</button>
         <button class="tab-entry tab-angle tab-blur" id="Settings" data-cy="tab-settings">Settings</button>
-        <div class="tab-bracket tab-angle-right tab-bracket-blur"></div>
+        <div class="tab-bracket tab-angle-right tab-bracket-blur">
+            <a href="https://github.com/Elec0/apex-challenge-tracker" class="github-corner" aria-label="View source on GitHub">
+                <img src="res/images/GitHub-Mark-Light-64px.png" />
+            </a>
+        </div>
     </div>
     <div id="root-container">
         <div id="left-bar" style="display:none">
         </div>
     </div>
 
-
     <script src="dist/bundle.js"></script>
 </body>
+
 </html>
