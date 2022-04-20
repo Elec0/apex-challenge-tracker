@@ -8,6 +8,7 @@ import challengeHtml from "content/challenge.html";
 import challengeEditorHtml from "content/challenge-editor.html";
 import { CHAR_APOSTROPHE, MODES, NUMBER_REGEX } from "src/constants";
 import { LeftBarRenderer } from "src/challenge/LeftBarRenderer";
+import { VERSION } from "../globals";
 
 export class ChallengeController extends Navigation {
     public static currentFilter: string = "";

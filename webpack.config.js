@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -33,6 +34,11 @@ module.exports = {
       // },
     ]
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(require("./package.json").version)
+    })
+  ],
   resolve: {
     extensions: ['.ts', '.js', '.html'],
     modules: [path.resolve(__dirname), "node_modules"]
