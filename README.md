@@ -84,7 +84,7 @@ Rampart has been removed, because all of her points were part of BR. Bloodhound'
 # Building
 Written in typescript because it is marginally acceptable over javascript.
 
-To compile and start a local (Python) webserver, run
+To compile and start a local webserver, run
 ```
 npm install
 npm run dev
@@ -98,3 +98,4 @@ I tried to write it in some kind of not-stupid way, but I haven't done much with
 * Apex Background: [xGhostx](https://wall.alphacoders.com/big.php?i=992033)  
 * Legend icons: [EA's website](https://www.ea.com/games/apex-legends/about/characters)
 * Misc icons: idk some random websites + I made some
+* Github logo: https://github.com/logos

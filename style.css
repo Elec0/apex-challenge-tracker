@@ -795,6 +795,11 @@ div.entries {
 /* #endregion Optimal Path */
 
 /* #region Widgets */
+.github-corner {
+    position: absolute;
+    left: 0.5em;
+    transform: rotate(60deg);
+}
 /* Make the progress bar look like it's slanted */
 .bar-angle {
     clip-path: polygon(0 0, calc(100% - 1.5em) 0, 100% 100%, 0% 100%);
