@@ -168,6 +168,7 @@ hr {
     display: flex;
     flex-grow: 1;
     height: 3.3em;
+    position: relative;
     background-color: rgba(40, 40, 44, 0.7);
 }
 .tab-button {
