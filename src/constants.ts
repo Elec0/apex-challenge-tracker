@@ -2,7 +2,7 @@
 export const LEGENDS: string[] = ["Ash", "Bangalore", "Bloodhound", "Caustic", "Crypto", 
                                      "Fuse", "Gibraltar", "Horizon", "Lifeline", "Loba", "Mad Maggie", 
                                      "Mirage", "Newcastle", "Octane", "Pathfinder", "Rampart", "Revenant", "Seer", 
-                                     "Valkyrie", "Wattson", "Wraith"];
+                                     "Valkyrie", "Vantage", "Wattson", "Wraith"];
 /** All weapon names */
 export const WEAPON_NAMES: string[] = ["HAVOC", "VK-47 Flatline", "Hemlock", "R-301", "Alternator", "Prowler",
                                        "R-99", "Volt", "C.A.R.", "Devotion", "L-STAR", "M600 Spitfire", "Rampage",
