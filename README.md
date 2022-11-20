@@ -86,6 +86,8 @@ Rampart has been removed, because all of her points were part of BR. Bloodhound'
 # Building
 Written in typescript because it is marginally acceptable over javascript.
 
+I have Github set to use Node.js v14, so no guarantees if you use something higher than that.
+
 To compile and start a local webserver, run
 ```
 npm install
