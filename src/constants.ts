@@ -1,5 +1,5 @@
 /** All characters */
-export const LEGENDS: string[] = ["Ash", "Bangalore", "Bloodhound", "Caustic", "Crypto", 
+export const LEGENDS: string[] = ["Ash", "Bangalore", "Bloodhound", "Catalyst", "Caustic", "Crypto", 
                                      "Fuse", "Gibraltar", "Horizon", "Lifeline", "Loba", "Mad Maggie", 
                                      "Mirage", "Newcastle", "Octane", "Pathfinder", "Rampart", "Revenant", "Seer", 
                                      "Valkyrie", "Vantage", "Wattson", "Wraith"];
