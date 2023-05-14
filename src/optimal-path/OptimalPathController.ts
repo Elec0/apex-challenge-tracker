@@ -1,4 +1,4 @@
-import { KEYWORDS, LEGENDS, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
+import { CLASS_TYPES, KEYWORDS, LEGENDS, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
 import { Navigation } from "src/Navigation";
 import $, { Cash } from "cash-dom";
 import { StorageHelper } from "src/storage-helper";
@@ -14,7 +14,7 @@ export type Count = Array<[string, number]>;
  * 
  */
 export class OptimalPathController extends Navigation {
-   
+
     /** Index of modeKeywordCount that we are currently displaying (what mode is selected) */
     public currentKeywordMode: number = 0;
     /** 
@@ -34,13 +34,13 @@ export class OptimalPathController extends Navigation {
     private modeKeywordCount: Array<Map<string, number>> = new Array(NumModes + 1);
 
     private pathRenderer: OptimalPathRenderer = new OptimalPathRenderer(this);
-    
+
     navigateTo(): void {
         if (!this.isShowing) {
             super.navigateTo();
             this.setHash(TAB_OPTIMAL_PATH);
             $("#root-container").append(pathHtml);
-            
+
             this.loadPathContent();
         }
     }
@@ -64,7 +64,7 @@ export class OptimalPathController extends Navigation {
     private parseResults(): void {
         // Get the actual results
         this.pathRenderer.createPathElements(this.getCountedResults());
-        
+
     }
 
     /**
@@ -77,17 +77,21 @@ export class OptimalPathController extends Navigation {
      */
     private getCountedResults(): Count[] {
         let legendCount: Count = new Array();
+        let legendClassCount: Count = new Array();
         let weaponCount: Count = new Array();
         let weaponTypeCount: Count = new Array();
         let modeCount: Count = new Array();
         for (let i of [0, 1, 2, 3])
-            modeCount.push([MODES[i], this.modeKeywordCount[0].get(`Mode${i}`)!]);
-        
+            modeCount.push([MODES[i], this.modeKeywordCount[0].get(`Mode${ i }`)!]);
+
         // We have the complete list of keywords and counts
         // turn that into 3 separate lists that we can sort and return.
         for (let [key, value] of this.modeKeywordCount[this.currentKeywordMode]) {
             if (LEGENDS.includes(key)) {
                 legendCount.push([key, value]);
+            }
+            else if ((Object.values(CLASS_TYPES) as string[]).includes(key)) {
+                legendClassCount.push([key, value]);
             }
             else if (WEAPON_TYPES.includes(key)) {
                 weaponTypeCount.push([key, value]);
@@ -99,12 +103,13 @@ export class OptimalPathController extends Navigation {
 
         // Now sort it, descending order
         let sorter = (n1: [string, number], n2: [string, number]): number => n2[1] - n1[1];
-        
-        let legendCountSorted       = legendCount.sort(sorter);
-        let weaponTypeCountSorted   = weaponTypeCount.sort(sorter);
-        let weaponCountSorted       = weaponCount.sort(sorter);
-        let modeCountSorted         = modeCount.sort(sorter);
-        return [legendCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted];
+
+        let legendCountSorted = legendCount.sort(sorter);
+        let weaponTypeCountSorted = weaponTypeCount.sort(sorter);
+        let weaponCountSorted = weaponCount.sort(sorter);
+        let modeCountSorted = modeCount.sort(sorter);
+        let legendClassCountSorted = legendClassCount.sort(sorter);
+        return [legendCountSorted, legendClassCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted];
     }
 
     /**
@@ -140,7 +145,7 @@ export class OptimalPathController extends Navigation {
                 // Shouldn't process anything if the challenge is done
                 if (value.isCompleted())
                     continue;
-                
+
                 if (value.text.includes(element)) {
                     // Add challenge's star value to tally
                     // Add it twice: once to the 0th, which has all totals of everything
@@ -148,7 +153,7 @@ export class OptimalPathController extends Navigation {
                     // Then again to the one with the matching mode
                     let offsetMode: number = value.mode + 1;
                     this.modeKeywordCount[offsetMode].set(element, (this.modeKeywordCount[offsetMode].get(element) ?? 0) + value.value);
-                    
+
                     // We want each challenge with 'All' mode to be included in every applicable keyword sum, since a challenge
                     // with All applies to all the modes, in addition to being able to be filtered by All only.
                     if (value.mode == MODES["All"]) {
@@ -166,14 +171,14 @@ export class OptimalPathController extends Navigation {
                         continue;
                     }
                     // This mode+x value might not exist
-                    this.modeKeywordCount[0].set(`Mode${value.mode}`, 
-                                                (this.modeKeywordCount[0].get(`Mode${value.mode}`) ?? 0) + value.value);
+                    this.modeKeywordCount[0].set(`Mode${ value.mode }`,
+                        (this.modeKeywordCount[0].get(`Mode${ value.mode }`) ?? 0) + value.value);
                     // Add the count for this challenge to all other modes if it's 'All'
                     if (value.mode == MODES["All"]) {
                         // j is the whole array index, which is offset by 1 since 0th is all totals
                         for (let j = 2; j < this.modeKeywordCount.length; ++j) {
-                            this.modeKeywordCount[0].set(`Mode${j - 1}`, 
-                                (this.modeKeywordCount[0].get(`Mode${j - 1}`) ?? 0) + value.value);
+                            this.modeKeywordCount[0].set(`Mode${ j - 1 }`,
+                                (this.modeKeywordCount[0].get(`Mode${ j - 1 }`) ?? 0) + value.value);
                         }
                     }
                 }
@@ -198,8 +203,8 @@ export class OptimalPathController extends Navigation {
         // Append the mode filter if we have a non-0 mode selected
         // Include All challenges, since they are included in the displayed calculations
         // Not technically needed for 'All', but whatever
-        let filterName: string = (cTarget.attr("name") ?? "") + 
-                                 (this.currentKeywordMode != 0 ? `,${MODES[this.currentKeywordMode - 1]}*` : "");
+        let filterName: string = (cTarget.attr("name") ?? "") +
+            (this.currentKeywordMode != 0 ? `,${ MODES[this.currentKeywordMode - 1] }*` : "");
 
         if (filterName == "" || filterName == ",") {
             console.error("Something went wrong with the click, filter name was not found.");
@@ -214,7 +219,7 @@ export class OptimalPathController extends Navigation {
     /** Called when an element that is `.path-entry[mode-name]` is clicked */
     public handleClickModeEntry(elem: Cash) {
         let oldSelected: Cash = $(".path-entry[mode-name].selected");
-        
+
         if (oldSelected.length) {
             this.handleDeselectMode(oldSelected);
         }
@@ -235,7 +240,7 @@ export class OptimalPathController extends Navigation {
      */
     private handleDeselectMode(elem: Cash) {
         if (elem.length > 1) {
-            console.warn(`Something weird happened! Expected selector of 1, got ${elem.length} instead`);
+            console.warn(`Something weird happened! Expected selector of 1, got ${ elem.length } instead`);
         }
         elem.removeClass("selected");
         this.currentKeywordMode = 0;
@@ -249,7 +254,7 @@ export class OptimalPathController extends Navigation {
         const indexOfName: number = parseInt(Object.keys(MODES)[Object.values(MODES).indexOf(modeName as unknown as MODES)]) + 1;
 
         this.currentKeywordMode = indexOfName;
-        console.debug(`Selected mode index ${indexOfName-1}: '${MODES[indexOfName-1]}'`);
+        console.debug(`Selected mode index ${ indexOfName - 1 }: '${ MODES[indexOfName - 1] }'`);
         this.loadPathContent();
     }
 }

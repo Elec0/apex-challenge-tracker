@@ -40,7 +40,7 @@ export class OptimalPathRenderer {
      * Given input lists, generate the lists for legends, weapon types, weapons, and modes.
      * @param Result of {@link OptimalPathController.getCountedResults()} 
      */
-    public createPathElements([legendResults, weaponTypeResults, weaponResults, modeResults]: Array<Count>) {
+    public createPathElements([legendResults, legendClassResults, weaponTypeResults, weaponResults, modeResults]: Array<Count>) {
         let curSection = $("<div>").addClass("entries");
 
         $("#path-content").append(this.parseSpecificResults(modeResults, true));
@@ -59,6 +59,9 @@ export class OptimalPathRenderer {
             }
         });
         $("#path-content").append(curSection);
+
+        $("#path-content").append(this.makeTitleElem("Legend Class Types"));
+        $("#path-content").append(this.parseSpecificResults(legendClassResults));
 
         $("#path-content").append(this.makeTitleElem("Weapon Types"));        
         $("#path-content").append(this.parseSpecificResults(weaponTypeResults));
