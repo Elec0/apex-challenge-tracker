@@ -70,4 +70,7 @@ describe("Create a challenge", () => {
         
         // cy.get("[data-cy='edit-checkmark']").click();
     });
+
+    it("")
+
 });
