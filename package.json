@@ -13,7 +13,7 @@
     "coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test",
     "build": "webpack",
     "start": "npm run dev:server",
-    "dev:server": "http-server -p 8000",
+    "dev:server": "serve -l 8000",
     "dev:reload": "browser-sync reload",
     "dev:browsersync": "browser-sync start",
     "watch": "concurrently --kill-others \"npm run dev:browsersync\"  \"npm run dev:server\" \"npm run watch:js\"",
@@ -37,14 +37,13 @@
     "cypress": "^9.5.4",
     "expect": "^27.5.1",
     "html-loader": "^3.1.0",
-    "http-server": "^14.1.0",
     "jest": "^27.5.1",
     "jest-mock": "^27.5.1",
     "jsdom": "^19.0.0",
     "mock-local-storage": "^1.1.20",
     "nodemon": "^2.0.20",
     "nyc": "^15.1.0",
-    "start-server-and-test": "^1.14.0",
+    "start-server-and-test": "^2.0.0",
     "ts-jest": "^27.1.4",
     "ts-loader": "^9.2.6",
     "ts-node": "^10.5.0",
@@ -56,6 +55,7 @@
   "dependencies": {
     "cash-dom": "^8.1.0",
     "jest-codemods": "^0.25.1",
-    "lz-string": "^1.4.4"
+    "lz-string": "^1.4.4",
+    "serve": "^14.2.0"
   }
 }
