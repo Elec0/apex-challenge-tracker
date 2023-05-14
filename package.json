@@ -21,7 +21,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "test/*"
+      "test/*",
+      "cypress/*"
     ],
     "ext": "js,ts,html",
     "delay": 0

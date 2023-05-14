@@ -1,6 +1,8 @@
 /// <reference types="Cypress" />
 import { enterChallenge } from "../plugins/util-functions";
 
+const keywordYellowColor = "rgb(255, 208, 0)";
+
 describe("Create a challenge", () => {
     before(() => {
         cy.reload(true);
@@ -14,13 +16,13 @@ describe("Create a challenge", () => {
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Deal damage as Bangalore.", "1", "10", "15");
 
-        // Getting multiple things is kind of a pain
+        // Find the whole text, get the color from the keyword, then check that all the text is not the keyword color
         cy.contains("Deal damage as Bangalore.").as("challengeText")
             .find("span").invoke("css", "color")
-            .then(function(keywordColor) {
+            .then(function (keywordColor) {
                 cy.get(this.challengeText).invoke("css", "color").should("not.equal", keywordColor);
             });
-        
+
         cy.contains("span", "BR");
         cy.contains("1/10");
         cy.contains("+15");
@@ -48,7 +50,7 @@ describe("Create a challenge", () => {
     it("Verifies the left bar properly counts challenges", () => {
         enterChallenge("Kill people with sniper rifles as Ash.", "1", "10", "7", true);
 
-        for(let i = 1; i < 13; ++i) {
+        for (let i = 1; i < 13; ++i) {
             cy.get(`[data-cy='lb-week-${i}']`).click();
             enterChallenge("Kill people with sniper rifles as Ash.", "1", "10", "7", true);
             cy.contains(`Week ${i} (0/1)`);
@@ -60,17 +62,28 @@ describe("Create a challenge", () => {
         cy.get(".challenge-editor").should("be.visible");
         cy.contains("Title:");
         cy.contains("Progress:");
-    
-   
+
         cy.get("[for-data='title']").type("Find 1500 eggs");
         cy.get("[for-data='max']").should("have.value", 1500);
 
         cy.get("[for-data='progress']").should("have.value", 0);
         cy.get("[for-data='value']").should("have.value", 0);
-        
+
         // cy.get("[data-cy='edit-checkmark']").click();
     });
 
-    it("")
+    it("Verifies the legend class types properly keywordify", () => {
+        cy.get("[data-cy='tab-challenges']").click();
+
+        cy.get(".challenge-editor").should("not.exist");
+        enterChallenge("Kill enemies as a Controller class", "1", "10", "15");
+
+        cy.contains("Kill enemies as a Controller class").as("challengeText")
+            .find("span")
+            .invoke("css", "color")
+            .then(function (keywordColor) {
+                expect(keywordColor).to.equal(keywordYellowColor);
+            });
+    });
 
 });
