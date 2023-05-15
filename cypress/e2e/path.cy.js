@@ -1,8 +1,18 @@
 /// <reference types="Cypress" />
+import { CLASS_TYPES } from "src/constants";
 import { enterChallenge } from "../plugins/util-functions";
 
-/** Verify a legend's point total */
-const legEq = (legName, totVal) => cy.get(`[name='${legName}']`).contains(totVal);
+/** Verify an entry's point total */
+const valueEq = (valName, totVal) => cy.get(`[name='${valName}']`).contains(totVal);
+
+function importData() {
+    cy.get("[data-cy='tab-settings']").click();
+    cy.fixture("path-data").then(fixData => {
+        cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
+    });
+    cy.get("[data-cy='import-data']").click();
+    cy.get("[data-cy='tab-path']").click();
+}
 
 describe("Verify optimal path calculations are correct", () => {
     before(() => {
@@ -10,6 +20,26 @@ describe("Verify optimal path calculations are correct", () => {
     });
     beforeEach(() => {
         cy.visit("/#Optimal-Path");
+    });
+
+    it("Properly calculates the new class type values", () => {
+        importData();
+
+        cy.get("[data-cy='tab-challenges']").click();
+        // There are 5 class types
+        Object.values(CLASS_TYPES).forEach(element => {
+            enterChallenge(`Damage with ${element} legends`, 0, 10, 1, true);
+        });
+
+        // Go back to path tab
+        cy.get("[data-cy='tab-path']").click();
+        // Verify that the extra 5 points have been added to BR
+        cy.get("[mode-name='BR']").contains("43"); // 38 + 5 = 43
+
+        Object.values(CLASS_TYPES).forEach(element => {
+            valueEq(element, "1");
+        });
+    
     });
 
     /**
@@ -29,12 +59,7 @@ describe("Verify optimal path calculations are correct", () => {
         Total: 68
      */
     it("Tests pre-determined calculations via importing data", () => {
-        cy.get("[data-cy='tab-settings']").click();
-        cy.fixture("path-data").then(fixData => {
-            cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
-        });
-        cy.get("[data-cy='import-data']").click();
-        cy.get("[data-cy='tab-path']").click();
+        importData();
 
         /*
         BR: 38
@@ -46,7 +71,7 @@ describe("Verify optimal path calculations are correct", () => {
         cy.get("[mode-name='A']").contains("28");
         cy.get("[mode-name='C']").contains("18");
         cy.get("[mode-name='All']").contains("8");
-        
+
         /* - BR -
         Ash: 11
         Caustic: 18
@@ -58,13 +83,13 @@ describe("Verify optimal path calculations are correct", () => {
         */
         // Don't check deselected all first, check it at the end to make sure deselecting works too
         cy.get("[mode-name='BR']").click();
-        legEq("Ash", "11");
-        legEq("Caustic", "18");
-        legEq("Seer", "18");
-        legEq("Bloodhound", "11");
-        legEq("Horizon", "11");
-        legEq("Lifeline", "1");
-        legEq("Loba", "1");
+        valueEq("Ash", "11");
+        valueEq("Caustic", "18");
+        valueEq("Seer", "18");
+        valueEq("Bloodhound", "11");
+        valueEq("Horizon", "11");
+        valueEq("Lifeline", "1");
+        valueEq("Loba", "1");
 
         /* - A -
         Caustic: 18
@@ -73,10 +98,10 @@ describe("Verify optimal path calculations are correct", () => {
         Loba: 1
         */
         cy.get("[mode-name='A']").click();
-        legEq("Caustic", "18");
-        legEq("Seer", "18");
-        legEq("Lifeline", "1");
-        legEq("Loba", "1");
+        valueEq("Caustic", "18");
+        valueEq("Seer", "18");
+        valueEq("Lifeline", "1");
+        valueEq("Loba", "1");
 
 
         /* - C -
@@ -86,11 +111,11 @@ describe("Verify optimal path calculations are correct", () => {
         Seer: 8
         */
         cy.get("[mode-name='C']").click();
-        legEq("Caustic", "8");
-        legEq("Seer", "8");
-        legEq("Lifeline", "11");
-        legEq("Loba", "11");
-        
+        valueEq("Caustic", "8");
+        valueEq("Seer", "8");
+        valueEq("Lifeline", "11");
+        valueEq("Loba", "11");
+
         /* - All -
         Caustic: 8
         Seer: 8
@@ -101,13 +126,13 @@ describe("Verify optimal path calculations are correct", () => {
         Horizon: 1
         */
         cy.get("[mode-name='All']").click();
-        legEq("Ash", "1");
-        legEq("Caustic", "8");
-        legEq("Seer", "8");
-        legEq("Bloodhound", "1");
-        legEq("Horizon", "1");
-        legEq("Lifeline", "1");
-        legEq("Loba", "1");
+        valueEq("Ash", "1");
+        valueEq("Caustic", "8");
+        valueEq("Seer", "8");
+        valueEq("Bloodhound", "1");
+        valueEq("Horizon", "1");
+        valueEq("Lifeline", "1");
+        valueEq("Loba", "1");
 
         /* - Deselected [All] -
         Caustic: 28
@@ -120,12 +145,12 @@ describe("Verify optimal path calculations are correct", () => {
         */
         // Deselect
         cy.get("[mode-name='All']").click();
-        legEq("Ash", "11");
-        legEq("Caustic", "28");
-        legEq("Seer", "28");
-        legEq("Bloodhound", "11");
-        legEq("Horizon", "11");
-        legEq("Lifeline", "11");
-        legEq("Loba", "11");
+        valueEq("Ash", "11");
+        valueEq("Caustic", "28");
+        valueEq("Seer", "28");
+        valueEq("Bloodhound", "11");
+        valueEq("Horizon", "11");
+        valueEq("Lifeline", "11");
+        valueEq("Loba", "11");
     });
 });

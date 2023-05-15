@@ -28,7 +28,7 @@ export class OptimalPathRenderer {
                         e[0] == MODES[this.pathController.currentKeywordMode - 1])
                     newElem.addClass("selected");
 
-                newElem.append($("<span>").text(`${e[0]}`).addClass("legend-name"));
+                newElem.append($("<span>").text(`${e[0]}`).addClass("path-entry-name"));
                 newElem.append($("<span>").text(`${e[1]}`));
                 curSection.append(newElem);
             }
@@ -53,7 +53,7 @@ export class OptimalPathRenderer {
                 let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
                 newElem.append($("<img>").attr("style", "width: 10em").attr("src", `res/images/legends/${e[0].replace(" ", "-").toLowerCase()}.png`));
                 newElem.append($("<div>").addClass("path-entry-text")
-                    .append($("<span>").text(`${e[0]}`).addClass("legend-name"))
+                    .append($("<span>").text(`${e[0]}`).addClass("path-entry-name"))
                     .append($("<span>").text(`${e[1]}`)));
                 curSection.append(newElem);
             }
