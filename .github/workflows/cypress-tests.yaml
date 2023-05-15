@@ -42,12 +42,12 @@ jobs:
           name: build
           path: dist
 
-      - name: Install http-server
-        run: npm install http-server
+      - name: Install serve
+        run: npm install serve
 
       # Run all Cypress tests
       - name: Cypress run
-        uses: cypress-io/github-action@v2.9.7
+        uses: cypress-io/github-action@v5.7.2
         with:
           browser: chrome
           install: false
