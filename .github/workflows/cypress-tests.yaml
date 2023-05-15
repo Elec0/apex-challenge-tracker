@@ -54,4 +54,4 @@ jobs:
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
           start: npm start
-          configFile: ./cypress.config.ts
+          config-file: ./cypress.config.ts
