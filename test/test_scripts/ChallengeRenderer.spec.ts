@@ -1,6 +1,6 @@
 import expect from 'expect';
-import { ChallengeRenderer } from '../src/challenge/ChallengeRenderer';
-import { MODES } from '../src/constants';
+import { ChallengeRenderer } from '../../src/challenge/ChallengeRenderer';
+import { MODES } from '../../src/constants';
 
 test('adds 1 + 2 to equal 3', () => {
     expect(1+ 2).toBe(3);

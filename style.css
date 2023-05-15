@@ -779,7 +779,7 @@ div.entries {
     image-rendering: crisp-edges;
     -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
 }
-.path-entry .legend-name {
+.path-entry .path-entry-name {
     font-weight: bolder;
 }
 .path-entry[mode-name] {

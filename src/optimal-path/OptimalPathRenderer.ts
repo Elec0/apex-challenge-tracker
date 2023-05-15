@@ -28,7 +28,7 @@ export class OptimalPathRenderer {
                         e[0] == MODES[this.pathController.currentKeywordMode - 1])
                     newElem.addClass("selected");
 
-                newElem.append($("<span>").text(`${e[0]}`).addClass("legend-name"));
+                newElem.append($("<span>").text(`${e[0]}`).addClass("path-entry-name"));
                 newElem.append($("<span>").text(`${e[1]}`));
                 curSection.append(newElem);
             }
@@ -40,7 +40,7 @@ export class OptimalPathRenderer {
      * Given input lists, generate the lists for legends, weapon types, weapons, and modes.
      * @param Result of {@link OptimalPathController.getCountedResults()} 
      */
-    public createPathElements([legendResults, weaponTypeResults, weaponResults, modeResults]: Array<Count>) {
+    public createPathElements([legendResults, legendClassResults, weaponTypeResults, weaponResults, modeResults]: Array<Count>) {
         let curSection = $("<div>").addClass("entries");
 
         $("#path-content").append(this.parseSpecificResults(modeResults, true));
@@ -53,12 +53,15 @@ export class OptimalPathRenderer {
                 let newElem = $("<div>").attr("class", "path-entry").attr("name", e[0]);
                 newElem.append($("<img>").attr("style", "width: 10em").attr("src", `res/images/legends/${e[0].replace(" ", "-").toLowerCase()}.png`));
                 newElem.append($("<div>").addClass("path-entry-text")
-                    .append($("<span>").text(`${e[0]}`).addClass("legend-name"))
+                    .append($("<span>").text(`${e[0]}`).addClass("path-entry-name"))
                     .append($("<span>").text(`${e[1]}`)));
                 curSection.append(newElem);
             }
         });
         $("#path-content").append(curSection);
+
+        $("#path-content").append(this.makeTitleElem("Legend Class Types"));
+        $("#path-content").append(this.parseSpecificResults(legendClassResults));
 
         $("#path-content").append(this.makeTitleElem("Weapon Types"));        
         $("#path-content").append(this.parseSpecificResults(weaponTypeResults));

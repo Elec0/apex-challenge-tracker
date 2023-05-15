@@ -2,7 +2,7 @@ import $, { Cash } from "cash-dom";
 import { StorageHelper } from "src/storage-helper";
 import { ChallengeController } from "src/challenge/ChallengeController";
 import helpHtml from "content/help.html";
-import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM} from "src/constants";
+import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM, CLASS_TYPES, LEGEND_CLASSES } from "src/constants";
 import { VERSION } from "../globals";
 
 export class LeftBarRenderer {
@@ -17,13 +17,16 @@ export class LeftBarRenderer {
         helpElements.append(helpBtn);
         helpElements.append(helpHtml);
 
-        let keywordTemplate = (name: string, arr: string[]) => `<h4>${name}</h4><span>${arr.join("<span class='comma'>,</span> ")}</span>`;
+        let keywordTemplate = (name: string, arr: string[]) => 
+        `<h4>${ name }</h4><span>${ arr.join("<span class='comma'>,</span> ") }</span>`;
+
         helpElements.find("#help-keywords")
             .append($("<div class='keyword'>").html(keywordTemplate("Legends", LEGENDS)))
+            .append($("<div class='keyword'>").html(keywordTemplate("Class Types", Object.values(CLASS_TYPES))))
             .append($("<div class='keyword'>").html(keywordTemplate("Weapon Types", WEAPON_TYPES)))
             .append($("<div class='keyword'>").html(keywordTemplate("Weapons", WEAPON_NAMES)))
-            .append($("<div class='keyword' style='color:lightgrey;'>").html(`Version ${VERSION}`));
-        
+            .append($("<div class='keyword' style='color:lightgrey;'>").html(`Version ${ VERSION }`));
+
         return helpElements;
     }
 
@@ -31,13 +34,13 @@ export class LeftBarRenderer {
     public static renderWeekButton(weekNumP?: number, leftBar?: Cash) {
         let weekNum: number = -1;
 
-        if (weekNumP === undefined) 
+        if (weekNumP === undefined)
             weekNum = StorageHelper.currentWeek;
         else
             weekNum = weekNumP!;
         if (leftBar === undefined)
             leftBar = $("#left-bar");
-            
+
 
         // Don't get data that doesn't exist
         let prog: string = "";
@@ -45,15 +48,15 @@ export class LeftBarRenderer {
             let total: number = StorageHelper.weekData[weekNum].length;
             if (total != 0) {
                 let completed: number = StorageHelper.getWeekCompleted(weekNum);
-                prog = `(${completed}/${total})`;
+                prog = `(${ completed }/${ total })`;
             }
         }
 
         let newBtn = $("<div>")
             .addClass("nav-bar nav-blur")
-            .attr("id", `weekbtn${weekNum}`)
-            .attr("data-cy", `lb-week-${weekNum}`)
-            .text(`Week ${weekNum} ${prog}`);
+            .attr("id", `weekbtn${ weekNum }`)
+            .attr("data-cy", `lb-week-${ weekNum }`)
+            .text(`Week ${ weekNum } ${ prog }`);
         if (weekNum == 0) {
             newBtn.text("Daily").attr("data-cy", `lb-week-daily`);
         }
@@ -63,8 +66,8 @@ export class LeftBarRenderer {
         newBtn.on("click", e => LeftBarRenderer.handleChangeWeek(e, weekNum));
 
         // Now that we have the element constructed, figure out if we need to replace one or just render
-        let curBtn = leftBar.find(`#weekbtn${weekNum}`);
-        
+        let curBtn = leftBar.find(`#weekbtn${ weekNum }`);
+
         if (curBtn.length) {
             // Replacing!
             curBtn.before(newBtn)
@@ -88,7 +91,7 @@ export class LeftBarRenderer {
     /** Change what week is being displayed by updating StorageHelper */
     private static handleChangeWeek(event: Event, week: number) {
         if (week < 0 || week > WEEKS_NUM) {
-            console.error(`Requested week is outside of 0-${WEEKS_NUM} range.`);
+            console.error(`Requested week is outside of 0-${ WEEKS_NUM } range.`);
             return;
         }
         StorageHelper.currentWeek = week;
@@ -101,6 +104,6 @@ export class LeftBarRenderer {
             $(<Element>event.target).addClass("nav-bar-selected");
         }
         // Reload challenges with entry method, it will handle the set week
-        ChallengeController.loadChallenges();   
+        ChallengeController.loadChallenges();
     }
 }

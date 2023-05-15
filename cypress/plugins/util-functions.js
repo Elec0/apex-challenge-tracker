@@ -5,10 +5,10 @@ export function enterChallenge(title, prog, progMax, starVal, fast = false) {
     cy.contains("Progress:");
 
     if (fast) {
-        cy.get("[for-data='title']").invoke("text", title);
-        cy.get("[for-data='progress']").invoke("text", prog) // Progress
-        cy.get("[for-data='max']").invoke("text", progMax); // Max
-        cy.get("[for-data='value']").invoke("text", starVal);
+        cy.get("[for-data='title']").invoke("val", title);
+        cy.get("[for-data='progress']").invoke("val", prog) // Progress
+        cy.get("[for-data='max']").invoke("val", progMax); // Max
+        cy.get("[for-data='value']").invoke("val", starVal);
     }
     else {
         cy.get("[for-data='title']").type(title);
@@ -17,4 +17,4 @@ export function enterChallenge(title, prog, progMax, starVal, fast = false) {
         cy.get("[for-data='value']").clear().type(starVal);
     }
     cy.get("[data-cy='edit-checkmark']").click();
-}    
+}
