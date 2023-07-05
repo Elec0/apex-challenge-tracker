@@ -3,6 +3,7 @@ import $ from "cash-dom";
 import { NavigationController } from "src/NavigationController";
 import { StorageHelper } from "src/storage-helper";
 import { VERSION } from "./globals";
+import { setupBackground } from "./BackgroundRenderer";
 
 $(function () {
     if(!localStorageAvailable()) {
@@ -17,8 +18,9 @@ $(function () {
  */
 function initStuff() {
     console.log(`Loading tracker v${VERSION}`);
+    setupBackground();
     setupListeners();
-
+    
     StorageHelper.loadFromStorage();
     NavigationController.init();
 }

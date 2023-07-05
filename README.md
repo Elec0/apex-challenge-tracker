@@ -99,7 +99,8 @@ My website can't run Node, so I wrote it such that it runs without that. It's a 
 I tried to write it in some kind of not-stupid way, but I haven't done much with web recently, so most of this is new to me.
 
 # Credits
-* Apex Background: [xGhostx](https://wall.alphacoders.com/big.php?i=992033)  
-* Legend icons: [EA's website](https://www.ea.com/games/apex-legends/about/characters)
+* Apex Background: [xGhostx](https://wall.alphacoders.com/big.php?i=992033)
+* Legend icons: [EA](https://www.ea.com/games/apex-legends/about/characters)
+* Other backgrounds: [EA](https://www.ea.com/games/apex-legends/media)
 * Misc icons: idk some random websites + I made some
 * Github logo: https://github.com/logos
