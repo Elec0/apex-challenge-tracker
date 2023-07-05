@@ -277,7 +277,7 @@ export class StorageHelper {
             // Check the week assigned to the challenge to see if the challenge
             // is present in the week
             if (weekData[cWeek].indexOf(challengeIds[i]) == -1) {
-                // Problem: the challenge exists but isnt in the week it expects to be
+                // Problem: the challenge exists but isn't in the week it expects to be
                 // Solution: delete the challenge and do a pass through week data at the end
                 console.error("Found orphan challenge! Deleting! This should not happen.", `Expected to be in week ${cWeek}.`, 
                               challenges.get(challengeIds[i]));

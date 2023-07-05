@@ -49,7 +49,7 @@ body {
     margin-top: 0em;
     margin-left: 0em;
     margin-right: 0em;
-    background: url("res/images/backgrounds/apex-background.jpg") no-repeat center center fixed;
+    background: var(--color-tab-blur-background);
     background-size: cover;
 }
 hr {
