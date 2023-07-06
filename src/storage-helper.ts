@@ -56,6 +56,22 @@ export class StorageHelper {
     }
 
     /** 
+     * Check if the user has specified to hide the daily challenges tab. 
+     * Default: True
+     */
+    public static get isDailyChallengeEnabled(): boolean {
+        let enabled = this.getValue("dailyEnabled")
+        console.debug(enabled, this._storage);
+        return enabled == null || enabled === "true";
+    }
+
+    /** Set if the user wants to see the daily challenges tab.  */
+    public static set isDailyChallengeEnabled(isEnabled: boolean) {
+        this.setValue("dailyEnabled", String(isEnabled));
+        console.debug(`Set dailies ${isEnabled}, ${String(isEnabled)}`)
+    }
+
+    /** 
      * Just straight return all the challenges. I guess with TS being itself the objects
      * in the array will be references.
      */

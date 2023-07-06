@@ -26,6 +26,22 @@ export class SettingsController extends Navigation {
     private initSettings() {
         this.btnDeleteData();
         this.setupImportExport();
+        this.btnToggleDailyChallenges();
+    }
+
+    private btnToggleDailyChallenges() {
+        let textFun = (x: Boolean) => `Daily Challenges: ${x ? "Enabled" : "Disabled"}`;
+
+        let elem = $("#toggle-daily-challenges");
+        elem.on("click", (e) => {
+            let newVal = !StorageHelper.isDailyChallengeEnabled;
+            console.debug(StorageHelper.isDailyChallengeEnabled, newVal);
+            StorageHelper.isDailyChallengeEnabled = newVal;
+            
+            elem.text(textFun(newVal));
+        });
+        elem.text(textFun(StorageHelper.isDailyChallengeEnabled));
+    
     }
 
     private btnDeleteData() {
@@ -48,7 +64,7 @@ export class SettingsController extends Navigation {
     
     /** 
      * Take the internal data, stringify it, and slap it in the output textarea
-     * Don't care aboutc confirmation on this one because it can't delete anything
+     * Don't care about confirmation on this one because it can't delete anything
      */
     private exportData() {
         $("#import-export-text").text(StorageHelper.exportData());
