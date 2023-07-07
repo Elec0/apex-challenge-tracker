@@ -1,10 +1,11 @@
-/** All characters */
+/** All legends */
 export const LEGENDS: string[] = ["Ash", "Ballistic", "Bangalore", "Bloodhound", "Catalyst", "Caustic", "Crypto",
     "Fuse", "Gibraltar", "Horizon", "Lifeline", "Loba", "Mad Maggie",
     "Mirage", "Newcastle", "Octane", "Pathfinder", "Rampart", "Revenant", "Seer",
     "Valkyrie", "Vantage", "Wattson", "Wraith"];
 
-/** All legend classes */
+// type CLASS_TYPES = string;
+/** All legend classes. Assault, etc. */
 export enum CLASS_TYPES {
     Assault = "Assault",
     Skirmisher = "Skirmisher",
@@ -13,8 +14,8 @@ export enum CLASS_TYPES {
     Controller = "Controller",
 }
 
-/** Class -> legend mapping */
-export const LEGEND_CLASSES: { [className in CLASS_TYPES]: string[] } = {
+/** Class -> legend mapping. Assault: [Bangalore, ...] */
+export const CLASS_LEGENDS: { [className in CLASS_TYPES]: string[] } = {
     [CLASS_TYPES.Assault]: ["Bangalore", "Revenant", "Fuse", "Ash", "Mad Maggie", "Ballistic"],
     [CLASS_TYPES.Skirmisher]: ["Pathfinder", "Wraith", "Mirage", "Octane", "Horizon", "Valkyrie"],
     [CLASS_TYPES.Recon]: ["Bloodhound", "Crypto", "Seer", "Vantage"],
@@ -22,6 +23,17 @@ export const LEGEND_CLASSES: { [className in CLASS_TYPES]: string[] } = {
     [CLASS_TYPES.Controller]: ["Caustic", "Wattson", "Rampart", "Catalyst"],
 };
 
+/** The reverse of {@link CLASS_LEGENDS}, so each legend is linked to their class. */
+export const LEGEND_CLASSES: { [key: string]: CLASS_TYPES } = {};
+
+for (const key in CLASS_LEGENDS) {
+  if (CLASS_LEGENDS.hasOwnProperty(key)) {
+    const values: string[] = CLASS_LEGENDS[key as keyof typeof CLASS_LEGENDS];
+    for (const value of values) {
+      LEGEND_CLASSES[value] = key as CLASS_TYPES;
+    }
+  }
+}
 /** All weapon names */
 export const WEAPON_NAMES: string[] = ["HAVOC", "VK-47 Flatline", "Hemlock", "R-301", "Nemesis", "Alternator", "Prowler",
     "R-99", "Volt", "C.A.R.", "Devotion", "L-STAR", "M600 Spitfire", "Rampage",
