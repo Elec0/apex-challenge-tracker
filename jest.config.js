@@ -16,4 +16,5 @@ module.exports = {
     "\\.(html)$": "<rootDir>/test/helpers/fileMock.js"
   },
   transformIgnorePatterns: [`<rootDir>/node_modules/`, "<rootDir>/content/"],
+  setupFiles: ["<rootDir>/test/helpers/setup.js"],
 };
