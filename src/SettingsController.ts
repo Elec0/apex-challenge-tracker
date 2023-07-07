@@ -3,6 +3,7 @@ import { Navigation } from "src/Navigation";
 import { StorageHelper } from "src/storage-helper";
 import settingsHtml from "content/settings.html";
 import { TAB_SETTINGS } from "src/constants";
+import { SettingsRenderer } from "./SettingsRenderer";
 
 export class SettingsController extends Navigation {
 
@@ -30,18 +31,15 @@ export class SettingsController extends Navigation {
     }
 
     private btnToggleDailyChallenges() {
-        let textFun = (x: Boolean) => `Daily Challenges: ${x ? "Enabled" : "Disabled"}`;
-
         let elem = $("#toggle-daily-challenges");
         elem.on("click", (e) => {
             let newVal = !StorageHelper.isDailyChallengeEnabled;
             console.debug(StorageHelper.isDailyChallengeEnabled, newVal);
             StorageHelper.isDailyChallengeEnabled = newVal;
             
-            elem.text(textFun(newVal));
+            SettingsRenderer.updateToggleDaily(newVal);
         });
-        elem.text(textFun(StorageHelper.isDailyChallengeEnabled));
-    
+        SettingsRenderer.updateToggleDaily(StorageHelper.isDailyChallengeEnabled);    
     }
 
     private btnDeleteData() {
