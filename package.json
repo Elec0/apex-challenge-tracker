@@ -39,6 +39,7 @@
     "expect": "^27.5.1",
     "html-loader": "^3.1.0",
     "jest": "^27.5.1",
+    "jest-codemods": "^0.25.1",
     "jest-mock": "^27.5.1",
     "jsdom": "^19.0.0",
     "mock-local-storage": "^1.1.20",
@@ -55,7 +56,6 @@
   },
   "dependencies": {
     "cash-dom": "^8.1.0",
-    "jest-codemods": "^0.25.1",
     "lz-string": "^1.4.4",
     "serve": "^14.2.0"
   }

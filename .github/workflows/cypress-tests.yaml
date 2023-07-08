@@ -1,4 +1,4 @@
-name: Cypress Tests with installation job
+name: Run Cypress E2E tests
 
 on:
   push:
@@ -7,50 +7,24 @@ on:
       - '!main' 
 
 jobs:
-  install:
+  cypress-tests-chrome:
     runs-on: ubuntu-latest
     container: cypress/browsers:node18.6.0-chrome105-ff104
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cypress install
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install & Run Cypress tests
         uses: cypress-io/github-action@v2.9.7
         with:
           # Disable running of tests within install job 
-          runTests: false
           build: npm run build
-
-      - name: Save build folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          if-no-files-found: error
-          path: dist
-
-  run-chrome-tests:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node18.6.0-chrome105-ff104
-    needs: install
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Download the build folders
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: dist
-
-      - name: Install serve
-        run: npm install serve
-
-      # Run all Cypress tests
-      - name: Cypress run
-        uses: cypress-io/github-action@v5.7.2
-        with:
           browser: chrome
-          install: false
           wait-on: 'http://localhost:8000'
           wait-on-timeout: 120
           start: npm start
