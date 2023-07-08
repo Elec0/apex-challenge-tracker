@@ -23,11 +23,9 @@ export function enterChallenge(title, prog, progMax, starVal, fast = false) {
 export function setDailyChallenges(isEnabled) {
     cy.contains("Settings").click();
 
-    let btn = cy.get("[data-cy='toggle-daily-data']")
+    cy.get("[data-cy='toggle-daily-data']")
         .invoke("text")
         .then((curText) => {
-
-
             if (curText.includes("Enabled")) {
                 if (!isEnabled) {
                     // Switch status
@@ -41,6 +39,4 @@ export function setDailyChallenges(isEnabled) {
                 }
             }
         });
-
-    cy.contains("Challenges").click();
 }

@@ -8,6 +8,12 @@ function swapTabs() {
     cy.get("[data-cy='tab-challenges']").click();
 }
 
+/** Set the daily challenge status and navigate back to challenges tab */
+function _setDailyChallenges(isEnabled) {
+    setDailyChallenges(isEnabled);
+    cy.contains("Challenges").click();
+}
+
 describe("Enable and disable daily challenges", () => {
     before(() => {
         cy.reload(true);
@@ -16,12 +22,12 @@ describe("Enable and disable daily challenges", () => {
         cy.visit("/");
     });
     it("Enables daily challenges", () => {
-        setDailyChallenges(false);
+        _setDailyChallenges(false);
 
         cy.get("#left-bar").contains("Daily")
             .should("not.exist");
 
-        setDailyChallenges(true);
+        _setDailyChallenges(true);
 
         cy.get("#left-bar").contains("Daily")
             .should("exist");
@@ -32,7 +38,7 @@ describe("Enable and disable daily challenges", () => {
         cy.get("#left-bar").contains("Daily")
             .should("exist");
 
-        setDailyChallenges(false);
+        _setDailyChallenges(false);
         cy.reload();
 
         cy.get("#left-bar").contains("Daily")
@@ -64,7 +70,7 @@ describe("Daily challenges render correctly", () => {
     });
 
     it("Does not render daily challenges when setting is disabled", () => {
-        setDailyChallenges(false);
+        _setDailyChallenges(false);
         swapTabs();
 
         cy.get("#left-bar").contains("Daily")

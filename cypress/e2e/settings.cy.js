@@ -5,11 +5,9 @@ describe("Ensure the daily challenge button toggles", () => {
     let beforeVal;
     beforeEach(() => {
         beforeVal = window.localStorage.getItem("dailyEnabled");
+        cy.visit("/#Settings");
         // Reset this to false so we can test the toggle
         setDailyChallenges(false);
-
-        cy.visit("/");
-        cy.get("[data-cy='tab-settings']").click();
     });
     it("Enables the daily challenge button", () => {
         let btn = cy.contains("Daily Challenges: Disabled");
@@ -31,13 +29,12 @@ describe("Ensure the daily challenge button toggles", () => {
 
 describe("Clear localStorage", () => {
     beforeEach(() => {
-        cy.visit("/");
+        cy.visit("/#Settings");
     });
     it("Creates a new challenge", () => {        
         enterChallenge("Challenge to be deleted", "5", "20", "2");
     });
     it("Clears the storage with the settings button", () => {
-        cy.get("[data-cy='tab-settings']").click();
         cy.get("[data-cy='delete-data']").click();
 
         cy.get("[data-cy='tab-challenges']").click();
@@ -47,11 +44,10 @@ describe("Clear localStorage", () => {
 
 describe("Import challenge data", () => {
     beforeEach(() => {
-        cy.visit("/");
+        cy.visit("/#Settings");
     });
 
     it("Loads challenge data properly", () => {
-        cy.get("[data-cy='tab-settings']").click();
         cy.fixture("settings-data").then(settingsData => {
             cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(settingsData));
         });
@@ -71,11 +67,10 @@ describe("Import challenge data", () => {
 
 describe("Export challenge data", () => {
     beforeEach(() => {
-        cy.visit("/");
+        cy.visit("/#Settings");
     });
     it("Will properly export data", () => {
         enterChallenge("Challenge to be exported", "5", "20", "2");
-        cy.get("[data-cy='tab-settings']").click();
         cy.get("[data-cy='export-data']").click();
     });
 
