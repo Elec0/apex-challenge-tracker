@@ -18,3 +18,7 @@ export function enterChallenge(title, prog, progMax, starVal, fast = false) {
     }
     cy.get("[data-cy='edit-checkmark']").click();
 }
+
+export function setDailyChallenges(isEnabled) {
+    window.localStorage.setItem("dailyEnabled", isEnabled ? "true": "false");
+}

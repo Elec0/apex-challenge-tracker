@@ -1,12 +1,12 @@
 /// <reference types="Cypress" />
-import { enterChallenge } from "../plugins/util-functions";
+import { enterChallenge, setDailyChallenges } from "../plugins/util-functions";
 
 describe("Ensure the daily challenge button toggles", () => {
     let beforeVal;
     beforeEach(() => {
         beforeVal = window.localStorage.getItem("dailyEnabled");
         // Reset this to false so we can test the toggle
-        window.localStorage.setItem("dailyEnabled", "false");
+        setDailyChallenges(false);
 
         cy.visit("/");
         cy.get("[data-cy='tab-settings']").click();
@@ -25,7 +25,7 @@ describe("Ensure the daily challenge button toggles", () => {
     });
     // Restore the starting value
     afterEach(() => {
-        window.localStorage.setItem("dailyEnabled", beforeVal);
+        setDailyChallenges(beforeVal);
     });
 });
 

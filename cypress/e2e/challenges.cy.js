@@ -1,7 +1,43 @@
 /// <reference types="Cypress" />
-import { enterChallenge } from "../plugins/util-functions";
+import { enterChallenge, setDailyChallenges } from "../plugins/util-functions";
 
 const keywordYellowColor = "rgb(255, 208, 0)";
+
+describe("Enable and disable daily challenges", () => {
+    before(() => {
+        cy.reload(true);
+    });
+    beforeEach(() => {
+        cy.visit("/");
+    });
+    it("Enables daily challenges", () => {
+        setDailyChallenges(false);
+        cy.reload();
+
+        cy.get("#left-bar").get("#weekbtn0")
+            .should("not.exist");
+
+        setDailyChallenges(true);
+        cy.reload();
+
+        cy.get("#left-bar").get("#weekbtn0")
+            .should("exist");
+    });
+
+    it("Disables daily challenges", () => {
+        setDailyChallenges(true);
+        cy.reload();
+
+        cy.get("#left-bar").get("#weekbtn0")
+            .should("exist");
+
+        setDailyChallenges(false);
+        cy.reload();
+
+        cy.get("#left-bar").get("#weekbtn0")
+            .should("not.exist");
+    });
+});
 
 describe("Create a challenge", () => {
     before(() => {
