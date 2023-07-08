@@ -1,6 +1,34 @@
 /// <reference types="Cypress" />
 import { enterChallenge } from "../plugins/util-functions";
 
+describe("Ensure the daily challenge button toggles", () => {
+    let beforeVal;
+    beforeEach(() => {
+        beforeVal = window.localStorage.getItem("dailyEnabled");
+        // Reset this to false so we can test the toggle
+        window.localStorage.setItem("dailyEnabled", "false");
+
+        cy.visit("/");
+        cy.get("[data-cy='tab-settings']").click();
+    });
+    it("Enables the daily challenge button", () => {
+        let btn = cy.contains("Daily Challenges: Disabled");
+        btn.should("exist");
+        btn.should("not.have.class", "tab-selected");
+    });
+    it("Disables the daily challenge button", () => {
+        cy.get("[data-cy='toggle-daily-data']").click();
+
+        let btn = cy.contains("Daily Challenges: Enabled");
+        btn.should("exist");
+        btn.should("have.class", "tab-selected");
+    });
+    // Restore the starting value
+    afterEach(() => {
+        window.localStorage.setItem("dailyEnabled", beforeVal);
+    });
+});
+
 describe("Clear localStorage", () => {
     beforeEach(() => {
         cy.visit("/");
