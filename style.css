@@ -86,6 +86,10 @@ hr {
     flex-grow: 1;
 }
 
+#settings-content-area .tab-button {
+    flex-grow: inherit;
+}
+
 #path-content-area {
     display: inline-flex;
     justify-content: center;

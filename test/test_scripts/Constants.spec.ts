@@ -1,14 +1,16 @@
 import expect from 'expect';
-import { CLASS_TYPES } from "../../src/constants";
+import { CLASS_LEGENDS, CLASS_TYPES, LEGENDS, LEGEND_CLASSES } from "../../src/constants";
 
 describe('The legends are properly assigned to class types', () => {
-    it("test one", () => {
-        expect(1).toBe(1);
-    });
 
-    Object.values(CLASS_TYPES).forEach((classType) => {
-        it("should assign the correct class types", () => {
-            // expect(classType).to.equal(classType);
+    Object.values(LEGENDS).forEach((legend) => { 
+        let classType = CLASS_TYPES[LEGEND_CLASSES[legend]];
+        
+        test(`'${legend}' should be in a class type`, () => {
+            expect(classType).toBeDefined();
+        });
+        test(`legends in class '${classType}' should contain '${legend}'`, () => {
+            expect(CLASS_LEGENDS[classType]).toContain(legend);
         });
     });
 });

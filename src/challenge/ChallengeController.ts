@@ -20,6 +20,7 @@ export class ChallengeController extends Navigation {
             this.setHash("");
             $("#root-container").append(challengeHtml);
             $("#left-bar").removeAttr("style");
+            ChallengeController.setupWeekIndexDaily();
             ChallengeController.loadChallenges();
             LeftBarRenderer.createWeekButtons();
             ChallengeController.setupFilterButtons();
@@ -138,6 +139,9 @@ export class ChallengeController extends Navigation {
         maxElem.val(m[0]);
     }
 
+    /**
+     * Load the {@link StorageHelper.currentWeek current week's} challenges.
+     */
     public static loadChallenges() {
         let sort: boolean = true;
         let dataToRender = StorageHelper.getDataToRenderFilter(this.currentFilter, this.currentFilterShowCompleted);
@@ -154,6 +158,16 @@ export class ChallengeController extends Navigation {
             .attr("id", "add-challenge").attr("tabindex", "0").text("New Challenge");
         btnAdd.on("click", e => this.handleClickAddChallenge(e));
         $("#challenge-content-area").append(btnAdd);
+    }
+
+    /** 
+     * If the daily challenges are not displayed, make sure weekIndex is not set to 0.
+     */
+    public static setupWeekIndexDaily() {
+        StorageHelper.currentWeek = 1;
+        if (StorageHelper.isDailyChallengeEnabled) {
+            StorageHelper.currentWeek = 0;
+        }
     }
 
     public static setupFilterButtons() {

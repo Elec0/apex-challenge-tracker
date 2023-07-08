@@ -1,7 +1,96 @@
 /// <reference types="Cypress" />
-import { enterChallenge } from "../plugins/util-functions";
+import { goToChallenges, goToSettings } from "../plugins/nav-helper";
+import { enterChallenge, setDailyChallenges } from "../plugins/util-functions";
 
 const keywordYellowColor = "rgb(255, 208, 0)";
+
+function swapTabs() {
+    goToSettings();
+    goToChallenges();
+}
+
+/** Set the daily challenge status and navigate back to challenges tab */
+function _setDailyChallenges(isEnabled) {
+    setDailyChallenges(isEnabled);
+    cy.contains("Challenges").click();
+}
+
+describe("Enable and disable daily challenges", () => {
+    before(() => {
+        cy.reload(true);
+    });
+    beforeEach(() => {
+        cy.visit("/");
+    });
+    it("Enables daily challenges", () => {
+        _setDailyChallenges(false);
+
+        cy.get("#left-bar").contains("Daily")
+            .should("not.exist");
+
+        _setDailyChallenges(true);
+
+        cy.get("#left-bar").contains("Daily")
+            .should("exist");
+    });
+
+    it("Disables daily challenges", () => {
+        // We don't need to set this to true because it's null (true) by default at start
+        cy.get("#left-bar").contains("Daily")
+            .should("exist");
+
+        _setDailyChallenges(false);
+        cy.reload();
+
+        cy.get("#left-bar").contains("Daily")
+            .should("not.exist");
+    });
+});
+
+describe("Daily challenges render correctly", () => {
+    beforeEach(() => {
+        cy.visit("/");
+    });
+
+    it("Renders daily challenges when setting is enabled", () => {
+        cy.get("#left-bar").contains("Daily")
+            .should("exist");
+
+        goToSettings();
+
+        cy.fixture("single-daily-challenge").then(fixData => {
+            cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
+        });
+        cy.get("[data-cy='import-data']").click();
+
+        goToChallenges();
+
+        // Verify there is a challenge visible
+        cy.get("#challenge-content-area")
+            .get(".challenge-bar").should("exist");
+    });
+
+    it("Does not render daily challenges when setting is disabled", () => {
+        _setDailyChallenges(false);
+        swapTabs();
+
+        cy.get("#left-bar").contains("Daily")
+            .should("not.exist");
+
+        goToSettings();
+
+        cy.fixture("single-daily-challenge").then(fixData => {
+            cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
+        });
+        cy.get("[data-cy='import-data']").click();
+
+        goToChallenges();
+
+        // Verify there are no challenges visible
+        cy.get("#challenge-content-area")
+            .get(".challenge-bar").should("not.exist");
+    });
+});
 
 describe("Create a challenge", () => {
     before(() => {
@@ -11,8 +100,6 @@ describe("Create a challenge", () => {
         cy.visit("/");
     })
     it("Creates, verifies, then deletes a new challenge", () => {
-        cy.get("[data-cy='tab-challenges']").click();
-
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Deal damage as Bangalore.", "1", "10", "15");
 
@@ -73,8 +160,6 @@ describe("Create a challenge", () => {
     });
 
     it("Verifies the legend class types properly keywordify", () => {
-        cy.get("[data-cy='tab-challenges']").click();
-
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Kill enemies as a Controller class", "1", "10", "15");
 

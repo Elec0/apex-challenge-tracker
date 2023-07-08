@@ -2,7 +2,7 @@ import $, { Cash } from "cash-dom";
 import { StorageHelper } from "src/storage-helper";
 import { ChallengeController } from "src/challenge/ChallengeController";
 import helpHtml from "content/help.html";
-import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM, CLASS_TYPES, LEGEND_CLASSES } from "src/constants";
+import { LEGENDS, MODES, WEAPON_TYPES, WEAPON_NAMES, NUMBER_REGEX, WEEKS_NUM, CLASS_TYPES, CLASS_LEGENDS } from "src/constants";
 import { VERSION } from "../globals";
 
 export class LeftBarRenderer {
@@ -83,7 +83,11 @@ export class LeftBarRenderer {
 
         leftBar.append(this.createHelpElement());
 
-        for (let i = 0; i < StorageHelper.weekData.length; ++i) {
+        // Skip it if the daily challenges should not be present
+        if (StorageHelper.isDailyChallengeEnabled) {
+            this.renderWeekButton(0, leftBar);
+        }
+        for (let i = 1; i < StorageHelper.weekData.length; ++i) {
             this.renderWeekButton(i, leftBar);
         }
     }

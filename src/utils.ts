@@ -7,7 +7,7 @@ export function localStorageAvailable() {
         storage.removeItem(x);
         return true;
     }
-    catch(e) {
+    catch (e) {
         return e instanceof DOMException && (
             // everything except Firefox
             e.code === 22 ||
@@ -32,14 +32,14 @@ var entityMap = {
     '/': '&#x2F;',
     '`': '&#x60;',
     '=': '&#x3D;'
-  };
-  
-  /** Escapes dangerous characters, returns empty if given null string */
-export function escapeHtml (toEscape: string | null): string {
-  if (toEscape == null)
-    return "";
+};
+
+/** Escapes dangerous characters, returns empty if given null string */
+export function escapeHtml(toEscape: string | null): string {
+    if (toEscape == null)
+        return "";
 
     return String(toEscape).replace(/[&<>"'`=\/]/g, function (s) {
-      return entityMap[s as keyof typeof entityMap];
+        return entityMap[s as keyof typeof entityMap];
     });
-  }
+}

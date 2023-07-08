@@ -18,3 +18,25 @@ export function enterChallenge(title, prog, progMax, starVal, fast = false) {
     }
     cy.get("[data-cy='edit-checkmark']").click();
 }
+
+/** Goes to settings page and toggles daily challenges if needed. */
+export function setDailyChallenges(isEnabled) {
+    cy.contains("Settings").click();
+
+    cy.get("[data-cy='toggle-daily-data']")
+        .invoke("text")
+        .then((curText) => {
+            if (curText.includes("Enabled")) {
+                if (!isEnabled) {
+                    // Switch status
+                    cy.get("[data-cy='toggle-daily-data']").click();
+                }
+            }
+            else { // Currently disabled
+                if (isEnabled) {
+                    // Switch status
+                    cy.get("[data-cy='toggle-daily-data']").click();
+                }
+            }
+        });
+}
