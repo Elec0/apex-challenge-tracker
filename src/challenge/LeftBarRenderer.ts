@@ -83,7 +83,11 @@ export class LeftBarRenderer {
 
         leftBar.append(this.createHelpElement());
 
-        for (let i = 0; i < StorageHelper.weekData.length; ++i) {
+        // Skip it if the daily challenges should not be present
+        if (StorageHelper.isDailyChallengeEnabled) {
+            this.renderWeekButton(0, leftBar);
+        }
+        for (let i = 1; i < StorageHelper.weekData.length; ++i) {
             this.renderWeekButton(i, leftBar);
         }
     }
