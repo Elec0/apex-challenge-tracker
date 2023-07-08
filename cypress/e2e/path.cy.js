@@ -1,17 +1,18 @@
 /// <reference types="Cypress" />
 import { CLASS_TYPES } from "src/constants";
 import { enterChallenge } from "../plugins/util-functions";
+import { goToChallenges, goToPath, goToSettings } from "../plugins/nav-helper";
 
 /** Verify an entry's point total */
 const valueEq = (valName, totVal) => cy.get(`[name='${valName}']`).contains(totVal);
 
 function importData() {
-    cy.get("[data-cy='tab-settings']").click();
+    goToSettings();
     cy.fixture("path-data").then(fixData => {
         cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
     });
     cy.get("[data-cy='import-data']").click();
-    cy.get("[data-cy='tab-path']").click();
+    goToPath();
 }
 
 describe("Verify optimal path calculations are correct", () => {
@@ -25,14 +26,14 @@ describe("Verify optimal path calculations are correct", () => {
     it("Properly calculates the new class type values", () => {
         importData();
 
-        cy.get("[data-cy='tab-challenges']").click();
+        goToChallenges();
         // There are 5 class types
         Object.values(CLASS_TYPES).forEach(element => {
             enterChallenge(`Damage with ${element} legends`, 0, 10, 1, true);
         });
 
         // Go back to path tab
-        cy.get("[data-cy='tab-path']").click();
+        goToPath();
         // Verify that the extra 5 points have been added to BR
         cy.get("[mode-name='BR']").contains("43"); // 38 + 5 = 43
 

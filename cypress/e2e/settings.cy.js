@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import { goToChallenges, goToSettings } from "../plugins/nav-helper";
 import { enterChallenge, setDailyChallenges } from "../plugins/util-functions";
 
 describe("Ensure the daily challenge button toggles", () => {
@@ -31,13 +32,14 @@ describe("Clear localStorage", () => {
     beforeEach(() => {
         cy.visit("/#Settings");
     });
-    it("Creates a new challenge", () => {        
+    it("Creates a new challenge", () => {
+        goToChallenges();
         enterChallenge("Challenge to be deleted", "5", "20", "2");
     });
     it("Clears the storage with the settings button", () => {
         cy.get("[data-cy='delete-data']").click();
 
-        cy.get("[data-cy='tab-challenges']").click();
+        goToChallenges();
         cy.get(".challenge-bar").should("not.exist");
     });
 });
@@ -53,7 +55,7 @@ describe("Import challenge data", () => {
         });
 
         cy.get("[data-cy='import-data']").click();
-        cy.get("[data-cy='tab-challenges']").click();
+        goToChallenges();
 
         cy.contains("Do 5000 damage as Bloodhound");
         cy.contains("4500/5000");
@@ -67,11 +69,18 @@ describe("Import challenge data", () => {
 
 describe("Export challenge data", () => {
     beforeEach(() => {
-        cy.visit("/#Settings");
+        cy.visit("/");
     });
     it("Will properly export data", () => {
         enterChallenge("Challenge to be exported", "5", "20", "2");
+        goToSettings();
         cy.get("[data-cy='export-data']").click();
+        
+        // Check that the export text is correct
+        cy.get("[data-cy='import-export-text-data']").invoke("text").then(text => {
+            expect(text).to.contain(`"allChallengesCompressed"`);
+            expect(text).to.contain(`"weekDataCompressed"`);
+        });
     });
 
 });

@@ -1,11 +1,12 @@
 /// <reference types="Cypress" />
+import { goToChallenges, goToSettings } from "../plugins/nav-helper";
 import { enterChallenge, setDailyChallenges } from "../plugins/util-functions";
 
 const keywordYellowColor = "rgb(255, 208, 0)";
 
 function swapTabs() {
-    cy.get("[data-cy='tab-settings']").click();
-    cy.get("[data-cy='tab-challenges']").click();
+    goToSettings();
+    goToChallenges();
 }
 
 /** Set the daily challenge status and navigate back to challenges tab */
@@ -55,14 +56,14 @@ describe("Daily challenges render correctly", () => {
         cy.get("#left-bar").contains("Daily")
             .should("exist");
 
-        cy.get("[data-cy='tab-settings']").click();
+        goToSettings();
 
         cy.fixture("single-daily-challenge").then(fixData => {
             cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
         });
         cy.get("[data-cy='import-data']").click();
 
-        cy.get("[data-cy='tab-challenges']").click();
+        goToChallenges();
 
         // Verify there is a challenge visible
         cy.get("#challenge-content-area")
@@ -76,14 +77,14 @@ describe("Daily challenges render correctly", () => {
         cy.get("#left-bar").contains("Daily")
             .should("not.exist");
 
-        cy.get("[data-cy='tab-settings']").click();
+        goToSettings();
 
         cy.fixture("single-daily-challenge").then(fixData => {
             cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
         });
         cy.get("[data-cy='import-data']").click();
 
-        cy.get("[data-cy='tab-challenges']").click();
+        goToChallenges();
 
         // Verify there are no challenges visible
         cy.get("#challenge-content-area")
@@ -99,8 +100,6 @@ describe("Create a challenge", () => {
         cy.visit("/");
     })
     it("Creates, verifies, then deletes a new challenge", () => {
-        cy.get("[data-cy='tab-challenges']").click();
-
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Deal damage as Bangalore.", "1", "10", "15");
 
@@ -161,8 +160,6 @@ describe("Create a challenge", () => {
     });
 
     it("Verifies the legend class types properly keywordify", () => {
-        cy.get("[data-cy='tab-challenges']").click();
-
         cy.get(".challenge-editor").should("not.exist");
         enterChallenge("Kill enemies as a Controller class", "1", "10", "15");
 
