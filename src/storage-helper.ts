@@ -21,7 +21,10 @@ export class StorageHelper {
      * // Week 1 has challenges 3, 7
      */
     private static _weekData: Array<Array<string>> = new Array<Array<string>>(WEEKS_NUM);
-    /** Current week to display, index of {@link _weekData}. */
+    /** 
+     * Current week to display, index of {@link _weekData}. 
+     * @see ChallengeController.setupWeekIndexDaily
+    */
     public static currentWeek: number = 0;
 
     private static _storage = window.localStorage;
@@ -31,11 +34,11 @@ export class StorageHelper {
 
     /** Set up our 2D week array */
     public static init() {
-        for(let i = 0; i < this._weekData.length; ++i) {
+        for (let i = 0; i < this._weekData.length; ++i) {
             this._weekData[i] = (new Array<string>(0));
         }
     }
-    
+
     public static getValue(key: string) {
         return this._storage.getItem(key);
     }
@@ -68,7 +71,7 @@ export class StorageHelper {
     /** Set if the user wants to see the daily challenges tab.  */
     public static set isDailyChallengeEnabled(isEnabled: boolean) {
         this.setValue("dailyEnabled", String(isEnabled));
-        console.debug(`Set dailies ${isEnabled}, ${String(isEnabled)}`)
+        console.debug(`Set dailies ${ isEnabled }, ${ String(isEnabled) }`)
     }
 
     /** 
@@ -172,8 +175,8 @@ export class StorageHelper {
      * might be problematic for some people, or Notepad.
      */
     public static exportData(): string {
-        return `{"${KEY_CHALLENGES_LZ}": [${this.stringToUTF16Bytes(this.compressChallenges())}],` +
-                `"${KEY_WEEK_DATA_LZ}": [${this.stringToUTF16Bytes(this.compressWeekData())}]}`;
+        return `{"${ KEY_CHALLENGES_LZ }": [${ this.stringToUTF16Bytes(this.compressChallenges()) }],` +
+            `"${ KEY_WEEK_DATA_LZ }": [${ this.stringToUTF16Bytes(this.compressWeekData()) }]}`;
     }
 
     /**
@@ -193,8 +196,8 @@ export class StorageHelper {
             // We expect this to be an array of numbers. If it isn't we're (probably) going to crash
             let newChallengeData: number[] = incoming[KEY_CHALLENGES_LZ];
             let newDataString = decompressFromUTF16(this.utf16BytesToString(newChallengeData));
-            if (newDataString == null) throw(new TypeError("Decompressed value was null!"));
-            
+            if (newDataString == null) throw (new TypeError("Decompressed value was null!"));
+
             // We've got the data in the plaintext format we expect from storage, now parse it
             let challengeArray = this.loadChallengesFromString(newDataString);
             // Construct our temporary objects
@@ -208,12 +211,12 @@ export class StorageHelper {
             console.info("Importing: Found week data");
             let newWeekData: number[] = incoming[KEY_WEEK_DATA_LZ];
             let newDataString = decompressFromUTF16(this.utf16BytesToString(newWeekData));
-            if (newDataString == null) throw(new TypeError("Decompressed value was null!"));
+            if (newDataString == null) throw (new TypeError("Decompressed value was null!"));
 
             weekData = JSON.parse(newDataString);
         }
 
-        if(!this.verifyData(challengeIds, challenges, weekData)) {
+        if (!this.verifyData(challengeIds, challenges, weekData)) {
             console.info("Importing: Data has been verified, saving")
             // Replace our current objects and save everything
             this._challenges = challenges;
@@ -241,25 +244,25 @@ export class StorageHelper {
 
         if (storChallenges != null) {
             storChallenges = decompressFromUTF16(storChallenges);
-            if (storChallenges == null) throw(new TypeError("Decompressed value was null!"));
+            if (storChallenges == null) throw (new TypeError("Decompressed value was null!"));
 
             let challengeArray = this.loadChallengesFromString(storChallenges);
             challengeArray.forEach((value: [string, ChallengeEntry]) => {
                 this.setChallenge(value[1], false);
                 challengeIds.push(value[0]);
             });
-            console.debug("Loaded challenge map:", this.challenges);            
+            console.debug("Loaded challenge map:", this.challenges);
         }
 
         if (storWeeks != null) {
             storWeeks = decompressFromUTF16(storWeeks);
-            if (storWeeks == null) throw(new TypeError("Decompressed value was null!"));
-            
+            if (storWeeks == null) throw (new TypeError("Decompressed value was null!"));
+
             let arr: Array<Array<string>> = JSON.parse(storWeeks);
             this._weekData = arr;
         }
         // Verify the data, and save it if anything changed.
-        if(this.verifyData(challengeIds, this.challenges, this.weekData)) {
+        if (this.verifyData(challengeIds, this.challenges, this.weekData)) {
             this.saveToStorage();
         }
     }
@@ -284,9 +287,9 @@ export class StorageHelper {
      * @returns boolean, true if any invalid data was found
      */
     private static verifyData(challengeIds: Array<string>, challenges: Map<string, ChallengeEntry>,
-                                weekData: string[][]): boolean {
+        weekData: string[][]): boolean {
         let found: boolean = false;
-        for(let i = 0; i < challengeIds.length; ++i) {
+        for (let i = 0; i < challengeIds.length; ++i) {
             // We just constructed the challengeIds array from the loaded list
             // of challenges, so each of them *will* exist right now.
             let cWeek = challenges.get(challengeIds[i])!.week
@@ -295,8 +298,8 @@ export class StorageHelper {
             if (weekData[cWeek].indexOf(challengeIds[i]) == -1) {
                 // Problem: the challenge exists but isn't in the week it expects to be
                 // Solution: delete the challenge and do a pass through week data at the end
-                console.error("Found orphan challenge! Deleting! This should not happen.", `Expected to be in week ${cWeek}.`, 
-                              challenges.get(challengeIds[i]));
+                console.error("Found orphan challenge! Deleting! This should not happen.", `Expected to be in week ${ cWeek }.`,
+                    challenges.get(challengeIds[i]));
                 challenges.delete(challengeIds[i]);
                 found = true;
             }
@@ -304,28 +307,28 @@ export class StorageHelper {
 
         // Check our saved length
         if (weekData.length < WEEKS_NUM) {
-            console.warn(`Week array is too short, expanding from ${weekData.length} to ${WEEKS_NUM}.`);
+            console.warn(`Week array is too short, expanding from ${ weekData.length } to ${ WEEKS_NUM }.`);
             console.debug(weekData);
 
-            for(let i = 0; i <= WEEKS_NUM - weekData.length; ++i) {
+            for (let i = 0; i <= WEEKS_NUM - weekData.length; ++i) {
                 weekData.push(new Array<string>());
             }
             found = true;
             console.debug(weekData);
         }
         // Now ensure each entry in the weeks arrays exists
-        for(let i = 0; i < weekData.length; ++i) {
+        for (let i = 0; i < weekData.length; ++i) {
             let toRemove: Array<number> = []; // Keep track of what indexes to remove, if any
 
-            for(let j = 0; j < weekData[i].length; ++j) {
+            for (let j = 0; j < weekData[i].length; ++j) {
                 let curId = weekData[i][j];
                 if (!challenges.has(curId)) {
-                    console.error("Week expects challenge that does not exist!", `Week ${i}[${j}] expects ${curId}`);
+                    console.error("Week expects challenge that does not exist!", `Week ${ i }[${ j }] expects ${ curId }`);
                     toRemove.push(j);
                     found = true;
                 }
             }
-            for(let j = 0; j < toRemove.length; ++j) {
+            for (let j = 0; j < toRemove.length; ++j) {
                 // Remove the invalid indexes
                 weekData[i].splice(toRemove[j], 1);
             }
@@ -348,7 +351,7 @@ export class StorageHelper {
         });
         return result;
     }
-    
+
     /** 
      * Collect all challenges that contain `filterText` in the text.
      * 
@@ -383,7 +386,7 @@ export class StorageHelper {
             if (filterMode != "") // If the entered mode text includes the string key value of the challenge mode
                 // The regex handles the A/All case: need to not match 'A' when ',All' is the filter
                 include = include && (new RegExp(MODES[val.mode].toLocaleUpperCase() + "(\\*|$)").test(filterMode.toLocaleUpperCase())
-                        || (filterMode.includes("*") && val.mode == MODES.All));
+                    || (filterMode.includes("*") && val.mode == MODES.All));
 
             if (include)
                 result.push(val);
@@ -398,9 +401,9 @@ export class StorageHelper {
             console.warn("Tried to get an invalid week index!", week);
             return -1;
         }
-        
+
         let res: number = 0;
-        this.weekData[week].forEach( e => res += this.challenges.get(e)!.isCompleted() ? 1 : 0);
+        this.weekData[week].forEach(e => res += this.challenges.get(e)!.isCompleted() ? 1 : 0);
         return res;
     }
 
@@ -415,8 +418,8 @@ export class StorageHelper {
         let hash: number = 0, i: number, chr: number;
         if (toHash.length === 0) return hash.toString();
         for (i = 0; i < toHash.length; i++) {
-            chr   = toHash.charCodeAt(i);
-            hash  = ((hash << 5) - hash) + chr;
+            chr = toHash.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
             hash |= 0; // Convert to 32bit integer
         }
         return hash.toString();
@@ -434,7 +437,7 @@ export class StorageHelper {
     /** Convert utf 16 byte array to string */
     public static utf16BytesToString(bytes: number[]): string {
         let res: string = "";
-        bytes.forEach( e => {
+        bytes.forEach(e => {
             res = res.concat(String.fromCharCode(e));
         });
         return res;
@@ -449,7 +452,7 @@ export class StorageHelper {
      * Determine if the data in localStorage is old and uncompressed. If so, compress it 
      * If it was compressed, return true, else return false
      */
-     private static checkCompressionMigration(): boolean {
+    private static checkCompressionMigration(): boolean {
         let dirty: boolean = false;
         let data: string | null = this.getValue(KEY_CHALLENGES);
         if (data != null) {
@@ -468,14 +471,14 @@ export class StorageHelper {
     }
     /** Take the old data from storage, compress it, save it */
     private static migrateData(key: string, data: string) {
-        console.warn(`Found old data at ${key}! Migrating to new compression methods`);
+        console.warn(`Found old data at ${ key }! Migrating to new compression methods`);
         let newKey: string;
-        if (key == KEY_CHALLENGES) 
+        if (key == KEY_CHALLENGES)
             newKey = KEY_CHALLENGES_LZ;
         else if (key == KEY_WEEK_DATA)
             newKey = KEY_WEEK_DATA_LZ;
-        else 
-            throw(new Error(`Invalid key '${key}'!`));
+        else
+            throw (new Error(`Invalid key '${ key }'!`));
 
         this.setValue(newKey, compressToUTF16(data));
         this._storage.removeItem(key);

@@ -3,6 +3,11 @@ import { enterChallenge, setDailyChallenges } from "../plugins/util-functions";
 
 const keywordYellowColor = "rgb(255, 208, 0)";
 
+function swapTabs() {
+    cy.get("[data-cy='tab-settings']").click();
+    cy.get("[data-cy='tab-challenges']").click();
+}
+
 describe("Enable and disable daily challenges", () => {
     before(() => {
         cy.reload(true);
@@ -12,30 +17,71 @@ describe("Enable and disable daily challenges", () => {
     });
     it("Enables daily challenges", () => {
         setDailyChallenges(false);
-        cy.reload();
 
-        cy.get("#left-bar").get("#weekbtn0")
+        cy.get("#left-bar").contains("Daily")
             .should("not.exist");
 
         setDailyChallenges(true);
-        cy.reload();
 
-        cy.get("#left-bar").get("#weekbtn0")
+        cy.get("#left-bar").contains("Daily")
             .should("exist");
     });
 
     it("Disables daily challenges", () => {
-        setDailyChallenges(true);
-        cy.reload();
-
-        cy.get("#left-bar").get("#weekbtn0")
+        // We don't need to set this to true because it's null (true) by default at start
+        cy.get("#left-bar").contains("Daily")
             .should("exist");
 
         setDailyChallenges(false);
         cy.reload();
 
-        cy.get("#left-bar").get("#weekbtn0")
+        cy.get("#left-bar").contains("Daily")
             .should("not.exist");
+    });
+});
+
+describe("Daily challenges render correctly", () => {
+    beforeEach(() => {
+        cy.visit("/");
+    });
+
+    it("Renders daily challenges when setting is enabled", () => {
+        cy.get("#left-bar").contains("Daily")
+            .should("exist");
+
+        cy.get("[data-cy='tab-settings']").click();
+
+        cy.fixture("single-daily-challenge").then(fixData => {
+            cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
+        });
+        cy.get("[data-cy='import-data']").click();
+
+        cy.get("[data-cy='tab-challenges']").click();
+
+        // Verify there is a challenge visible
+        cy.get("#challenge-content-area")
+            .get(".challenge-bar").should("exist");
+    });
+
+    it("Does not render daily challenges when setting is disabled", () => {
+        setDailyChallenges(false);
+        swapTabs();
+
+        cy.get("#left-bar").contains("Daily")
+            .should("not.exist");
+
+        cy.get("[data-cy='tab-settings']").click();
+
+        cy.fixture("single-daily-challenge").then(fixData => {
+            cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
+        });
+        cy.get("[data-cy='import-data']").click();
+
+        cy.get("[data-cy='tab-challenges']").click();
+
+        // Verify there are no challenges visible
+        cy.get("#challenge-content-area")
+            .get(".challenge-bar").should("not.exist");
     });
 });
 

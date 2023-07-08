@@ -139,6 +139,9 @@ export class ChallengeController extends Navigation {
         maxElem.val(m[0]);
     }
 
+    /**
+     * Load the {@link StorageHelper.currentWeek current week's} challenges.
+     */
     public static loadChallenges() {
         let sort: boolean = true;
         let dataToRender = StorageHelper.getDataToRenderFilter(this.currentFilter, this.currentFilterShowCompleted);
