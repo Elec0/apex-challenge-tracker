@@ -1,6 +1,6 @@
 /** All legends */
-export const LEGENDS: string[] = ["Ash", "Ballistic", "Bangalore", "Bloodhound", "Catalyst", "Caustic", "Crypto",
-    "Fuse", "Gibraltar", "Horizon", "Lifeline", "Loba", "Mad Maggie",
+export const LEGENDS: string[] = ["Alter", "Ash", "Ballistic", "Bangalore", "Bloodhound", "Catalyst", "Caustic", "Crypto",
+    "Conduit", "Fuse", "Gibraltar", "Horizon", "Lifeline", "Loba", "Mad Maggie",
     "Mirage", "Newcastle", "Octane", "Pathfinder", "Rampart", "Revenant", "Seer",
     "Valkyrie", "Vantage", "Wattson", "Wraith"];
 
@@ -16,11 +16,11 @@ export enum CLASS_TYPES {
 
 /** Class -> legend mapping. Assault: [Bangalore, ...] */
 export const CLASS_LEGENDS: { [className in CLASS_TYPES]: string[] } = {
-    [CLASS_TYPES.Assault]: ["Bangalore", "Revenant", "Fuse", "Ash", "Mad Maggie", "Ballistic"],
-    [CLASS_TYPES.Skirmisher]: ["Pathfinder", "Wraith", "Mirage", "Octane", "Horizon", "Valkyrie"],
+    [CLASS_TYPES.Assault]: ["Ash", "Ballistic", "Bangalore", "Fuse", "Mad Maggie",],
+    [CLASS_TYPES.Skirmisher]: ["Alter", "Horizon", "Octane", "Pathfinder", "Revenant", "Valkyrie", "Wraith"],
     [CLASS_TYPES.Recon]: ["Bloodhound", "Crypto", "Seer", "Vantage"],
-    [CLASS_TYPES.Support]: ["Gibraltar", "Lifeline", "Loba", "Newcastle"],
-    [CLASS_TYPES.Controller]: ["Caustic", "Wattson", "Rampart", "Catalyst"],
+    [CLASS_TYPES.Support]: ["Conduit", "Gibraltar", "Lifeline", "Loba", "Mirage", "Newcastle"],
+    [CLASS_TYPES.Controller]: ["Catalyst", "Caustic",  "Rampart", "Wattson"],
 };
 
 /** The reverse of {@link CLASS_LEGENDS}, so each legend is linked to their class. */
