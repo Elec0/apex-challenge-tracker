@@ -1,11 +1,11 @@
 /* #region local fonts */
 @font-face {
     font-family: AgencyFB;
-    src: url("res/fonts/AGENCYR.TTF");
+    src: url("res/fonts/AGENCYR.woff") format("woff");
 }
 @font-face {
     font-family: AgencyFB;
-    src: url("res/fonts/AgencyFBBold.ttf");
+    src: url("res/fonts/AgencyFBBold.woff") format("woff");
     font-weight: bold;
 }
 /* #endregion */
