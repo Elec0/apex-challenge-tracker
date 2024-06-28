@@ -1,18 +1,17 @@
 /// <reference types="Cypress" />
-import { CLASS_TYPES } from "src/constants";
+import { CLASS_TYPES, CLASS_LEGENDS } from "src/constants";
 import { enterChallenge } from "../plugins/util-functions";
 import { goToChallenges, goToPath, goToSettings } from "../plugins/nav-helper";
 
 /** Verify an entry's point total */
 const valueEq = (valName, totVal) => cy.get(`[name='${valName}']`).contains(totVal);
 
-function importData() {
+function importData(dataName = "path-data") {
     goToSettings();
-    cy.fixture("path-data").then(fixData => {
+    cy.fixture(dataName).then(fixData => {
         cy.get("[data-cy='import-export-text-data']").invoke("text", JSON.stringify(fixData));
     });
     cy.get("[data-cy='import-data']").click();
-    goToPath();
 }
 
 describe("Verify optimal path calculations are correct", () => {
@@ -43,6 +42,19 @@ describe("Verify optimal path calculations are correct", () => {
     
     });
 
+    it("Includes class types in character totals", () => {
+        // Import data with a new challenge, a 1 pointer for the 'Assault' class
+        importData("path-class-data");
+        goToPath();
+
+        // Check that the Assault class has been added to the character totals
+        // Ash and Ballistic should have 2 points each, the rest should have 1
+        Object.values(CLASS_LEGENDS[CLASS_TYPES.Assault]).forEach(element => {
+            const expectedValue = element === "Ash" || element === "Ballistic" ? "2" : "1";
+            valueEq(element, expectedValue);
+        });
+    });
+
     /**
         Challenge values:
         Ash: BR: 10
@@ -61,6 +73,7 @@ describe("Verify optimal path calculations are correct", () => {
      */
     it("Tests pre-determined calculations via importing data", () => {
         importData();
+        goToPath();
 
         /*
         BR: 38
