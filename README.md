@@ -17,8 +17,9 @@ Hotkey N will add a new challenge, pressing Enter while editing will save the ch
 When adding a new challenge, the first number entered will be placed in the max value box, if no other number has been entered already.
 
 The search icon opens a filter panel, which will search all entered challenges.  
-Text after a comma will be filtered as Modes. 
-> Ex: "Bloodhound, BR" shows all challenges with Bloodhound and the BR mode.
+Text after a comma will be filtered as Modes.  
+Challenges applying to class types will appear in the search results for legends of that class.
+> Ex: "Bloodhound, BR" shows all challenges with Bloodhound, the BR mode, and any that include "Recon".
 > 
 Adding an asterisk will also include the challenges with the 'All' mode. 
 > Ex: "Ash, A*"

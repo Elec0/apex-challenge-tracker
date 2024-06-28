@@ -39,7 +39,7 @@ describe("Verify optimal path calculations are correct", () => {
         Object.values(CLASS_TYPES).forEach(element => {
             valueEq(element, "1");
         });
-    
+
     });
 
     it("Includes class types in character totals", () => {
@@ -53,6 +53,20 @@ describe("Verify optimal path calculations are correct", () => {
             const expectedValue = element === "Ash" || element === "Ballistic" ? "2" : "1";
             valueEq(element, expectedValue);
         });
+    });
+
+    it("Includes class type challenges in character search", () => {
+        // Import data with a new challenge, a 1 pointer for the 'Assault' class
+        importData("path-class-data");
+        goToPath();
+
+        // Check that the Assault challenge shows up in Ash's search
+        // Click <div class="path-entry" name="Ash">
+        cy.get("[name='Ash']").click();
+
+        // Check that the challenge with Assault in its text shows up
+        // i.e. <span class="keyword">Assault</span> exists
+        cy.get("span.keyword").contains("Assault");
     });
 
     /**
