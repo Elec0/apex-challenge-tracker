@@ -1,4 +1,4 @@
-import { CLASS_TYPES, KEYWORDS, LEGENDS, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
+import { CLASS_LEGENDS, CLASS_TYPES, KEYWORDS, LEGENDS, LEGEND_CLASSES, MODES, NumModes, TAB_CHALLENGES, TAB_OPTIMAL_PATH, WEAPON_NAMES, WEAPON_TYPES } from "../constants";
 import { Navigation } from "src/Navigation";
 import $, { Cash } from "cash-dom";
 import { StorageHelper } from "src/storage-helper";
@@ -73,7 +73,7 @@ export class OptimalPathController extends Navigation {
      * Which to display is selected via index by {@link currentKeywordMode}.
      * 
      * modeCountSorted is always the same, as it reads from index 0.
-     * @returns 4 arrays of {@link Count}: legendCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted
+     * @returns Array constructed with: legendCountSorted, legendClassCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted
      */
     private getCountedResults(): Count[] {
         let legendCount: Count = new Array();
@@ -85,7 +85,6 @@ export class OptimalPathController extends Navigation {
             modeCount.push([MODES[i], this.modeKeywordCount[0].get(`Mode${ i }`)!]);
 
         // We have the complete list of keywords and counts
-        // turn that into 3 separate lists that we can sort and return.
         for (let [key, value] of this.modeKeywordCount[this.currentKeywordMode]) {
             if (LEGENDS.includes(key)) {
                 legendCount.push([key, value]);
@@ -100,16 +99,10 @@ export class OptimalPathController extends Navigation {
                 weaponCount.push([key, value]);
             }
         }
-
         // Now sort it, descending order
         let sorter = (n1: [string, number], n2: [string, number]): number => n2[1] - n1[1];
 
-        let legendCountSorted = legendCount.sort(sorter);
-        let weaponTypeCountSorted = weaponTypeCount.sort(sorter);
-        let weaponCountSorted = weaponCount.sort(sorter);
-        let modeCountSorted = modeCount.sort(sorter);
-        let legendClassCountSorted = legendClassCount.sort(sorter);
-        return [legendCountSorted, legendClassCountSorted, weaponTypeCountSorted, weaponCountSorted, modeCountSorted];
+        return [legendCount.sort(sorter), legendClassCount.sort(sorter), weaponTypeCount.sort(sorter), weaponCount.sort(sorter), modeCount.sort(sorter)]
     }
 
     /**
@@ -134,7 +127,7 @@ export class OptimalPathController extends Navigation {
                 this.modeKeywordCount[i] = new Map();
         }
         // Start by going through each challenge's keywords, incrementing a counter when finding one
-        KEYWORDS.forEach(element => {
+        KEYWORDS.forEach((element: string) => {
             // Init the map
             // i in = index
             for (let i in this.modeKeywordCount) {
@@ -160,6 +153,24 @@ export class OptimalPathController extends Navigation {
                         // j is the whole array index, which is offset by 1 since 0th is all totals
                         for (let j = 2; j < this.modeKeywordCount.length; ++j) {
                             this.modeKeywordCount[j].set(element, (this.modeKeywordCount[j].get(element) ?? 0) + value.value);
+                        }
+                    }
+                    // We want to add the class type's total value to each legend that is in that class
+                    // `element` is a class type, so we need to:
+                    // 1. Get the list of legends in that class
+                    // 2. Add the value to each legend in that class
+                    // Note: We are not adding these to "All", as they have already been counted
+                    if (Object.values(CLASS_TYPES).includes(element as CLASS_TYPES)) {
+                        let legendsInClass: string[] = CLASS_LEGENDS[element as CLASS_TYPES];
+                        console.debug(`Adding ${value.value} to all Legends in class ${ element }: ${ legendsInClass }`);
+                        
+                        for (let legend of legendsInClass) {
+                            // Add challenge's star value to tally
+                            // Add it twice: once to the 0th, which has all totals of everything
+                            this.modeKeywordCount[0].set(legend, (this.modeKeywordCount[0].get(legend) ?? 0) + value.value);
+                            // Then again to the one with the matching mode
+                            let offsetMode: number = value.mode + 1;
+                            this.modeKeywordCount[offsetMode].set(legend, (this.modeKeywordCount[offsetMode].get(legend) ?? 0) + value.value);
                         }
                     }
                 }
