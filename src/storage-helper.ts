@@ -1,5 +1,5 @@
 import { ChallengeEntry } from "src/challenge/ChallengeEntry";
-import { KEY_WEEK_DATA, KEY_CHALLENGES, KEY_CHALLENGES_LZ, KEY_WEEK_DATA_LZ, MODES, WEEKS_NUM } from "src/constants";
+import { KEY_WEEK_DATA, KEY_CHALLENGES, KEY_CHALLENGES_LZ, KEY_WEEK_DATA_LZ, MODES, WEEKS_NUM, LEGENDS, LEGEND_CLASSES } from "src/constants";
 import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 
 export class StorageHelper {
@@ -359,6 +359,8 @@ export class StorageHelper {
      * 
      * If there's a comma, after that will be the mode.
      * 
+     * Filtering by Legend name will also include challenges for that Legend's class type.
+     * 
      * "Ash" => Challenges with Ash
      * "Ash, BR" => Ash & BR mode
      * ",BR" => All BR challenges
@@ -377,11 +379,20 @@ export class StorageHelper {
             filterMode = spl[1].trim();
         }
 
+        const legend = this.getLegendFromText(filterLower);
+
         this.challenges.forEach((val, key) => {
             if (!showCompleted && val.isCompleted())
                 return;
             // Check if the challenge text includes our filter text
             let include: boolean = val.text.toLowerCase().includes(filterLower);
+
+            // There must be a legend name in the filter text, and that legend must have a class type
+            if (legend != "" && Object.hasOwnProperty.call(LEGEND_CLASSES, legend)) {
+                // Include challenges for the legend's class type
+                include = include || val.text.includes(LEGEND_CLASSES[legend].toString());
+            }
+
             // See if we need to check the mode
             if (filterMode != "") // If the entered mode text includes the string key value of the challenge mode
                 // The regex handles the A/All case: need to not match 'A' when ',All' is the filter
@@ -393,6 +404,21 @@ export class StorageHelper {
         });
 
         return result;
+    }
+
+    /**
+     * Determine if the provided text contains a legend name.
+     * 
+     * @returns The legend name if found, else an empty string. The first legend found will be returned.
+     */
+    private static getLegendFromText(text: string): string {
+        let lower = text.toLowerCase();
+        for (let i = 0; i < LEGENDS.length; ++i) {
+            if (lower.includes(LEGENDS[i].toLowerCase())) {
+                return LEGENDS[i];
+            }
+        }
+        return "";
     }
 
     /** Return how many challenges have been completed within the provided week */

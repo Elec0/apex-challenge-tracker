@@ -69,7 +69,7 @@ export class SettingsController extends Navigation {
     }
 
     private importData() {
-        let importing = $("#import-export-text").text();
+        let importing = $("#import-export-text").val() as string;
         console.debug("Import", importing);
         if (confirm("Are you sure? This is not reversible!")) {
             if (StorageHelper.importData(importing)) {
